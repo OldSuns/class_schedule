@@ -15,13 +15,13 @@ const App = () => {
         { period: 2, courses: [
             { name: "内科学A(I)", weeks: [1,2,3,4,5,7,8,9,11,12,13,14,15,16], group: null, note: "2学时×14（共28学时）" }
           ]},
-        { period: 3, courses: [] },
+        { period: 3, courses: [
+            { name: "神经病学B", weeks: [4,5,7,8,9,11,12,13,14,15], group: null, note: "2学时×10（共20学时）" }
+          ] },
         { period: 4, courses: [
             { name: "神经病学B", weeks: [4,5,7,8,9,11,12,13,14,15], group: null, note: "2学时×10（共20学时）" }
           ]},
-        { period: 5, courses: [
-            { name: "神经病学B", weeks: [4,5,7,8,9,11,12,13,14,15], group: null, note: "2学时×10（共20学时）" }
-          ]},
+        { period: 5, courses: []},
         { period: 6, courses: [
             { name: "内科学见习", weeks: [15], group: "6班A组", note: "2学时×1" },
             { name: "内科学见习", weeks: [16], group: "6班B组", note: "2学时×1" },
@@ -117,7 +117,7 @@ const App = () => {
         { period: 4, courses: [] },
         { period: 5, courses: [] },
         { period: 6, courses: [
-            { name: "形势与政策A", weeks: [4], group: null, note: "讲座（14-15周第6节，网课）" }
+            { name: "形势与政策A", weeks: [4,14,15], group: null, note: "讲座（14-15周第6节，网课）" }
           ]},
         { period: 7, courses: [] },
         { period: 8, courses: [] },
@@ -190,13 +190,13 @@ const App = () => {
             { name: "神经病学B", weeks: [1,2,3], group: null, note: "2学时×3" },
             { name: "外科学A(I)", weeks: [5,6,7,11,13,15], group: null, note: "2学时×6（共12学时）" }
           ]},
-        { period: 3, courses: [] },
+        { period: 3, courses: [
+            { name: "口腔科学A", weeks: [2,4,6,8,12], group: null, note: "2学时×10（共10学时）" }
+          ] },
         { period: 4, courses: [
             { name: "口腔科学A", weeks: [2,4,6,8,12], group: null, note: "2学时×10（共10学时）" }
           ]},
-        { period: 5, courses: [
-            { name: "口腔科学A", weeks: [2,4,6,8,12], group: null, note: "2学时×10（共10学时）" }
-          ]},
+        { period: 5, courses: []},
         { period: 6, courses: [
             { name: "儿科学见习", weeks: [12], group: "6班A组", note: "2学时" },
             { name: "儿科学见习", weeks: [13], group: "6班B组", note: "2学时" },
@@ -231,74 +231,9 @@ const App = () => {
   };
 
   // 处理单元格点击
-  const handleCellClick = (day, period, courses) => {
-    setSelectedCell({ day, period, courses });
+  const handleCellClick = (day, periodStart, periodEnd, courses) => {
+    setSelectedCell({ day, periodStart, periodEnd, courses });
     setIsModalOpen(true);
-  };
-
-  // 过滤当前周课程
-  const getFilteredCourses = (courses) => {
-    return courses.map(course => ({
-      ...course,
-      isCurrentWeek: course.weeks.includes(currentWeek)
-    }));
-  };
-
-  // 生成课表单元格 - 统一行高，只显示一门课程
-  const renderCell = (day, period) => {
-    // 找到对应时间段的课程
-    const dayData = scheduleData.find(d => d.day === day);
-    if (!dayData) return null;
-    
-    const periodData = dayData.periods.find(p => p.period === period);
-    if (!periodData) return null;
-
-    // 无课程：直接不渲染任何组件（透明）
-    if (!periodData.courses || periodData.courses.length === 0) return null;
-    
-    const filteredCourses = getFilteredCourses(periodData.courses);
-    const totalCourses = filteredCourses.length;
-    const currentWeekCourses = filteredCourses.filter(c => c.isCurrentWeek);
-    
-    // 优先显示当前周的课程
-    let displayCourse = currentWeekCourses.length > 0 
-      ? currentWeekCourses[0] 
-      : (filteredCourses.length > 0 ? filteredCourses[0] : null);
-    
-    // 是否有其他课程（仅当除展示课程外还有剩余课程时显示）
-    const otherCoursesCount = Math.max(0, totalCourses - 1);
-    const hasOtherCourses = otherCoursesCount > 0;
-    
-    // 是否有当前周课程
-    const hasCurrentWeekCourse = currentWeekCourses.length > 0;
-    
-    return (
-      <div 
-        onClick={() => handleCellClick(day, period, filteredCourses)}
-        className={`p-2 border border-gray-200 min-h-[80px] flex flex-col justify-center items-center cursor-pointer transition-all duration-200 ${
-          hasCurrentWeekCourse 
-            ? "bg-blue-50 hover:bg-blue-100" 
-            : "bg-gray-50 hover:bg-gray-100"
-        }`}
-      >
-        {displayCourse ? (
-          <>
-            <div className={`text-center font-medium text-sm ${
-              displayCourse.isCurrentWeek ? "text-blue-700" : "text-gray-600"
-            }`}>
-              {displayCourse.name}
-              {displayCourse.group && ` (${displayCourse.group})`}
-            </div>
-            {hasOtherCourses && (
-              <div className="mt-1 flex items-center text-xs text-indigo-600 font-medium">
-                <Plus size={12} className="mr-1" />
-                {otherCoursesCount} 门其他课程
-              </div>
-            )}
-          </>
-        ) : null}
-      </div>
-    );
   };
 
   // 获取节次名称
@@ -308,6 +243,160 @@ const App = () => {
     }
     return `${period}节`;
   };
+
+  const getPeriodRangeLabel = (periodStart, periodEnd) => {
+    if (periodStart === periodEnd) return getPeriodLabel(periodStart);
+    return `${getPeriodLabel(periodStart)}～${getPeriodLabel(periodEnd)}`;
+  };
+
+  // 合并同一天内连续的同一课程：以“显示的课程（name+group）一致”为准，并用 rowSpan 覆盖多行显示
+  const mergedCellsByDay = useMemo(() => {
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const periods = Array.from({ length: 11 }, (_, i) => i + 1);
+    const result = {};
+
+    const getCourseKey = (course) =>
+      `${course.name}::${course.group ?? ""}::${course.note ?? ""}::${course.weeks.join(",")}`;
+
+    const getDisplayKey = (courses) => {
+      const keys = [];
+      const seen = new Set();
+      for (const course of courses) {
+        const key = `${course.name}::${course.group ?? ""}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        keys.push(key);
+      }
+      keys.sort();
+      return keys.join("||");
+    };
+
+    const getDisplayCourses = (courses) => {
+      const result = [];
+      const seen = new Set();
+      for (const course of courses) {
+        const key = `${course.name}::${course.group ?? ""}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        result.push(course);
+      }
+      // 同一时间 A/B 组都上课时同时显示（最多显示 2 条，剩余用“其他课程”提示）
+      return result.slice(0, 2);
+    };
+
+    for (const day of days) {
+      const dayData = scheduleData.find(d => d.day === day);
+      const raw = {};
+
+      for (const period of periods) {
+        const periodData = dayData?.periods.find(p => p.period === period);
+        const courses = periodData?.courses ?? [];
+
+        if (courses.length === 0) {
+          raw[period] = { empty: true };
+          continue;
+        }
+
+        const filteredCourses = courses.map(course => ({
+          ...course,
+          isCurrentWeek: course.weeks.includes(currentWeek),
+        }));
+
+        const currentWeekCourses = filteredCourses.filter(c => c.isCurrentWeek);
+        const displayCourses =
+          currentWeekCourses.length > 0 ? getDisplayCourses(currentWeekCourses) : (filteredCourses[0] ? [filteredCourses[0]] : []);
+        const displayKey = currentWeekCourses.length > 0 ? getDisplayKey(currentWeekCourses) : "";
+        const otherCoursesCount = Math.max(0, filteredCourses.length - displayCourses.length);
+
+        raw[period] = {
+          empty: false,
+          filteredCourses,
+          displayCourses,
+          displayKey,
+          hasCurrentWeekCourse: currentWeekCourses.length > 0,
+          otherCoursesCount,
+        };
+      }
+
+      const merged = {};
+      let period = 1;
+      while (period <= 11) {
+        const cell = raw[period];
+        if (!cell || cell.empty) {
+          merged[period] = { empty: true };
+          period += 1;
+          continue;
+        }
+
+        // 不是本周课程：不做跨节次合并（保持每节独立显示）
+        if (!cell.hasCurrentWeekCourse) {
+          merged[period] = {
+            ...cell,
+            periodStart: period,
+            periodEnd: period,
+            rowSpan: 1,
+          };
+          period += 1;
+          continue;
+        }
+
+        let end = period;
+        const combinedCoursesMap = new Map();
+        const addCourses = (list) => {
+          for (const course of list) {
+            const key = getCourseKey(course);
+            const existing = combinedCoursesMap.get(key);
+            if (!existing) {
+              combinedCoursesMap.set(key, course);
+              continue;
+            }
+            if (!existing.isCurrentWeek && course.isCurrentWeek) {
+              combinedCoursesMap.set(key, { ...existing, isCurrentWeek: true });
+            }
+          }
+        };
+
+        addCourses(cell.filteredCourses);
+        let hasCurrentWeekCourse = cell.hasCurrentWeekCourse;
+
+        while (end + 1 <= 11) {
+          const next = raw[end + 1];
+          if (!next || next.empty) break;
+          if (!next.hasCurrentWeekCourse) break;
+          if (next.displayKey !== cell.displayKey) break;
+          addCourses(next.filteredCourses);
+          hasCurrentWeekCourse = hasCurrentWeekCourse || next.hasCurrentWeekCourse;
+          end += 1;
+        }
+
+        const mergedCourses = Array.from(combinedCoursesMap.values());
+        const mergedCurrentWeekCourses = mergedCourses.filter(c => c.isCurrentWeek);
+        const displayCourses = getDisplayCourses(mergedCurrentWeekCourses);
+        const otherCoursesCount = Math.max(0, mergedCourses.length - displayCourses.length);
+
+        merged[period] = {
+          ...cell,
+          filteredCourses: mergedCourses,
+          displayCourses,
+          hasCurrentWeekCourse,
+          otherCoursesCount,
+          periodStart: period,
+          periodEnd: end,
+          rowSpan: end - period + 1,
+        };
+
+        for (let p = period + 1; p <= end; p += 1) {
+          merged[p] = { skip: true };
+        }
+
+        period = end + 1;
+      }
+
+      result[day] = merged;
+    }
+
+    return result;
+  }, [scheduleData, currentWeek]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
@@ -334,7 +423,7 @@ const App = () => {
 
         {/* 课表 */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-indigo-100">
-          <table className="min-w-full divide-y divide-gray-200">
+          <table className="min-w-full border-collapse">
             <thead className="bg-indigo-600">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-24">
@@ -351,17 +440,62 @@ const App = () => {
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
+            <tbody className="bg-white">
               {Array.from({ length: 11 }, (_, i) => i + 1).map(period => (
                 <tr key={period} className="h-20">
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-indigo-50">
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-indigo-50 border border-gray-200">
                     {getPeriodLabel(period)}
                   </td>
-                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map(day => (
-                    <td key={`${day}-${period}`} className="p-1 h-full">
-                      {renderCell(day, period)}
-                    </td>
-                  ))}
+                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map(day => {
+                    const cell = mergedCellsByDay?.[day]?.[period];
+                    if (cell?.skip) return null;
+
+                    if (!cell || cell.empty) {
+                      return <td key={`${day}-${period}`} className="p-1 h-full border border-gray-200" />;
+                    }
+
+                    return (
+                      <td
+                        key={`${day}-${period}`}
+                        onClick={() =>
+                          handleCellClick(day, cell.periodStart, cell.periodEnd, cell.filteredCourses)
+                        }
+                        className={`p-0 h-full align-top border border-gray-200 cursor-pointer transition-colors duration-200 ${
+                          cell.hasCurrentWeekCourse
+                            ? "bg-blue-50 hover:bg-blue-100"
+                            : "bg-gray-50 hover:bg-gray-100"
+                        }`}
+                        rowSpan={cell.rowSpan}
+                      >
+                        <div
+                          style={{ height: `${cell.rowSpan * 80}px` }}
+                          className="p-2 w-full h-full flex flex-col justify-center items-center"
+                        >
+                          {cell.displayCourses.length > 0 ? (
+                            <>
+                              {cell.displayCourses.map((course, idx) => (
+                                <div
+                                  key={`${course.name}-${course.group ?? ""}-${idx}`}
+                                  className={`text-center font-medium text-sm ${
+                                    course.isCurrentWeek ? "text-blue-700" : "text-gray-600"
+                                  }`}
+                                >
+                                  {course.name}
+                                  {course.group && ` (${course.group})`}
+                                </div>
+                              ))}
+                              {cell.otherCoursesCount > 0 && (
+                                <div className="mt-1 flex items-center text-xs text-indigo-600 font-medium">
+                                  <Plus size={12} className="mr-1" />
+                                  {cell.otherCoursesCount} 门其他课程
+                                </div>
+                              )}
+                            </>
+                          ) : null}
+                        </div>
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
@@ -393,7 +527,7 @@ const App = () => {
                       {selectedCell.day === "Tuesday" && "星期二"}
                       {selectedCell.day === "Wednesday" && "星期三"}
                       {selectedCell.day === "Thursday" && "星期四"}
-                      {selectedCell.day === "Friday" && "星期五"} · {getPeriodLabel(selectedCell.period)}
+                      {selectedCell.day === "Friday" && "星期五"} · {getPeriodRangeLabel(selectedCell.periodStart, selectedCell.periodEnd)}
                     </h2>
                   </div>
                   <button 
