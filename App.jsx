@@ -1,9 +1,24 @@
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Calendar, Clock, Plus } from "lucide-react";
+import { X, Calendar, Clock, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 
 const App = () => {
-  // 课表数据（根据校正后的课表结构化）
+  // 响应式窗口宽度状态
+  const [isMobile, setIsMobile] = useState(false);
+
+  // 监听窗口大小变化
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // 课表数据
   const scheduleData = useMemo(() => [
     // 星期一
     {
@@ -221,12 +236,97 @@ const App = () => {
   const [currentWeek, setCurrentWeek] = useState(1);
   const [selectedCell, setSelectedCell] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showWeekSelector, setShowWeekSelector] = useState(false);
+  const [semesterStartDate, setSemesterStartDate] = useState(() => {
+    // 从本地缓存读取开学日期
+    return localStorage.getItem("semesterStartDate") || "";
+  });
+  const [todayInfo, setTodayInfo] = useState(null);
+
+  // 计算今天是第几周的星期几
+  const calculateTodayInfo = React.useCallback((startDate) => {
+    if (!startDate) return null;
+
+    const start = new Date(startDate);
+    const today = new Date();
+
+    // 设置时间为0点，只比较日期
+    start.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    const diffTime = today - start;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) return null; // 还没开学
+
+    const week = Math.floor(diffDays / 7) + 1;
+    const dayOfWeek = today.getDay(); // 0=周日, 1=周一, ..., 6=周六
+
+    if (week > 16) return null; // 超过学期范围
+    if (dayOfWeek === 0 || dayOfWeek === 6) return null; // 周末无课
+
+    const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const dayName = dayNames[dayOfWeek - 1];
+
+    return { week, day: dayName, dayOfWeek };
+  }, []);
+
+  // 初始化时计算今天的信息
+  React.useEffect(() => {
+    const savedDate = localStorage.getItem("semesterStartDate");
+    if (savedDate) {
+      const info = calculateTodayInfo(savedDate);
+      setTodayInfo(info);
+      if (info) {
+        setCurrentWeek(info.week);
+      }
+    }
+  }, [calculateTodayInfo]);
 
   // 处理周数变化
   const handleWeekChange = (e) => {
     const week = parseInt(e.target.value);
     if (week >= 1 && week <= 16) {
       setCurrentWeek(week);
+    }
+  };
+
+  // 快速选择周数
+  const handleQuickSelectWeek = (week) => {
+    setCurrentWeek(week);
+    setShowWeekSelector(false);
+  };
+
+  // 上一周/下一周
+  const handlePreviousWeek = () => {
+    if (currentWeek > 1) {
+      setCurrentWeek(currentWeek - 1);
+    }
+  };
+
+  const handleNextWeek = () => {
+    if (currentWeek < 16) {
+      setCurrentWeek(currentWeek + 1);
+    }
+  };
+
+  // 处理开学日期变化
+  const handleStartDateChange = (e) => {
+    const date = e.target.value;
+    setSemesterStartDate(date);
+
+    // 保存到本地缓存
+    if (date) {
+      localStorage.setItem("semesterStartDate", date);
+      const info = calculateTodayInfo(date);
+      setTodayInfo(info);
+
+      if (info) {
+        setCurrentWeek(info.week);
+      }
+    } else {
+      localStorage.removeItem("semesterStartDate");
+      setTodayInfo(null);
     }
   };
 
@@ -399,107 +499,229 @@ const App = () => {
   }, [scheduleData, currentWeek]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4">
       <div className="max-w-7xl mx-auto">
         {/* 顶部标题和周数选择 */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-indigo-900 mb-2">
+        <div className="text-center mb-3 sm:mb-6 md:mb-8">
+          <h1 className="text-base sm:text-xl md:text-3xl lg:text-4xl font-bold text-indigo-900 mb-1 sm:mb-2 px-2 leading-tight">
             第五临床医学院 临床医学 2023级 6班课表
           </h1>
-          <p className="text-gray-600 mb-4">湖州市中心医院教学点</p>
-          <div className="flex justify-center items-center space-x-4">
-            <label className="font-medium text-lg text-indigo-800">当前周数:</label>
-            <input
-              type="number"
-              min="1"
-              max="16"
-              value={currentWeek}
-              onChange={handleWeekChange}
-              className="w-20 px-3 py-2 border-2 border-indigo-300 rounded-lg text-lg font-bold text-center focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            />
-            <div className="text-gray-500 text-sm">（1-16周）</div>
+          <p className="text-xs sm:text-sm md:text-base text-gray-600 mb-2 sm:mb-3 md:mb-4">湖州市中心医院教学点</p>
+
+          {/* 开学日期输入 */}
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 mb-3 sm:mb-4">
+            <label className="font-medium text-sm sm:text-base md:text-lg text-indigo-800">开学日期:</label>
+            <div className="relative">
+              <input
+                type="date"
+                value={semesterStartDate}
+                onChange={handleStartDateChange}
+                lang="zh-CN"
+                placeholder="选择开学日期"
+                className="px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 border-2 border-indigo-300 rounded-md sm:rounded-lg text-sm sm:text-base md:text-lg font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer"
+                style={{
+                  colorScheme: 'light',
+                  minWidth: '150px'
+                }}
+              />
+            </div>
+            {todayInfo && (
+              <span className="text-xs sm:text-sm md:text-base text-green-600 font-medium">
+                今天是第{todayInfo.week}周 星期{["一", "二", "三", "四", "五"][todayInfo.dayOfWeek - 1]}
+              </span>
+            )}
+            {!todayInfo && semesterStartDate && (
+              <span className="text-xs sm:text-sm md:text-base text-gray-500 font-medium">
+                今天不在上课时间
+              </span>
+            )}
           </div>
+
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4">
+            <label className="font-medium text-sm sm:text-base md:text-lg text-indigo-800">当前周数:</label>
+            <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+              {/* 上一周按钮 */}
+              <button
+                onClick={handlePreviousWeek}
+                disabled={currentWeek === 1}
+                className={`p-1 sm:p-1.5 md:p-2 rounded-md sm:rounded-lg transition-colors ${
+                  currentWeek === 1
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+                }`}
+                title="上一周"
+              >
+                <ChevronLeft size={16} className="sm:w-5 sm:h-5" />
+              </button>
+
+              {/* 周数输入框 */}
+              <input
+                type="number"
+                min="1"
+                max="16"
+                value={currentWeek}
+                onChange={handleWeekChange}
+                className="w-14 sm:w-16 md:w-20 px-1.5 sm:px-2 md:px-3 py-1 sm:py-1.5 md:py-2 border-2 border-indigo-300 rounded-md sm:rounded-lg text-sm sm:text-base md:text-lg font-bold text-center focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+
+              {/* 下一周按钮 */}
+              <button
+                onClick={handleNextWeek}
+                disabled={currentWeek === 16}
+                className={`p-1 sm:p-1.5 md:p-2 rounded-md sm:rounded-lg transition-colors ${
+                  currentWeek === 16
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+                }`}
+                title="下一周"
+              >
+                <ChevronRight size={16} className="sm:w-5 sm:h-5" />
+              </button>
+
+              {/* 快速选择按钮 */}
+              <button
+                onClick={() => setShowWeekSelector(!showWeekSelector)}
+                className="px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 bg-indigo-600 text-white text-xs sm:text-sm md:text-base font-medium rounded-md sm:rounded-lg hover:bg-indigo-700 transition-colors whitespace-nowrap"
+              >
+                快速选择
+              </button>
+            </div>
+          </div>
+
+          {/* 周数快速选择器 */}
+          <AnimatePresence>
+            {showWeekSelector && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mt-3 sm:mt-4 overflow-hidden"
+              >
+                <div className="bg-white rounded-lg shadow-lg p-3 sm:p-4 max-w-2xl mx-auto border-2 border-indigo-200">
+                  <div className="flex justify-between items-center mb-2 sm:mb-3">
+                    <h3 className="text-sm sm:text-base md:text-lg font-bold text-indigo-900">选择周数</h3>
+                    <button
+                      onClick={() => setShowWeekSelector(false)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      <X size={18} className="sm:w-5 sm:h-5" />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5 sm:gap-2">
+                    {Array.from({ length: 16 }, (_, i) => i + 1).map((week) => (
+                      <button
+                        key={week}
+                        onClick={() => handleQuickSelectWeek(week)}
+                        className={`py-1.5 sm:py-2 md:py-3 px-2 sm:px-3 md:px-4 rounded-md sm:rounded-lg font-bold text-xs sm:text-sm md:text-base transition-all ${
+                          week === currentWeek
+                            ? "bg-indigo-600 text-white shadow-lg scale-105"
+                            : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:scale-105"
+                        }`}
+                      >
+                        <span className="hidden sm:inline">第{week}周</span>
+                        <span className="inline sm:hidden">{week}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* 课表 */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-indigo-100">
-          <table className="min-w-full border-collapse">
-            <thead className="bg-indigo-600">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider w-24">
-                  节次
-                </th>
-                {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map(day => (
-                  <th key={day} className="px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">
-                    {day === "Monday" && "星期一"}
-                    {day === "Tuesday" && "星期二"}
-                    {day === "Wednesday" && "星期三"}
-                    {day === "Thursday" && "星期四"}
-                    {day === "Friday" && "星期五"}
+        <div className="bg-white rounded-lg sm:rounded-2xl shadow-xl overflow-hidden border border-indigo-100">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-xs sm:text-sm">
+              <thead className="bg-indigo-600">
+                <tr>
+                  <th className="px-1 sm:px-2 md:px-3 py-1.5 sm:py-2 md:py-3 text-left text-xs sm:text-sm font-medium text-white uppercase tracking-tight sm:tracking-wider w-10 sm:w-12 md:w-16 sticky left-0 bg-indigo-600 z-10">
+                    节次
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {Array.from({ length: 11 }, (_, i) => i + 1).map(period => (
-                <tr key={period} className="h-20">
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900 bg-indigo-50 border border-gray-200">
-                    {getPeriodLabel(period)}
-                  </td>
-                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map(day => {
-                    const cell = mergedCellsByDay?.[day]?.[period];
-                    if (cell?.skip) return null;
-
-                    if (!cell || cell.empty) {
-                      return <td key={`${day}-${period}`} className="p-1 h-full border border-gray-200" />;
-                    }
-
-                    return (
-                      <td
-                        key={`${day}-${period}`}
-                        onClick={() =>
-                          handleCellClick(day, cell.periodStart, cell.periodEnd, cell.filteredCourses)
-                        }
-                        className={`p-0 h-full align-top border border-gray-200 cursor-pointer transition-colors duration-200 ${
-                          cell.hasCurrentWeekCourse
-                            ? "bg-blue-50 hover:bg-blue-100"
-                            : "bg-gray-50 hover:bg-gray-100"
-                        }`}
-                        rowSpan={cell.rowSpan}
-                      >
-                        <div
-                          style={{ height: `${cell.rowSpan * 80}px` }}
-                          className="p-2 w-full h-full flex flex-col justify-center items-center"
-                        >
-                          {cell.displayCourses.length > 0 ? (
-                            <>
-                              {cell.displayCourses.map((course, idx) => (
-                                <div
-                                  key={`${course.name}-${course.group ?? ""}-${idx}`}
-                                  className={`text-center font-medium text-sm ${
-                                    course.isCurrentWeek ? "text-blue-700" : "text-gray-600"
-                                  }`}
-                                >
-                                  {course.name}
-                                  {course.group && ` (${course.group})`}
-                                </div>
-                              ))}
-                              {cell.otherCoursesCount > 0 && (
-                                <div className="mt-1 flex items-center text-xs text-indigo-600 font-medium">
-                                  <Plus size={12} className="mr-1" />
-                                  {cell.otherCoursesCount} 门其他课程
-                                </div>
-                              )}
-                            </>
-                          ) : null}
-                        </div>
-                      </td>
-                    );
-                  })}
+                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map(day => (
+                    <th key={day} className="px-1 sm:px-2 md:px-3 py-1.5 sm:py-2 md:py-3 text-center text-xs sm:text-sm font-medium text-white uppercase tracking-tight sm:tracking-wider w-[17.5%] sm:w-auto">
+                      <span className="hidden sm:inline">
+                        {day === "Monday" && "星期一"}
+                        {day === "Tuesday" && "星期二"}
+                        {day === "Wednesday" && "星期三"}
+                        {day === "Thursday" && "星期四"}
+                        {day === "Friday" && "星期五"}
+                      </span>
+                      <span className="inline sm:hidden">
+                        {day === "Monday" && "周一"}
+                        {day === "Tuesday" && "周二"}
+                        {day === "Wednesday" && "周三"}
+                        {day === "Thursday" && "周四"}
+                        {day === "Friday" && "周五"}
+                      </span>
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white">
+                {Array.from({ length: 11 }, (_, i) => i + 1).map(period => (
+                  <tr key={period}>
+                    <td className="px-1 sm:px-2 md:px-3 py-2 sm:py-3 md:py-4 text-xs sm:text-sm md:text-base font-medium text-gray-900 bg-indigo-50 border border-gray-200 sticky left-0 z-10">
+                      {getPeriodLabel(period)}
+                    </td>
+                    {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map(day => {
+                      const cell = mergedCellsByDay?.[day]?.[period];
+                      if (cell?.skip) return null;
+
+                      if (!cell || cell.empty) {
+                        return <td key={`${day}-${period}`} className="py-2 sm:py-3 md:py-4 border border-gray-200" />;
+                      }
+
+                      // 检查是否是今天的课程
+                      const isToday = todayInfo && todayInfo.day === day && todayInfo.week === currentWeek;
+
+                      return (
+                        <td
+                          key={`${day}-${period}`}
+                          onClick={() =>
+                            handleCellClick(day, cell.periodStart, cell.periodEnd, cell.filteredCourses)
+                          }
+                          className={`py-2 sm:py-3 md:py-4 px-1 sm:px-1.5 md:px-2 align-middle border cursor-pointer transition-colors duration-200 ${
+                            isToday
+                              ? "bg-green-100 hover:bg-green-200 border-green-400 border-2"
+                              : cell.hasCurrentWeekCourse
+                              ? "bg-blue-50 hover:bg-blue-100 border-gray-200"
+                              : "bg-gray-50 hover:bg-gray-100 border-gray-200"
+                          }`}
+                          rowSpan={cell.rowSpan}
+                        >
+                          <div className="w-full flex flex-col justify-center items-center gap-1">
+                            {cell.displayCourses.length > 0 ? (
+                              <>
+                                {cell.displayCourses.map((course, idx) => (
+                                  <div
+                                    key={`${course.name}-${course.group ?? ""}-${idx}`}
+                                    className={`text-center font-medium text-[11px] sm:text-xs md:text-sm leading-snug ${
+                                      course.isCurrentWeek ? "text-blue-700" : "text-gray-600"
+                                    }`}
+                                  >
+                                    <div className="break-words">{course.name}</div>
+                                    {course.group && <div className="text-[10px] sm:text-xs md:text-sm mt-0.5">({course.group})</div>}
+                                  </div>
+                                ))}
+                                {cell.otherCoursesCount > 0 && (
+                                  <div className="mt-0.5 flex items-center justify-center text-[10px] sm:text-xs md:text-sm text-indigo-600 font-medium">
+                                    <Plus size={10} className="mr-0.5" />
+                                    <span className="hidden sm:inline">{cell.otherCoursesCount} 门其他</span>
+                                    <span className="inline sm:hidden">+{cell.otherCoursesCount}</span>
+                                  </div>
+                                )}
+                              </>
+                            ) : null}
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* 课程详情模态框 */}
@@ -509,20 +731,20 @@ const App = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50"
               onClick={() => setIsModalOpen(false)}
             >
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
+                className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden"
                 onClick={e => e.stopPropagation()}
               >
-                <div className="bg-indigo-600 p-4 flex justify-between items-center">
-                  <div className="flex items-center">
-                    <Clock className="mr-2" size={24} color="white" />
-                    <h2 className="text-xl font-bold text-white">
+                <div className="bg-indigo-600 p-3 sm:p-4 flex justify-between items-center">
+                  <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0">
+                    <Clock className="flex-shrink-0" size={20} color="white" />
+                    <h2 className="text-base sm:text-xl font-bold text-white truncate">
                       {selectedCell.day === "Monday" && "星期一"}
                       {selectedCell.day === "Tuesday" && "星期二"}
                       {selectedCell.day === "Wednesday" && "星期三"}
@@ -530,69 +752,69 @@ const App = () => {
                       {selectedCell.day === "Friday" && "星期五"} · {getPeriodRangeLabel(selectedCell.periodStart, selectedCell.periodEnd)}
                     </h2>
                   </div>
-                  <button 
+                  <button
                     onClick={() => setIsModalOpen(false)}
-                    className="text-white hover:text-indigo-200 transition-colors"
+                    className="text-white hover:text-indigo-200 transition-colors flex-shrink-0 ml-2"
                   >
-                    <X size={24} />
+                    <X size={20} />
                   </button>
                 </div>
-                
-                <div className="p-6 overflow-y-auto max-h-[70vh]">
+
+                <div className="p-3 sm:p-6 overflow-y-auto max-h-[calc(95vh-140px)] sm:max-h-[70vh]">
                   {selectedCell.courses.length === 0 ? (
-                    <div className="text-center py-12">
-                      <Calendar className="mx-auto mb-4 text-gray-400" size={48} />
-                      <h3 className="text-lg font-medium text-gray-900 mb-1">本节无课程安排</h3>
-                      <p className="text-gray-500">该时间段没有安排课程</p>
+                    <div className="text-center py-8 sm:py-12">
+                      <Calendar className="mx-auto mb-3 sm:mb-4 text-gray-400" size={40} />
+                      <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-1">本节无课程安排</h3>
+                      <p className="text-sm sm:text-base text-gray-500">该时间段没有安排课程</p>
                     </div>
                   ) : (
                     selectedCell.courses.map((course, index) => (
-                      <div 
-                        key={index} 
-                        className={`mb-6 p-4 rounded-xl border-2 ${
-                          course.isCurrentWeek 
-                            ? "border-blue-500 bg-blue-50" 
+                      <div
+                        key={index}
+                        className={`mb-3 sm:mb-6 p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 ${
+                          course.isCurrentWeek
+                            ? "border-blue-500 bg-blue-50"
                             : "border-gray-200 bg-gray-50"
                         }`}
                       >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className={`text-lg font-bold ${
+                        <div className="flex justify-between items-start gap-2">
+                          <div className="flex-1 min-w-0">
+                            <h3 className={`text-base sm:text-lg font-bold ${
                               course.isCurrentWeek ? "text-blue-700" : "text-gray-700"
                             }`}>
                               {course.name}
                             </h3>
                             {course.group && (
-                              <p className="text-indigo-600 font-medium mt-1">{course.group}</p>
+                              <p className="text-sm sm:text-base text-indigo-600 font-medium mt-1">{course.group}</p>
                             )}
                           </div>
                           {course.isCurrentWeek && (
-                            <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                            <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 sm:px-2.5 py-0.5 rounded flex-shrink-0">
                               本周课程
                             </span>
                           )}
                         </div>
-                        
-                        <div className="mt-3">
+
+                        <div className="mt-2 sm:mt-3">
                           <p className="text-xs text-gray-500 uppercase tracking-wider">上课周次</p>
-                          <p className="font-medium mt-1">
+                          <p className="text-sm sm:text-base font-medium mt-1 break-words">
                             {course.weeks.join("、")}周
                           </p>
                         </div>
-                        
-                        <div className="mt-3">
+
+                        <div className="mt-2 sm:mt-3">
                           <p className="text-xs text-gray-500 uppercase tracking-wider">学时/备注</p>
-                          <p className="font-medium mt-1 break-words">{course.note}</p>
+                          <p className="text-sm sm:text-base font-medium mt-1 break-words">{course.note}</p>
                         </div>
                       </div>
                     ))
                   )}
                 </div>
-                
-                <div className="bg-gray-50 px-6 py-4 border-t border-gray-100 flex justify-end">
+
+                <div className="bg-gray-50 px-3 sm:px-6 py-3 sm:py-4 border-t border-gray-100 flex justify-end">
                   <button
                     onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                    className="px-3 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 text-white text-sm sm:text-base font-medium rounded-lg hover:bg-indigo-700 transition-colors"
                   >
                     关闭
                   </button>
