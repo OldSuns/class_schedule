@@ -1,5 +1,18 @@
 {
-  "appId": "com.example.classschedule",
-  "appName": "Class Schedule",
-  "webDir": "dist"
+  "appId": "com.medical.classschedule",
+  "appName": "医学院课程表",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#4F46E5",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false
+    }
+  },
+  "server": {
+    "androidScheme": "https"
+  }
 }

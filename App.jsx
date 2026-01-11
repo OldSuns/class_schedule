@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Calendar, Clock, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import * as storage from "./storage";
 
 const App = () => {
   // 响应式窗口宽度状态
@@ -238,8 +239,8 @@ const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showWeekSelector, setShowWeekSelector] = useState(false);
   const [semesterStartDate, setSemesterStartDate] = useState(() => {
-    // 从本地缓存读取开学日期
-    return localStorage.getItem("semesterStartDate") || "";
+    // 从本地缓存读取开学日期（同步方式，仅用于 Web）
+    return storage.getItemSync("semesterStartDate") || "";
   });
   const [todayInfo, setTodayInfo] = useState(null);
 
@@ -273,14 +274,19 @@ const App = () => {
 
   // 初始化时计算今天的信息
   React.useEffect(() => {
-    const savedDate = localStorage.getItem("semesterStartDate");
-    if (savedDate) {
-      const info = calculateTodayInfo(savedDate);
-      setTodayInfo(info);
-      if (info) {
-        setCurrentWeek(info.week);
+    const loadSavedDate = async () => {
+      const savedDate = await storage.getItem("semesterStartDate");
+      if (savedDate) {
+        setSemesterStartDate(savedDate);
+        const info = calculateTodayInfo(savedDate);
+        setTodayInfo(info);
+        if (info) {
+          setCurrentWeek(info.week);
+        }
       }
-    }
+    };
+
+    loadSavedDate();
   }, [calculateTodayInfo]);
 
   // 处理周数变化
@@ -311,13 +317,13 @@ const App = () => {
   };
 
   // 处理开学日期变化
-  const handleStartDateChange = (e) => {
+  const handleStartDateChange = async (e) => {
     const date = e.target.value;
     setSemesterStartDate(date);
 
     // 保存到本地缓存
     if (date) {
-      localStorage.setItem("semesterStartDate", date);
+      await storage.setItem("semesterStartDate", date);
       const info = calculateTodayInfo(date);
       setTodayInfo(info);
 
@@ -325,7 +331,7 @@ const App = () => {
         setCurrentWeek(info.week);
       }
     } else {
-      localStorage.removeItem("semesterStartDate");
+      await storage.removeItem("semesterStartDate");
       setTodayInfo(null);
     }
   };
