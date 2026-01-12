@@ -1,14 +1,16 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Calendar, Clock, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import * as storage from "./storage";
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { Capacitor } from '@capacitor/core';
 
 const App = () => {
   // 响应式窗口宽度状态
   const [isMobile, setIsMobile] = useState(false);
 
   // 监听窗口大小变化
-  React.useEffect(() => {
+  useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 640);
     };
@@ -17,6 +19,26 @@ const App = () => {
     window.addEventListener('resize', checkMobile);
 
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // 配置移动端状态栏
+  useEffect(() => {
+    const setupStatusBar = async () => {
+      if (Capacitor.isNativePlatform()) {
+        try {
+          // 设置状态栏样式为深色内容（适合浅色背景）
+          await StatusBar.setStyle({ style: Style.Light });
+          // 设置状态栏背景颜色为应用主色调
+          await StatusBar.setBackgroundColor({ color: '#4F46E5' });
+          // 显示状态栏
+          await StatusBar.show();
+        } catch (error) {
+          console.error('状态栏配置失败:', error);
+        }
+      }
+    };
+
+    setupStatusBar();
   }, []);
 
   // 课表数据
@@ -505,7 +527,7 @@ const App = () => {
   }, [scheduleData, currentWeek]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <div className="max-w-7xl mx-auto">
         {/* 顶部标题和周数选择 */}
         <div className="text-center mb-3 sm:mb-6 md:mb-8">
@@ -678,8 +700,9 @@ const App = () => {
                         return <td key={`${day}-${period}`} className="py-2 sm:py-3 md:py-4 border border-gray-200" />;
                       }
 
-                      // 检查是否是今天的课程
+                      // 检查是否是今天的课程且本周有课
                       const isToday = todayInfo && todayInfo.day === day && todayInfo.week === currentWeek;
+                      const isTodayAndHasClass = isToday && cell.hasCurrentWeekCourse;
 
                       return (
                         <td
@@ -688,7 +711,7 @@ const App = () => {
                             handleCellClick(day, cell.periodStart, cell.periodEnd, cell.filteredCourses)
                           }
                           className={`py-2 sm:py-3 md:py-4 px-1 sm:px-1.5 md:px-2 align-middle border cursor-pointer transition-colors duration-200 ${
-                            isToday
+                            isTodayAndHasClass
                               ? "bg-green-100 hover:bg-green-200 border-green-400 border-2"
                               : cell.hasCurrentWeekCourse
                               ? "bg-blue-50 hover:bg-blue-100 border-gray-200"

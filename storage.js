@@ -3,24 +3,13 @@
  * 支持 Web (localStorage) 和 Android (Capacitor Preferences)
  */
 
-// 检测是否在 Capacitor 环境中
-const isCapacitor = () => {
-  return typeof window !== 'undefined' &&
-         window.Capacitor !== undefined;
-};
+import { Capacitor } from '@capacitor/core';
+import { Preferences } from '@capacitor/preferences';
 
-// 动态导入 Capacitor Preferences（仅在 Capacitor 环境中）
-let Preferences = null;
-if (isCapacitor()) {
-  try {
-    // 在 Capacitor 环境中导入
-    import('@capacitor/preferences').then(module => {
-      Preferences = module.Preferences;
-    });
-  } catch (error) {
-    console.warn('Capacitor Preferences not available:', error);
-  }
-}
+// 检测是否在 Capacitor 原生平台中
+const isCapacitor = () => {
+  return Capacitor.isNativePlatform();
+};
 
 /**
  * 保存数据到存储
@@ -29,12 +18,14 @@ if (isCapacitor()) {
  */
 export const setItem = async (key, value) => {
   try {
-    if (isCapacitor() && Preferences) {
+    if (isCapacitor()) {
       // Android/iOS: 使用 Capacitor Preferences
       await Preferences.set({ key, value });
+      console.log(`移动端保存数据: ${key} = ${value}`);
     } else {
       // Web: 使用 localStorage
       localStorage.setItem(key, value);
+      console.log(`Web端保存数据: ${key} = ${value}`);
     }
   } catch (error) {
     console.error('存储数据失败:', error);
@@ -48,13 +39,16 @@ export const setItem = async (key, value) => {
  */
 export const getItem = async (key) => {
   try {
-    if (isCapacitor() && Preferences) {
+    if (isCapacitor()) {
       // Android/iOS: 使用 Capacitor Preferences
       const { value } = await Preferences.get({ key });
+      console.log(`移动端读取数据: ${key} = ${value}`);
       return value;
     } else {
       // Web: 使用 localStorage
-      return localStorage.getItem(key);
+      const value = localStorage.getItem(key);
+      console.log(`Web端读取数据: ${key} = ${value}`);
+      return value;
     }
   } catch (error) {
     console.error('读取数据失败:', error);
@@ -68,7 +62,7 @@ export const getItem = async (key) => {
  */
 export const removeItem = async (key) => {
   try {
-    if (isCapacitor() && Preferences) {
+    if (isCapacitor()) {
       // Android/iOS: 使用 Capacitor Preferences
       await Preferences.remove({ key });
     } else {
@@ -85,7 +79,7 @@ export const removeItem = async (key) => {
  */
 export const clear = async () => {
   try {
-    if (isCapacitor() && Preferences) {
+    if (isCapacitor()) {
       // Android/iOS: 使用 Capacitor Preferences
       await Preferences.clear();
     } else {
