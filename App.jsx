@@ -26,10 +26,12 @@ const App = () => {
     const setupStatusBar = async () => {
       if (Capacitor.isNativePlatform()) {
         try {
-          // 设置状态栏样式为深色内容（适合浅色背景）
-          await StatusBar.setStyle({ style: Style.Light });
-          // 设置状态栏背景颜色为应用主色调
-          await StatusBar.setBackgroundColor({ color: '#4F46E5' });
+          // 设置状态栏样式为浅色内容（适合深色背景）
+          await StatusBar.setStyle({ style: Style.Dark });
+          // 设置状态栏背景颜色为透明，使用渐变背景
+          await StatusBar.setBackgroundColor({ color: '#00000000' });
+          // 设置状态栏为覆盖模式（内容延伸到状态栏下方）
+          await StatusBar.setOverlaysWebView({ overlay: true });
           // 显示状态栏
           await StatusBar.show();
         } catch (error) {
@@ -527,14 +529,15 @@ const App = () => {
   }, [scheduleData, currentWeek]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-[env(safe-area-inset-bottom)]">
       <div className="max-w-7xl mx-auto">
         {/* 顶部标题和周数选择 */}
         <div className="text-center mb-3 sm:mb-6 md:mb-8">
-          <h1 className="text-base sm:text-xl md:text-3xl lg:text-4xl font-bold text-indigo-900 mb-1 sm:mb-2 px-2 leading-tight">
+          <h1 className="hidden sm:block text-base sm:text-xl md:text-3xl lg:text-4xl font-bold text-indigo-900 mb-1 sm:mb-2 px-2 leading-tight">
             第五临床医学院 临床医学 2023级 6班课表
           </h1>
-          <p className="text-xs sm:text-sm md:text-base text-gray-600 mb-2 sm:mb-3 md:mb-4">湖州市中心医院教学点</p>
+          {/* 移动端顶部间距 */}
+          <div className="sm:hidden mb-4"></div>
 
           {/* 开学日期输入 */}
           <div className="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 mb-3 sm:mb-4">
