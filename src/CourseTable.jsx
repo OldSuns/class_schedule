@@ -2,6 +2,7 @@ import React from "react";
 import { Plus } from "lucide-react";
 import { getPeriodLabel, getPeriodTime } from "./timeUtils";
 import { DAYS, DAY_NAMES, MAX_PERIOD } from "./constants";
+import { getCourseLocation } from "./courseUtils";
 
 /**
  * 课程表格组件
@@ -76,7 +77,7 @@ const CourseTable = ({ mergedCellsByDay, todayInfo, currentWeek, onCellClick }) 
                                 {course.group && <div className="text-[10px] sm:text-xs md:text-sm mt-0.5">({course.group})</div>}
                                 {course.location && (
                                   <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-0.5">
-                                    📍 {course.location}
+                                    📍 {getCourseLocation(course.location, currentWeek)}
                                   </div>
                                 )}
                               </div>

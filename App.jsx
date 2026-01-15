@@ -112,6 +112,7 @@ const App = () => {
         <CourseModal
           isOpen={isModalOpen}
           selectedCell={selectedCell}
+          currentWeek={currentWeek}
           onClose={closeModal}
         />
       </div>

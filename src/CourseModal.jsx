@@ -3,11 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Clock, Calendar, MapPin } from "lucide-react";
 import { getPeriodRangeLabel } from "./timeUtils";
 import { DAY_NAMES } from "./constants";
+import { getCourseLocation } from "./courseUtils";
 
 /**
  * 课程详情模态框组件
  */
-const CourseModal = ({ isOpen, selectedCell, onClose }) => {
+const CourseModal = ({ isOpen, selectedCell, currentWeek, onClose }) => {
   if (!selectedCell) return null;
 
   return (
@@ -90,7 +91,7 @@ const CourseModal = ({ isOpen, selectedCell, onClose }) => {
                           <MapPin size={12} />
                           上课地点
                         </p>
-                        <p className="text-sm sm:text-base font-medium mt-1 break-words">{course.location}</p>
+                        <p className="text-sm sm:text-base font-medium mt-1 break-words">{getCourseLocation(course.location, currentWeek)}</p>
                       </div>
                     )}
 

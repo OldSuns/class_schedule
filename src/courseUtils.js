@@ -2,6 +2,58 @@
  * 课程合并相关工具函数
  */
 
+/**
+ * 获取课程在指定周次的地点
+ * @param {Object|string} location - 地点信息，可以是字符串或对象
+ * @param {number} week - 周次
+ * @returns {string} 该周次的地点
+ *
+ * 支持两种格式：
+ * 1. 字符串格式：所有周次使用相同地点
+ *    location: "教学楼A101"
+ *
+ * 2. 对象格式：为不同周次指定不同地点
+ *    location: {
+ *      default: "教学楼A101",  // 默认地点（可选）
+ *      weeks: {
+ *        1: "教学楼B202",      // 第1周的地点
+ *        3: "教学楼C303",      // 第3周的地点
+ *        "5-8": "实验楼D404"   // 第5-8周的地点
+ *      }
+ *    }
+ */
+export const getCourseLocation = (location, week) => {
+  // 如果是字符串，直接返回
+  if (typeof location === "string") {
+    return location;
+  }
+
+  // 如果是对象格式
+  if (location && typeof location === "object" && location.weeks) {
+    // 遍历 weeks 对象，查找匹配的周次
+    for (const [key, value] of Object.entries(location.weeks)) {
+      // 处理单个周次，如 "1", "3"
+      if (!key.includes("-")) {
+        if (parseInt(key) === week) {
+          return value;
+        }
+      } else {
+        // 处理周次范围，如 "5-8"
+        const [start, end] = key.split("-").map(Number);
+        if (week >= start && week <= end) {
+          return value;
+        }
+      }
+    }
+
+    // 如果没有匹配的周次，返回默认地点
+    return location.default || "未排地点";
+  }
+
+  // 其他情况返回空字符串
+  return "";
+};
+
 // 获取课程唯一标识
 export const getCourseKey = (course) =>
   `${course.name}::${course.group ?? ""}::${course.note ?? ""}::${course.weeks.join(",")}`;
