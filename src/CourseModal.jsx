@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Clock, Calendar } from "lucide-react";
+import { X, Clock, Calendar, MapPin } from "lucide-react";
 import { getPeriodRangeLabel } from "./timeUtils";
 import { DAY_NAMES } from "./constants";
 
@@ -83,6 +83,16 @@ const CourseModal = ({ isOpen, selectedCell, onClose }) => {
                         {course.weeks.join("、")}周
                       </p>
                     </div>
+
+                    {course.location && (
+                      <div className="mt-2 sm:mt-3">
+                        <p className="text-xs text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                          <MapPin size={12} />
+                          上课地点
+                        </p>
+                        <p className="text-sm sm:text-base font-medium mt-1 break-words">{course.location}</p>
+                      </div>
+                    )}
 
                     <div className="mt-2 sm:mt-3">
                       <p className="text-xs text-gray-500 uppercase tracking-wider">学时/备注</p>

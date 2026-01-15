@@ -1,9 +1,10 @@
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
 
 // 组件
 import Header from "./src/Header";
+import SettingsMenu from "./src/SettingsMenu";
 import WeekSelector from "./src/WeekSelector";
 import CourseTable from "./src/CourseTable";
 import CourseModal from "./src/CourseModal";
@@ -37,6 +38,9 @@ const App = () => {
 
   // 课程模态框管理
   const { isModalOpen, selectedCell, handleCellClick, closeModal } = useCourseModal();
+
+  // 设置菜单状态
+  const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
 
   // 配置移动端状态栏
   useEffect(() => {
@@ -79,8 +83,17 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-[env(safe-area-inset-bottom)]">
       <div className="max-w-7xl mx-auto">
-        {/* 顶部标题和周数选择 */}
+        {/* 顶部标题和菜单按钮 */}
         <Header
+          todayInfo={todayInfo}
+          currentWeek={currentWeek}
+          onOpenMenu={() => setIsSettingsMenuOpen(true)}
+        />
+
+        {/* 设置菜单 */}
+        <SettingsMenu
+          isOpen={isSettingsMenuOpen}
+          onClose={() => setIsSettingsMenuOpen(false)}
           semesterStartDate={semesterStartDate}
           onStartDateChange={handleDateChange}
           todayInfo={todayInfo}

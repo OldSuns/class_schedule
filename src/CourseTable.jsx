@@ -74,6 +74,11 @@ const CourseTable = ({ mergedCellsByDay, todayInfo, currentWeek, onCellClick }) 
                               >
                                 <div className="break-words">{course.name}</div>
                                 {course.group && <div className="text-[10px] sm:text-xs md:text-sm mt-0.5">({course.group})</div>}
+                                {course.location && (
+                                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-0.5">
+                                    📍 {course.location}
+                                  </div>
+                                )}
                               </div>
                             ))}
                             {cell.otherCoursesCount > 0 && (
