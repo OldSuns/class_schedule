@@ -5,7 +5,6 @@ import { Capacitor } from '@capacitor/core';
 // 组件
 import Header from "./src/Header";
 import SettingsMenu from "./src/SettingsMenu";
-import WeekSelector from "./src/WeekSelector";
 import CourseTable from "./src/CourseTable";
 import CourseModal from "./src/CourseModal";
 
@@ -26,14 +25,11 @@ const App = () => {
   // 周数选择管理
   const {
     currentWeek,
-    showWeekSelector,
     setCurrentWeek,
     handleWeekChange,
     handleQuickSelectWeek,
     handlePreviousWeek,
-    handleNextWeek,
-    toggleWeekSelector,
-    setShowWeekSelector
+    handleNextWeek
   } = useWeekSelector(1);
 
   // 课程模态框管理
@@ -88,6 +84,9 @@ const App = () => {
           todayInfo={todayInfo}
           currentWeek={currentWeek}
           onOpenMenu={() => setIsSettingsMenuOpen(true)}
+          onWeekChange={handleWeekChange}
+          onPreviousWeek={handlePreviousWeek}
+          onNextWeek={handleNextWeek}
         />
 
         {/* 设置菜单 */}
@@ -98,18 +97,7 @@ const App = () => {
           onStartDateChange={handleDateChange}
           todayInfo={todayInfo}
           currentWeek={currentWeek}
-          onWeekChange={handleWeekChange}
-          onPreviousWeek={handlePreviousWeek}
-          onNextWeek={handleNextWeek}
-          onToggleWeekSelector={toggleWeekSelector}
-        />
-
-        {/* 周数快速选择器 */}
-        <WeekSelector
-          show={showWeekSelector}
-          currentWeek={currentWeek}
           onSelectWeek={handleQuickSelectWeek}
-          onClose={() => setShowWeekSelector(false)}
         />
 
         {/* 课表 */}

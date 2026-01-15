@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronDown, ChevronUp } from "lucide-react";
 import { MIN_WEEK, MAX_WEEK } from "./constants";
 
 /**
- * 设置菜单组件 - 包含开学日期和周数选择
+ * 设置菜单组件 - 包含开学日期设置和快速周数选择
  */
 const SettingsMenu = ({
   isOpen,
@@ -13,15 +13,9 @@ const SettingsMenu = ({
   onStartDateChange,
   todayInfo,
   currentWeek,
-  onWeekChange,
-  onPreviousWeek,
-  onNextWeek,
-  onToggleWeekSelector
+  onSelectWeek
 }) => {
-  const handleWeekInputChange = (e) => {
-    onWeekChange(e.target.value);
-  };
-
+  const [showWeekSelector, setShowWeekSelector] = useState(false);
   return (
     <AnimatePresence>
       {isOpen && (
@@ -42,10 +36,10 @@ const SettingsMenu = ({
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed left-0 top-0 bottom-0 w-80 sm:w-96 bg-white shadow-2xl z-50 overflow-y-auto"
+            className="fixed left-0 top-0 bottom-0 w-72 sm:w-80 bg-white/20 backdrop-blur-md shadow-2xl z-50 overflow-y-auto"
           >
             {/* 菜单头部 */}
-            <div className="sticky top-0 bg-indigo-600 text-white p-4 flex justify-between items-center">
+            <div className="sticky top-0 bg-indigo-600/15 backdrop-blur-sm text-white p-4 flex justify-between items-center">
               <h2 className="text-xl font-bold">设置</h2>
               <button
                 onClick={onClose}
@@ -86,61 +80,49 @@ const SettingsMenu = ({
                 )}
               </div>
 
-              {/* 周数选择 */}
+              {/* 快速周数选择 */}
               <div className="space-y-3">
-                <label className="block text-lg font-semibold text-indigo-900">
-                  当前周数
-                </label>
-                <div className="flex items-center gap-3">
-                  {/* 上一周按钮 */}
-                  <button
-                    onClick={onPreviousWeek}
-                    disabled={currentWeek === MIN_WEEK}
-                    className={`p-3 rounded-lg transition-colors ${
-                      currentWeek === MIN_WEEK
-                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                        : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
-                    }`}
-                    title="上一周"
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-
-                  {/* 周数输入框 */}
-                  <input
-                    type="number"
-                    min={MIN_WEEK}
-                    max={MAX_WEEK}
-                    value={currentWeek}
-                    onChange={handleWeekInputChange}
-                    className="flex-1 px-4 py-3 border-2 border-indigo-300 rounded-lg text-lg font-bold text-center focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-
-                  {/* 下一周按钮 */}
-                  <button
-                    onClick={onNextWeek}
-                    disabled={currentWeek === MAX_WEEK}
-                    className={`p-3 rounded-lg transition-colors ${
-                      currentWeek === MAX_WEEK
-                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                        : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
-                    }`}
-                    title="下一周"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                </div>
-
-                {/* 快速选择按钮 */}
                 <button
-                  onClick={() => {
-                    onToggleWeekSelector();
-                    onClose();
-                  }}
-                  className="w-full px-4 py-3 bg-indigo-600 text-white text-base font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                  onClick={() => setShowWeekSelector(!showWeekSelector)}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-indigo-600 text-white text-base font-medium rounded-lg hover:bg-indigo-700 transition-colors"
                 >
-                  快速选择周数
+                  <span>快速选择周数</span>
+                  {showWeekSelector ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                 </button>
+
+                {/* 周数选择器网格 */}
+                <AnimatePresence>
+                  {showWeekSelector && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="bg-white/30 backdrop-blur-sm rounded-lg p-3 sm:p-4 border-2 border-indigo-300">
+                        <div className="grid grid-cols-4 sm:grid-cols-6 gap-1.5 sm:gap-2">
+                          {Array.from({ length: MAX_WEEK - MIN_WEEK + 1 }, (_, i) => i + MIN_WEEK).map((week) => (
+                            <button
+                              key={week}
+                              onClick={() => {
+                                onSelectWeek(week);
+                                setShowWeekSelector(false);
+                              }}
+                              className={`py-1.5 sm:py-2 px-2 sm:px-3 rounded-md sm:rounded-lg font-bold text-xs sm:text-sm transition-all ${
+                                week === currentWeek
+                                  ? "bg-indigo-600 text-white shadow-lg scale-105"
+                                  : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:scale-105"
+                              }`}
+                            >
+                              <span className="hidden sm:inline">{week}</span>
+                              <span className="inline sm:hidden">{week}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </motion.div>

@@ -1,10 +1,22 @@
 import React from "react";
-import { Menu } from "lucide-react";
+import { Menu, ChevronLeft, ChevronRight } from "lucide-react";
+import { MIN_WEEK, MAX_WEEK } from "./constants";
 
 /**
  * 页面头部组件 - 包含标题和菜单按钮
  */
-const Header = ({ todayInfo, currentWeek, onOpenMenu }) => {
+const Header = ({
+  todayInfo,
+  currentWeek,
+  onOpenMenu,
+  onWeekChange,
+  onPreviousWeek,
+  onNextWeek
+}) => {
+  const handleWeekInputChange = (e) => {
+    onWeekChange(e.target.value);
+  };
+
   return (
     <div className="text-center mb-3 sm:mb-6 md:mb-8">
       {/* 移动端顶部间距 */}
@@ -30,17 +42,55 @@ const Header = ({ todayInfo, currentWeek, onOpenMenu }) => {
         <div className="w-10 sm:w-14"></div>
       </div>
 
-      {/* 当前状态显示 */}
-      <div className="flex flex-col sm:flex-row justify-center items-center gap-2 text-xs sm:text-sm md:text-base">
-        <span className="font-medium text-indigo-800">
-          第 {currentWeek} 周
-        </span>
-        {todayInfo && (
-          <span className="text-green-600 font-medium">
-            · 今天是第{todayInfo.week}周 星期{["一", "二", "三", "四", "五"][todayInfo.dayOfWeek - 1]}
-          </span>
-        )}
+      {/* 周数选择器 */}
+      <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 px-2">
+        {/* 上一周按钮 */}
+        <button
+          onClick={onPreviousWeek}
+          disabled={currentWeek === MIN_WEEK}
+          className={`p-2 sm:p-2.5 rounded-lg transition-colors ${
+            currentWeek === MIN_WEEK
+              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+          }`}
+          title="上一周"
+        >
+          <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
+        </button>
+
+        {/* 周数输入框 */}
+        <input
+          type="number"
+          min={MIN_WEEK}
+          max={MAX_WEEK}
+          value={currentWeek}
+          onChange={handleWeekInputChange}
+          className="w-16 sm:w-20 px-2 sm:px-3 py-1.5 sm:py-2 border-2 border-indigo-300 rounded-lg text-base sm:text-lg font-bold text-center focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+        />
+
+        {/* 下一周按钮 */}
+        <button
+          onClick={onNextWeek}
+          disabled={currentWeek === MAX_WEEK}
+          className={`p-2 sm:p-2.5 rounded-lg transition-colors ${
+            currentWeek === MAX_WEEK
+              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+          }`}
+          title="下一周"
+        >
+          <ChevronRight size={18} className="sm:w-5 sm:h-5" />
+        </button>
       </div>
+
+      {/* 当前状态显示 */}
+      {todayInfo && (
+        <div className="flex justify-center items-center text-xs sm:text-sm md:text-base">
+          <span className="text-green-600 font-medium">
+            今天是第{todayInfo.week}周 星期{["一", "二", "三", "四", "五"][todayInfo.dayOfWeek - 1]}
+          </span>
+        </div>
+      )}
     </div>
   );
 };

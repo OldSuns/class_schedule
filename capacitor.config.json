@@ -1,6 +1,6 @@
 {
-  "appId": "com.medical.classschedule",
-  "appName": "医学院课程表",
+  "appId": "com.oldsun.classschedule",
+  "appName": "课程表by OldSun",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "plugins": {
