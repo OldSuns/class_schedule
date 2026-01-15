@@ -4,5 +4,5 @@ release
 .DS_Store
 .env
 .env.*
+*.xlsx
 !.env.example
-

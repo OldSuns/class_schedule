@@ -91,7 +91,9 @@ const App = () => {
             { name: "儿科学见习", weeks: [8,11,13,15], group: "6班B组", note: "4学时×4" }
           ]},
         { period: 10, courses: [] },
-        { period: 11, courses: [] }
+        { period: 11, courses: [] },
+        { period: 12, courses: [] },
+        { period: 13, courses: [] }
       ]
     },
     // 星期二
@@ -136,7 +138,9 @@ const App = () => {
             { name: "外科学见习", weeks: [9,15], group: "6班B组", note: "4学时×2" }
           ]},
         { period: 10, courses: [] },
-        { period: 11, courses: [] }
+        { period: 11, courses: [] },
+        { period: 12, courses: [] },
+        { period: 13, courses: [] }
       ]
     },
     // 星期三
@@ -162,12 +166,14 @@ const App = () => {
         { period: 7, courses: [] },
         { period: 8, courses: [] },
         { period: 9, courses: [] },
-        { period: 10, courses: [
-            { name: "形势与政策A", weeks: [14,15], group: null, note: "陈超怡（讲座）" }
-          ]},
+        { period: 10, courses: [] },
         { period: 11, courses: [
             { name: "形势与政策A", weeks: [14,15], group: null, note: "陈超怡（讲座）" }
-          ]}
+          ]},
+        { period: 12, courses: [
+            { name: "形势与政策A", weeks: [14,15], group: null, note: "陈超怡（讲座）" }
+          ]},
+        { period: 13, courses: [] }
       ]
     },
     // 星期四
@@ -366,10 +372,30 @@ const App = () => {
     setIsModalOpen(true);
   };
 
+  // 获取节次时间
+  const getPeriodTime = (period) => {
+    const timeMap = {
+      1: "8:15-8:55",
+      2: "9:00-9:40",
+      3: "9:55-10:35",
+      4: "10:40-11:20",
+      5: "11:25-12:05",
+      6: "13:45-14:25",
+      7: "14:30-15:10",
+      8: "15:20-16:00",
+      9: "16:05-16:45",
+      10: "16:45-17:55",
+      11: "18:00-18:40",
+      12: "18:45-19:25",
+      13: "19:30-20:10"
+    };
+    return timeMap[period] || "";
+  };
+
   // 获取节次名称
   const getPeriodLabel = (period) => {
-    if (period === 10 || period === 11) {
-      return `晚${period - 9}节`;
+    if (period >= 11 && period <= 13) {
+      return `晚${period - 10}节`;
     }
     return `${period}节`;
   };
@@ -379,10 +405,10 @@ const App = () => {
     return `${getPeriodLabel(periodStart)}～${getPeriodLabel(periodEnd)}`;
   };
 
-  // 合并同一天内连续的同一课程：以“显示的课程（name+group）一致”为准，并用 rowSpan 覆盖多行显示
+  // 合并同一天内连续的同一课程：以"显示的课程（name+group）一致"为准，并用 rowSpan 覆盖多行显示
   const mergedCellsByDay = useMemo(() => {
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-    const periods = Array.from({ length: 11 }, (_, i) => i + 1);
+    const periods = Array.from({ length: 13 }, (_, i) => i + 1);
     const result = {};
 
     const getCourseKey = (course) =>
@@ -450,7 +476,7 @@ const App = () => {
 
       const merged = {};
       let period = 1;
-      while (period <= 11) {
+      while (period <= 13) {
         const cell = raw[period];
         if (!cell || cell.empty) {
           merged[period] = { empty: true };
@@ -489,7 +515,7 @@ const App = () => {
         addCourses(cell.filteredCourses);
         let hasCurrentWeekCourse = cell.hasCurrentWeekCourse;
 
-        while (end + 1 <= 11) {
+        while (end + 1 <= 13) {
           const next = raw[end + 1];
           if (!next || next.empty) break;
           if (!next.hasCurrentWeekCourse) break;
@@ -690,10 +716,15 @@ const App = () => {
                 </tr>
               </thead>
               <tbody className="bg-white">
-                {Array.from({ length: 11 }, (_, i) => i + 1).map(period => (
+                {Array.from({ length: 13 }, (_, i) => i + 1).map(period => (
                   <tr key={period}>
                     <td className="px-1 sm:px-2 md:px-3 py-2 sm:py-3 md:py-4 text-xs sm:text-sm md:text-base font-medium text-gray-900 bg-indigo-50 border border-gray-200 sticky left-0 z-10">
-                      {getPeriodLabel(period)}
+                      <div className="flex flex-col items-center">
+                        <div className="font-bold">{getPeriodLabel(period)}</div>
+                        <div className="text-[10px] sm:text-xs text-gray-600 mt-0.5 whitespace-nowrap">
+                          {getPeriodTime(period)}
+                        </div>
+                      </div>
                     </td>
                     {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map(day => {
                       const cell = mergedCellsByDay?.[day]?.[period];
