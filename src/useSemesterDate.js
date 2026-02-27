@@ -1,16 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
 import * as storage from "../storage";
 import { calculateTodayInfo } from "./timeUtils";
-import { STORAGE_KEYS } from "./constants";
+import { DEFAULT_SEMESTER_START_DATE, STORAGE_KEYS } from "./constants";
 
 /**
  * 管理学期开始日期和今天信息的 Hook
  */
 export const useSemesterDate = () => {
-  const [semesterStartDate, setSemesterStartDate] = useState(() => {
-    return storage.getItemSync(STORAGE_KEYS.SEMESTER_START_DATE) || "";
-  });
-  const [todayInfo, setTodayInfo] = useState(null);
+  const initialDate =
+    storage.getItemSync(STORAGE_KEYS.SEMESTER_START_DATE) ||
+    DEFAULT_SEMESTER_START_DATE;
+  const [semesterStartDate, setSemesterStartDate] = useState(initialDate);
+  const [todayInfo, setTodayInfo] = useState(() =>
+    initialDate ? calculateTodayInfo(initialDate) : null
+  );
 
   // 初始化时计算今天的信息
   useEffect(() => {
@@ -20,6 +23,14 @@ export const useSemesterDate = () => {
         setSemesterStartDate(savedDate);
         const info = calculateTodayInfo(savedDate);
         setTodayInfo(info);
+      } else if (DEFAULT_SEMESTER_START_DATE) {
+        setSemesterStartDate(DEFAULT_SEMESTER_START_DATE);
+        const info = calculateTodayInfo(DEFAULT_SEMESTER_START_DATE);
+        setTodayInfo(info);
+        await storage.setItem(
+          STORAGE_KEYS.SEMESTER_START_DATE,
+          DEFAULT_SEMESTER_START_DATE
+        );
       }
     };
 

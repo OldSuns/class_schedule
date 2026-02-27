@@ -12,6 +12,7 @@ import CourseModal from "./src/CourseModal";
 import { useSemesterDate } from "./src/useSemesterDate";
 import { useWeekSelector } from "./src/useWeekSelector";
 import { useCourseModal } from "./src/useCourseModal";
+import { useNotifications } from "./src/useNotifications";
 
 // 数据和工具
 import { scheduleData } from "./src/scheduleData";
@@ -37,6 +38,19 @@ const App = () => {
 
   // 设置菜单状态
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
+
+  // 通知设置
+  const {
+    notificationsEnabled,
+    userGroup,
+    statusMessage,
+    exactAlarmStatus,
+    exactAlarmMessage,
+    onToggleNotifications,
+    onGroupChange,
+    onTestNotification,
+    onOpenExactAlarmSettings
+  } = useNotifications(semesterStartDate);
 
   // 配置移动端状态栏
   useEffect(() => {
@@ -98,6 +112,15 @@ const App = () => {
           todayInfo={todayInfo}
           currentWeek={currentWeek}
           onSelectWeek={handleQuickSelectWeek}
+          notificationsEnabled={notificationsEnabled}
+          onToggleNotifications={onToggleNotifications}
+          userGroup={userGroup}
+          onGroupChange={onGroupChange}
+          onTestNotification={onTestNotification}
+          notificationStatus={statusMessage}
+          exactAlarmStatus={exactAlarmStatus}
+          exactAlarmMessage={exactAlarmMessage}
+          onOpenExactAlarmSettings={onOpenExactAlarmSettings}
         />
 
         {/* 课表 */}

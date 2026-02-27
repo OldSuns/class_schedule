@@ -1,4 +1,4 @@
-package com.example.classschedule;
+package com.oldsun.classschedule;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -13,7 +13,16 @@ const SettingsMenu = ({
   onStartDateChange,
   todayInfo,
   currentWeek,
-  onSelectWeek
+  onSelectWeek,
+  notificationsEnabled = false,
+  onToggleNotifications,
+  userGroup = "A",
+  onGroupChange,
+  onTestNotification,
+  notificationStatus = "",
+  exactAlarmStatus = "unknown",
+  exactAlarmMessage = "",
+  onOpenExactAlarmSettings
 }) => {
   const [showWeekSelector, setShowWeekSelector] = useState(false);
   return (
@@ -123,6 +132,86 @@ const SettingsMenu = ({
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </div>
+
+              {/* 课程提醒设置 */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-lg font-semibold text-indigo-900">
+                    课程提醒
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => onToggleNotifications(!notificationsEnabled)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      notificationsEnabled ? "bg-indigo-600" : "bg-gray-300"
+                    }`}
+                    aria-pressed={notificationsEnabled}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        notificationsEnabled ? "translate-x-6" : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                </div>
+                <p className="text-xs text-gray-600">
+                  每节课开始前 15 分钟提醒（仅 Android）
+                </p>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-indigo-900">
+                    我的组别
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => onGroupChange("A")}
+                      className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
+                        userGroup === "A"
+                          ? "bg-indigo-600 text-white"
+                          : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                      }`}
+                    >
+                      A组
+                    </button>
+                    <button
+                      onClick={() => onGroupChange("B")}
+                      className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
+                        userGroup === "B"
+                          ? "bg-indigo-600 text-white"
+                          : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                      }`}
+                    >
+                      B组
+                    </button>
+                  </div>
+                </div>
+
+                {exactAlarmMessage && (
+                  <div className="flex items-center justify-between gap-2 bg-amber-50 text-amber-700 text-xs font-medium p-2 rounded-lg">
+                    <span>{exactAlarmMessage}</span>
+                    {exactAlarmStatus === "denied" && (
+                      <button
+                        onClick={onOpenExactAlarmSettings}
+                        className="px-2 py-1 rounded-md bg-amber-200 text-amber-900 hover:bg-amber-300 transition-colors"
+                      >
+                        去开启
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                <button
+                  onClick={onTestNotification}
+                  className="w-full px-4 py-2.5 rounded-lg bg-indigo-100 text-indigo-700 font-semibold text-sm hover:bg-indigo-200 transition-colors"
+                >
+                  发送测试通知
+                </button>
+                {notificationStatus && (
+                  <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                    {notificationStatus}
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
