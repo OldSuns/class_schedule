@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
-import { MIN_WEEK, MAX_WEEK } from "./constants";
+import { APP_VERSION, GITHUB_RELEASES_URL, MIN_WEEK, MAX_WEEK } from "./constants";
+import { checkForUpdates } from "./updateChecker";
 
 /**
  * 设置菜单组件 - 包含开学日期设置和快速周数选择
@@ -25,6 +26,29 @@ const SettingsMenu = ({
   onOpenExactAlarmSettings
 }) => {
   const [showWeekSelector, setShowWeekSelector] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState("");
+  const [updateUrl, setUpdateUrl] = useState("");
+  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+
+  const handleCheckUpdate = async () => {
+    setIsCheckingUpdate(true);
+    setUpdateStatus("");
+    setUpdateUrl("");
+    const result = await checkForUpdates(APP_VERSION);
+    setUpdateStatus(result.message || "检查完成");
+    if (result.status === "update" && result.url) {
+      setUpdateUrl(result.url);
+    }
+    setIsCheckingUpdate(false);
+  };
+
+  const handleOpenReleasePage = () => {
+    const target = updateUrl || GITHUB_RELEASES_URL;
+    if (typeof window !== "undefined") {
+      window.open(target, "_blank", "noopener,noreferrer");
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -211,6 +235,40 @@ const SettingsMenu = ({
                   <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
                     {notificationStatus}
                   </div>
+                )}
+              </div>
+
+              {/* 检查更新 */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-lg font-semibold text-indigo-900">
+                    检查更新
+                  </label>
+                  <span className="text-xs text-gray-500">v{APP_VERSION}</span>
+                </div>
+                <button
+                  onClick={handleCheckUpdate}
+                  disabled={isCheckingUpdate}
+                  className={`w-full px-4 py-2.5 rounded-lg font-semibold text-sm transition-colors ${
+                    isCheckingUpdate
+                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                      : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+                  }`}
+                >
+                  {isCheckingUpdate ? "检查中..." : "检查更新"}
+                </button>
+                {updateStatus && (
+                  <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                    {updateStatus}
+                  </div>
+                )}
+                {updateUrl && (
+                  <button
+                    onClick={handleOpenReleasePage}
+                    className="w-full px-4 py-2.5 rounded-lg bg-emerald-50 text-emerald-700 font-semibold text-sm hover:bg-emerald-100 transition-colors"
+                  >
+                    前往下载页
+                  </button>
                 )}
               </div>
             </div>

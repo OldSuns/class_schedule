@@ -24,6 +24,15 @@ export const MAX_PERIOD = 13;
 // 默认开学日期
 export const DEFAULT_SEMESTER_START_DATE = "2026-03-02";
 
+// 当前应用版本（用于更新检查）
+export const APP_VERSION = "1.9.1";
+
+// GitHub Releases
+export const GITHUB_RELEASES_URL =
+  "https://github.com/OldSuns/class_schedule/releases";
+export const GITHUB_RELEASES_API_LATEST =
+  "https://api.github.com/repos/OldSuns/class_schedule/releases/latest";
+
 // 本地存储键名
 export const STORAGE_KEYS = {
   SEMESTER_START_DATE: "semesterStartDate",

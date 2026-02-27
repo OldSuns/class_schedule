@@ -1,12 +1,13 @@
 {
   "name": "class-schedule",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.9.1",
   "type": "module",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
+    "sync-version": "node scripts/sync-version.mjs",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
