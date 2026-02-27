@@ -96,7 +96,7 @@ const CourseModal = ({ isOpen, selectedCell, currentWeek, onClose }) => {
                     )}
 
                     <div className="mt-2 sm:mt-3">
-                      <p className="text-xs text-gray-500 uppercase tracking-wider">学时/备注</p>
+                      <p className="text-xs text-gray-500 uppercase tracking-wider">备注</p>
                       <p className="text-sm sm:text-base font-medium mt-1 break-words">{course.note}</p>
                     </div>
                   </div>
