@@ -54,9 +54,60 @@ export const getCourseLocation = (location, week) => {
   return "";
 };
 
+/**
+ * 获取课程在指定周次的备注
+ * @param {Object|string} note - 备注信息，可以是字符串或对象
+ * @param {number} week - 周次
+ * @returns {string} 该周次的备注
+ */
+export const getCourseNote = (note, week) => {
+  // 如果是字符串，直接返回
+  if (typeof note === "string") {
+    return note;
+  }
+
+  // 如果是对象格式
+  if (note && typeof note === "object" && note.weeks) {
+    // 遍历 weeks 对象，查找匹配的周次
+    for (const [key, value] of Object.entries(note.weeks)) {
+      // 处理单个周次，如 "1", "3"
+      if (!key.includes("-")) {
+        if (parseInt(key) === week) {
+          return value;
+        }
+      } else {
+        // 处理周次范围，如 "5-8"
+        const [start, end] = key.split("-").map(Number);
+        if (week >= start && week <= end) {
+          return value;
+        }
+      }
+    }
+
+    // 如果没有匹配的周次，返回默认备注
+    return note.default || "";
+  }
+
+  // 其他情况返回空字符串
+  return "";
+};
+
+const serializeNoteForKey = (note) => {
+  if (note == null) return "";
+  if (typeof note === "string") return note;
+  if (typeof note === "object") {
+    try {
+      return JSON.stringify(note);
+    } catch {
+      return "";
+    }
+  }
+  return String(note);
+};
+
 // 获取课程唯一标识
 export const getCourseKey = (course) =>
-  `${course.name}::${course.group ?? ""}::${course.note ?? ""}::${course.weeks.join(",")}`;
+  `${course.name}::${course.group ?? ""}::${serializeNoteForKey(course.note)}::${course.weeks.join(",")}`;
 
 // 获取显示课程的唯一标识
 export const getDisplayKey = (courses) => {

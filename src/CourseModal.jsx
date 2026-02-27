@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Clock, Calendar, MapPin } from "lucide-react";
 import { getPeriodRangeLabel } from "./timeUtils";
 import { DAY_NAMES } from "./constants";
-import { getCourseLocation } from "./courseUtils";
+import { getCourseLocation, getCourseNote } from "./courseUtils";
 
 /**
  * 课程详情模态框组件
@@ -51,15 +51,19 @@ const CourseModal = ({ isOpen, selectedCell, currentWeek, onClose }) => {
                   <p className="text-sm sm:text-base text-gray-500">该时间段没有安排课程</p>
                 </div>
               ) : (
-                selectedCell.courses.map((course, index) => (
-                  <div
-                    key={index}
-                    className={`mb-3 sm:mb-6 p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 ${
-                      course.isCurrentWeek
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 bg-gray-50"
-                    }`}
-                  >
+                selectedCell.courses.map((course, index) => {
+                  const noteText = getCourseNote(course.note, currentWeek);
+                  const hasNote = noteText.trim().length > 0;
+
+                  return (
+                    <div
+                      key={index}
+                      className={`mb-3 sm:mb-6 p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 ${
+                        course.isCurrentWeek
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 bg-gray-50"
+                      }`}
+                    >
                     <div className="flex justify-between items-start gap-2">
                       <div className="flex-1 min-w-0">
                         <h3 className={`text-base sm:text-lg font-bold ${
@@ -95,12 +99,15 @@ const CourseModal = ({ isOpen, selectedCell, currentWeek, onClose }) => {
                       </div>
                     )}
 
-                    <div className="mt-2 sm:mt-3">
-                      <p className="text-xs text-gray-500 uppercase tracking-wider">备注</p>
-                      <p className="text-sm sm:text-base font-medium mt-1 break-words">{course.note}</p>
-                    </div>
+                    {hasNote && (
+                      <div className="mt-2 sm:mt-3">
+                        <p className="text-xs text-gray-500 uppercase tracking-wider">备注</p>
+                        <p className="text-sm sm:text-base font-medium mt-1 break-words">{noteText}</p>
+                      </div>
+                    )}
                   </div>
-                ))
+                  );
+                })
               )}
             </div>
 

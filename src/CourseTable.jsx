@@ -14,7 +14,7 @@ const CourseTable = ({ mergedCellsByDay, todayInfo, currentWeek, onCellClick }) 
         <table className="w-full border-collapse text-xs sm:text-sm">
           <thead className="bg-indigo-600">
             <tr>
-              <th className="px-1 sm:px-2 md:px-3 py-1.5 sm:py-2 md:py-3 text-left text-xs sm:text-sm font-medium text-white uppercase tracking-tight sm:tracking-wider w-10 sm:w-12 md:w-16 sticky left-0 bg-indigo-600 z-10">
+              <th className="px-1 sm:px-2 md:px-3 py-1.5 sm:py-2 md:py-3 text-center text-xs sm:text-sm font-medium text-white uppercase tracking-tight sm:tracking-wider w-10 sm:w-12 md:w-16 sticky left-0 bg-indigo-600 z-10">
                 节次
               </th>
               {DAYS.map(day => (
