@@ -2,6 +2,8 @@
  * 时间相关工具函数
  */
 
+import { MAX_WEEK } from "./constants";
+
 // 获取节次时间
 export const getPeriodTime = (period) => {
   const timeMap = {
@@ -22,6 +24,13 @@ export const getPeriodTime = (period) => {
   return timeMap[period] || "";
 };
 
+// 获取节次开始时间（HH:mm）
+export const getPeriodStartTime = (period) => {
+  const time = getPeriodTime(period);
+  if (!time) return "";
+  return time.split("-")[0];
+};
+
 // 获取节次名称
 export const getPeriodLabel = (period) => {
   if (period >= 11 && period <= 13) {
@@ -36,30 +45,37 @@ export const getPeriodRangeLabel = (periodStart, periodEnd) => {
   return `${getPeriodLabel(periodStart)}～${getPeriodLabel(periodEnd)}`;
 };
 
-// 计算今天是第几周的星期几
-export const calculateTodayInfo = (startDate) => {
+// 计算指定日期是第几周的星期几
+export const calculateDateInfo = (startDate, targetDate) => {
   if (!startDate) return null;
 
-  const start = new Date(startDate);
-  const today = new Date();
+  const [year, month, day] = String(startDate).split("-").map(Number);
+  if (!year || !month || !day) return null;
+  const start = new Date(year, month - 1, day);
+  const target = new Date(targetDate);
 
   // 设置时间为0点，只比较日期
   start.setHours(0, 0, 0, 0);
-  today.setHours(0, 0, 0, 0);
+  target.setHours(0, 0, 0, 0);
 
-  const diffTime = today - start;
+  const diffTime = target - start;
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
   if (diffDays < 0) return null; // 还没开学
 
   const week = Math.floor(diffDays / 7) + 1;
-  const dayOfWeek = today.getDay(); // 0=周日, 1=周一, ..., 6=周六
+  const dayOfWeek = target.getDay(); // 0=周日, 1=周一, ..., 6=周六
 
-  if (week > 16) return null; // 超过学期范围
+  if (week > MAX_WEEK) return null; // 超过学期范围
   if (dayOfWeek === 0 || dayOfWeek === 6) return null; // 周末无课
 
   const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const dayName = dayNames[dayOfWeek - 1];
 
   return { week, day: dayName, dayOfWeek };
+};
+
+// 计算今天是第几周的星期几
+export const calculateTodayInfo = (startDate) => {
+  return calculateDateInfo(startDate, new Date());
 };

@@ -1,6 +1,6 @@
 {
   "appId": "com.oldsun.classschedule",
-  "appName": "课程表by OldSun",
+  "appName": "课程表 by OldSun",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "plugins": {

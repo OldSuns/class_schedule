@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Class Schedule</string>
-    <string name="title_activity_main">Class Schedule</string>
-    <string name="package_name">com.example.classschedule</string>
-    <string name="custom_url_scheme">com.example.classschedule</string>
+    <string name="app_name">WL6课程表</string>
+    <string name="title_activity_main">WL6课程表</string>
+    <string name="package_name">com.oldsun.classschedule</string>
+    <string name="custom_url_scheme">com.oldsun.classschedule</string>
 </resources>
