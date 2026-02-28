@@ -1,5 +1,6 @@
 import { GITHUB_RELEASES_API_LATEST } from "./constants";
 
+// 统一版本格式：去掉前缀 v 与构建/预发布标记
 const normalizeVersion = (input) => {
   if (!input) return "";
   return String(input)
@@ -17,6 +18,7 @@ const parseVersion = (version) => {
   });
 };
 
+// 按语义版本逐段比较（仅数字）
 const compareVersions = (current, latest) => {
   const currentParts = parseVersion(current);
   const latestParts = parseVersion(latest);

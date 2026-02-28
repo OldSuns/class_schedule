@@ -25,13 +25,20 @@ const gradlePath = path.join(root, "android", "app", "build.gradle");
 const constantsPath = path.join(root, "src", "constants.js");
 const packageJsonPath = path.join(root, "package.json");
 
-const gradle = fs.readFileSync(gradlePath, "utf8");
-const match = gradle.match(/versionName\s+"([^"]+)"/);
-if (!match) {
-  console.error("未找到 versionName");
+const buildDateVersionCode = (date = new Date()) => {
+  const yyyy = String(date.getFullYear());
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  return Number(`${yyyy}${mm}${dd}`);
+};
+
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+const versionName = packageJson.version;
+if (!versionName) {
+  console.error("package.json 未包含 version 字段");
   process.exit(1);
 }
-const versionName = match[1];
+const versionCode = buildDateVersionCode();
 
 let constants = fs.readFileSync(constantsPath, "utf8");
 const versionPattern = /export const APP_VERSION\s*=\s*["'][^"']+["']/;
@@ -59,12 +66,19 @@ if (versionPattern.test(constants)) {
 }
 fs.writeFileSync(constantsPath, constants, "utf8");
 
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
-packageJson.version = versionName;
-fs.writeFileSync(
-  packageJsonPath,
-  JSON.stringify(packageJson, null, 2) + "\n",
-  "utf8"
-);
+let gradle = fs.readFileSync(gradlePath, "utf8");
+const gradleVersionPattern = /versionName\s+"[^"]+"/;
+const gradleCodePattern = /versionCode\s+\d+/;
+if (!gradleVersionPattern.test(gradle)) {
+  console.error("未找到 versionName");
+  process.exit(1);
+}
+if (!gradleCodePattern.test(gradle)) {
+  console.error("未找到 versionCode");
+  process.exit(1);
+}
+gradle = gradle.replace(gradleVersionPattern, `versionName "${versionName}"`);
+gradle = gradle.replace(gradleCodePattern, `versionCode ${versionCode}`);
+fs.writeFileSync(gradlePath, gradle, "utf8");
 
-console.log(`版本已同步为 ${versionName}`);
+console.log(`版本已同步为 ${versionName}（versionCode=${versionCode}）`);

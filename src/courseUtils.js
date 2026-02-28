@@ -161,6 +161,7 @@ export const mergeCellsByDay = (scheduleData, currentWeek) => {
         isCurrentWeek: course.weeks.includes(currentWeek),
       }));
 
+      // 优先显示本周课程；无本周课程时显示第一条作为占位
       const currentWeekCourses = filteredCourses.filter(c => c.isCurrentWeek);
       const displayCourses =
         currentWeekCourses.length > 0 ? getDisplayCourses(currentWeekCourses) : (filteredCourses[0] ? [filteredCourses[0]] : []);
@@ -177,6 +178,7 @@ export const mergeCellsByDay = (scheduleData, currentWeek) => {
       };
     }
 
+    // 将同一天的连续节次合并，减少重复渲染
     const merged = {};
     let period = 1;
     while (period <= 13) {
@@ -202,6 +204,7 @@ export const mergeCellsByDay = (scheduleData, currentWeek) => {
       let end = period;
       const combinedCoursesMap = new Map();
       const addCourses = (list) => {
+        // 以课程唯一标识去重，保留“本周课程”标记
         for (const course of list) {
           const key = getCourseKey(course);
           const existing = combinedCoursesMap.get(key);

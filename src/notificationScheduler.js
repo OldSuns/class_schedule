@@ -11,7 +11,9 @@ import { shouldNotifyForGroup } from "./groupUtils";
 import { getCourseLocation, getDisplayKey } from "./courseUtils";
 
 export const NOTIFICATION_CHANNEL_ID = "course-reminders";
+// 未来多少天内生成提醒
 const NOTIFICATION_WINDOW_DAYS = 14;
+// 提前多少分钟提醒
 const NOTIFICATION_LEAD_MINUTES = 15;
 
 const toYyyyMmDd = (date) => {
@@ -89,6 +91,7 @@ const buildDayCourseBlocks = ({
   const daySchedule = scheduleData.find((entry) => entry.day === info.day);
   if (!daySchedule) return [];
 
+    // 按节次整理当日课程，便于后续合并连续节次
     const periodMap = new Map();
     for (const periodEntry of daySchedule.periods) {
       const startTimeParts = getStartTimeParts(periodEntry.period);
@@ -100,6 +103,7 @@ const buildDayCourseBlocks = ({
 
       if (!matchingCourses.length) continue;
 
+      // 课程地点去重后参与合并判断
       const locations = matchingCourses
         .map((course) => getCourseLocation(course.location, info.week))
         .filter((location) => location && location.trim().length > 0);
@@ -131,6 +135,7 @@ const buildDayCourseBlocks = ({
       end += 1;
     }
 
+    // 将连续相同课程合并为一个提醒
     const classStart = new Date(currentDate);
     classStart.setHours(entry.startTimeParts.hour, entry.startTimeParts.minute, 0, 0);
     const body = buildCourseNotificationBody(
@@ -237,8 +242,10 @@ export const scheduleCourseNotifications = async ({
     return { scheduled: 0, reason: "no-start-date" };
   }
 
+  // 先清理旧通知，再重新生成
   await cancelAllScheduledNotifications();
 
+  // 必须先请求通知权限
   const permission = await LocalNotifications.requestPermissions();
   if (permission.display !== "granted") {
     return { scheduled: 0, reason: "permission-denied" };
@@ -253,6 +260,7 @@ export const scheduleCourseNotifications = async ({
   const notifications = [];
 
   for (let offset = 0; offset < NOTIFICATION_WINDOW_DAYS; offset += 1) {
+    // 逐日生成未来课程提醒
     const currentDate = new Date(today);
     currentDate.setDate(today.getDate() + offset);
 

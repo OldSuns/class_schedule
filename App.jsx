@@ -55,6 +55,7 @@ const App = () => {
   // 配置移动端状态栏
   useEffect(() => {
     const setupStatusBar = async () => {
+      // 仅原生端启用透明叠加的状态栏
       if (Capacitor.isNativePlatform()) {
         try {
           await StatusBar.setStyle({ style: Style.Dark });
@@ -73,12 +74,14 @@ const App = () => {
   // 当 todayInfo 更新时，自动设置当前周
   useEffect(() => {
     if (todayInfo) {
+      // 进入应用时跳转到今天所在的周次
       setCurrentWeek(todayInfo.week);
     }
   }, [todayInfo, setCurrentWeek]);
 
   // 合并课程单元格
   const mergedCellsByDay = useMemo(() => {
+    // 将同日连续课程合并，便于表格渲染
     return mergeCellsByDay(scheduleData, currentWeek);
   }, [currentWeek]);
 
@@ -86,6 +89,7 @@ const App = () => {
   const handleDateChange = async (date) => {
     const info = await handleStartDateChange(date);
     if (info) {
+      // 手动修改开学日期后同步周次
       setCurrentWeek(info.week);
     }
   };

@@ -12,6 +12,7 @@ import {
   sendTestNotification
 } from "./notificationScheduler";
 
+// 12 小时内不重复排程，避免频繁写入
 const RESCHEDULE_INTERVAL_MS = 12 * 60 * 60 * 1000;
 const EXACT_ALARM_MESSAGES = {
   granted: "精确闹钟权限：已开启",
@@ -75,6 +76,7 @@ export const useNotifications = (semesterStartDate) => {
   const scheduleIfNeeded = useCallback(
     async ({ force = false, showMessage = false } = {}) => {
       if (schedulingRef.current) return;
+      // 避免并发排程，确保一次只跑一个任务
       schedulingRef.current = true;
       try {
         if (!notificationsEnabled) {
@@ -97,6 +99,7 @@ export const useNotifications = (semesterStartDate) => {
         setExactAlarmStatus(alarmStatus);
 
         if (!force) {
+          // 非强制模式下，按时间窗口决定是否需要重新排程
           const lastScheduled = await storage.getItem(
             STORAGE_KEYS.NOTIFICATIONS_LAST_SCHEDULED_AT
           );
@@ -167,6 +170,7 @@ export const useNotifications = (semesterStartDate) => {
         "appStateChange",
         async ({ isActive }) => {
           if (isActive) {
+            // 回到前台时补齐近期通知
             await scheduleIfNeeded({ force: false, showMessage: false });
           }
         }
