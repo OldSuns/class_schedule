@@ -50,6 +50,7 @@ export const scheduleData = [
         ]},
       { period: 5, courses: []},
       { period: 6, courses: [
+          { name: "儿科学A", weeks: [1], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
           { name: "内科学见习", weeks: [15], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [16], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [5,8,11,13], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
@@ -58,6 +59,7 @@ export const scheduleData = [
           { name: "儿科学见习", weeks: [8,11,13,15], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" }
         ]},
       { period: 7, courses: [
+          { name: "儿科学A", weeks: [1], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
           { name: "内科学见习", weeks: [15], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [16], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [5,8,11,13], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
@@ -66,6 +68,7 @@ export const scheduleData = [
           { name: "儿科学见习", weeks: [8,11,13,15], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" }
         ]},
       { period: 8, courses: [
+          { name: "儿科学A", weeks: [1], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
           { name: "内科学见习", weeks: [5,8,11,13], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [7,9,12,14], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "儿科学见习", weeks: [7,9,12,14,16], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },

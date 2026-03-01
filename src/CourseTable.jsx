@@ -11,7 +11,7 @@ const CourseTable = ({ mergedCellsByDay, todayInfo, currentWeek, onCellClick }) 
   return (
     <div className="bg-white rounded-lg sm:rounded-2xl shadow-xl overflow-hidden border border-indigo-100">
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-xs sm:text-sm">
+        <table className="w-full table-fixed border-collapse text-xs sm:text-sm">
           <thead className="bg-indigo-600">
             <tr>
               <th className="px-1 sm:px-2 md:px-3 py-1.5 sm:py-2 md:py-3 text-center text-xs sm:text-sm font-medium text-white uppercase tracking-tight sm:tracking-wider w-10 sm:w-12 md:w-16 sticky left-0 bg-indigo-600 z-10">
@@ -76,7 +76,7 @@ const CourseTable = ({ mergedCellsByDay, todayInfo, currentWeek, onCellClick }) 
                                 <div className="break-words">{course.name}</div>
                                 {course.group && <div className="text-[10px] sm:text-xs md:text-sm mt-0.5">({course.group})</div>}
                                 {course.location && (
-                                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-0.5">
+                                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-0.5 break-words">
                                     📍 {getCourseLocation(course.location, currentWeek)}
                                   </div>
                                 )}
