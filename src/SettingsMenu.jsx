@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
-import { APP_VERSION, GITHUB_RELEASES_URL, MIN_WEEK, MAX_WEEK } from "./constants";
+import { APP_VERSION, DISPLAY_MODES, GITHUB_RELEASES_URL, MIN_WEEK, MAX_WEEK } from "./constants";
 import { checkForUpdates } from "./updateChecker";
 
 /**
@@ -15,6 +15,8 @@ const SettingsMenu = ({
   todayInfo,
   currentWeek,
   onSelectWeek,
+  displayMode = DISPLAY_MODES.ALL,
+  onDisplayModeChange,
   notificationsEnabled = false,
   onToggleNotifications,
   userGroup = "A",
@@ -156,6 +158,40 @@ const SettingsMenu = ({
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </div>
+
+              {/* 显示模式 */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-lg font-semibold text-indigo-900">
+                    显示模式
+                  </label>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => onDisplayModeChange?.(DISPLAY_MODES.ALL)}
+                    className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
+                      displayMode === DISPLAY_MODES.ALL
+                        ? "bg-indigo-600 text-white"
+                        : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                    }`}
+                  >
+                    显示全部
+                  </button>
+                  <button
+                    onClick={() => onDisplayModeChange?.(DISPLAY_MODES.CURRENT_ONLY)}
+                    className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
+                      displayMode === DISPLAY_MODES.CURRENT_ONLY
+                        ? "bg-indigo-600 text-white"
+                        : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                    }`}
+                  >
+                    仅本周
+                  </button>
+                </div>
+                <p className="text-xs text-gray-600">
+                  显示全部时，非本周课程将以灰色显示。
+                </p>
               </div>
 
               {/* 课程提醒设置 */}

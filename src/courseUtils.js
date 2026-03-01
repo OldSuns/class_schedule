@@ -1,6 +1,42 @@
+import { DISPLAY_MODES } from "./constants";
+
 /**
  * 课程合并相关工具函数
  */
+
+const getNearestWeekInfo = (weeks, currentWeek) => {
+  let next = null;
+  let prev = null;
+  for (const week of weeks) {
+    if (week >= currentWeek) {
+      if (next == null || week < next) next = week;
+    } else {
+      if (prev == null || week > prev) prev = week;
+    }
+  }
+  return { next, prev };
+};
+
+const getCourseWeekPriority = (course, currentWeek) => {
+  const weeks = Array.isArray(course.weeks) ? course.weeks : [];
+  const { next, prev } = getNearestWeekInfo(weeks, currentWeek);
+  if (next != null) {
+    return { rank: 0, dist: next - currentWeek };
+  }
+  if (prev != null) {
+    return { rank: 1, dist: currentWeek - prev };
+  }
+  return { rank: 2, dist: Number.MAX_SAFE_INTEGER };
+};
+
+const sortCoursesByNearestWeek = (courses, currentWeek) =>
+  courses
+    .map((course, index) => {
+      const { rank, dist } = getCourseWeekPriority(course, currentWeek);
+      return { course, rank, dist, index };
+    })
+    .sort((a, b) => a.rank - b.rank || a.dist - b.dist || a.index - b.index)
+    .map((item) => item.course);
 
 /**
  * 获取课程在指定周次的地点
@@ -138,10 +174,15 @@ export const getDisplayCourses = (courses) => {
 };
 
 // 合并同一天内连续的同一课程
-export const mergeCellsByDay = (scheduleData, currentWeek) => {
+export const mergeCellsByDay = (
+  scheduleData,
+  currentWeek,
+  displayMode = DISPLAY_MODES.ALL
+) => {
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const periods = Array.from({ length: 13 }, (_, i) => i + 1);
   const result = {};
+  const isCurrentOnly = displayMode === DISPLAY_MODES.CURRENT_ONLY;
 
   for (const day of days) {
     const dayData = scheduleData.find(d => d.day === day);
@@ -156,21 +197,53 @@ export const mergeCellsByDay = (scheduleData, currentWeek) => {
         continue;
       }
 
-      const filteredCourses = courses.map(course => ({
+      const annotatedCourses = courses.map(course => ({
         ...course,
         isCurrentWeek: course.weeks.includes(currentWeek),
       }));
 
-      // 优先显示本周课程；无本周课程时显示第一条作为占位
-      const currentWeekCourses = filteredCourses.filter(c => c.isCurrentWeek);
+      const currentWeekCourses = annotatedCourses.filter(c => c.isCurrentWeek);
+
+      if (isCurrentOnly) {
+        if (currentWeekCourses.length === 0) {
+          raw[period] = { empty: true };
+          continue;
+        }
+        const displayCourses = getDisplayCourses(currentWeekCourses);
+        raw[period] = {
+          empty: false,
+          filteredCourses: currentWeekCourses,
+          displayCourses,
+          displayKey: getDisplayKey(currentWeekCourses),
+          hasCurrentWeekCourse: true,
+          otherCoursesCount: Math.max(
+            0,
+            currentWeekCourses.length - displayCourses.length
+          ),
+        };
+        continue;
+      }
+
+      const orderedCourses =
+        currentWeekCourses.length > 0
+          ? annotatedCourses
+          : sortCoursesByNearestWeek(annotatedCourses, currentWeek);
+
+      // 优先显示本周课程；无本周课程时优先显示最近未来周次
       const displayCourses =
-        currentWeekCourses.length > 0 ? getDisplayCourses(currentWeekCourses) : (filteredCourses[0] ? [filteredCourses[0]] : []);
-      const displayKey = currentWeekCourses.length > 0 ? getDisplayKey(currentWeekCourses) : "";
-      const otherCoursesCount = Math.max(0, filteredCourses.length - displayCourses.length);
+        currentWeekCourses.length > 0
+          ? getDisplayCourses(currentWeekCourses)
+          : getDisplayCourses(orderedCourses);
+      const displayKey =
+        currentWeekCourses.length > 0 ? getDisplayKey(currentWeekCourses) : "";
+      const otherCoursesCount = Math.max(
+        0,
+        orderedCourses.length - displayCourses.length
+      );
 
       raw[period] = {
         empty: false,
-        filteredCourses,
+        filteredCourses: orderedCourses,
         displayCourses,
         displayKey,
         hasCurrentWeekCourse: currentWeekCourses.length > 0,

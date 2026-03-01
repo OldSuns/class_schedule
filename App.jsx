@@ -13,6 +13,7 @@ import { useSemesterDate } from "./src/useSemesterDate";
 import { useWeekSelector } from "./src/useWeekSelector";
 import { useCourseModal } from "./src/useCourseModal";
 import { useNotifications } from "./src/useNotifications";
+import { useDisplayMode } from "./src/useDisplayMode";
 
 // 数据和工具
 import { scheduleData } from "./src/scheduleData";
@@ -38,6 +39,9 @@ const App = () => {
 
   // 设置菜单状态
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
+
+  // 显示模式设置
+  const { displayMode, onDisplayModeChange } = useDisplayMode();
 
   // 通知设置
   const {
@@ -82,8 +86,8 @@ const App = () => {
   // 合并课程单元格
   const mergedCellsByDay = useMemo(() => {
     // 将同日连续课程合并，便于表格渲染
-    return mergeCellsByDay(scheduleData, currentWeek);
-  }, [currentWeek]);
+    return mergeCellsByDay(scheduleData, currentWeek, displayMode);
+  }, [currentWeek, displayMode]);
 
   // 处理开学日期变化
   const handleDateChange = async (date) => {
@@ -116,6 +120,8 @@ const App = () => {
           todayInfo={todayInfo}
           currentWeek={currentWeek}
           onSelectWeek={handleQuickSelectWeek}
+          displayMode={displayMode}
+          onDisplayModeChange={onDisplayModeChange}
           notificationsEnabled={notificationsEnabled}
           onToggleNotifications={onToggleNotifications}
           userGroup={userGroup}

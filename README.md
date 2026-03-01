@@ -64,17 +64,13 @@ npm run preview
 1. 构建 Web 资源并同步到 Android：
 
 ```bash
-npm run sync-version
-npm run build
-npx cap sync android
+npm run sync-version; npm run build; npx cap sync android
 ```
 
 2. 使用 Gradle 构建 APK：
 
 ```bash
-cd android
-.\gradlew.bat assembleDebug
-cd ..
+cd android; .\gradlew.bat assembleDebug; cd ..
 ```
 
 macOS/Linux 可使用：

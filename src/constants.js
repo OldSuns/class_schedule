@@ -24,8 +24,14 @@ export const MAX_PERIOD = 13;
 // 默认开学日期
 export const DEFAULT_SEMESTER_START_DATE = "2026-03-02";
 
+// 课程显示模式
+export const DISPLAY_MODES = {
+  ALL: "all",
+  CURRENT_ONLY: "currentOnly"
+};
+
 // 当前应用版本（用于更新检查）
-export const APP_VERSION = "1.9.1";
+export const APP_VERSION = "1.9.2";
 
 // GitHub Releases
 export const GITHUB_RELEASES_URL =
@@ -38,5 +44,6 @@ export const STORAGE_KEYS = {
   SEMESTER_START_DATE: "semesterStartDate",
   NOTIFICATIONS_ENABLED: "notificationsEnabled",
   NOTIFICATIONS_LAST_SCHEDULED_AT: "notificationsLastScheduledAt",
-  USER_GROUP: "userGroup"
+  USER_GROUP: "userGroup",
+  DISPLAY_MODE: "displayMode"
 };
