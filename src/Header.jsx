@@ -8,6 +8,7 @@ import { MIN_WEEK, MAX_WEEK } from "./constants";
 const Header = ({
   todayInfo,
   currentWeek,
+  currentClassProgress,
   onOpenMenu,
   onWeekChange,
   onPreviousWeek,
@@ -34,9 +35,27 @@ const Header = ({
         </button>
 
         {/* 标题 */}
-        <h1 className="flex-1 text-sm sm:text-xl md:text-3xl lg:text-4xl font-bold text-indigo-900 px-2 leading-tight">
-          第五临床医学院 临床医学 2023级 6班课表
-        </h1>
+        {currentClassProgress ? (
+          <div className="flex-1 px-2 text-left">
+            <div className="text-[11px] sm:text-sm md:text-base font-semibold text-indigo-900 truncate">
+              {currentClassProgress.periodLabel} · {currentClassProgress.courseLabel}
+            </div>
+            <div className="mt-1 h-2.5 sm:h-3 bg-indigo-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-indigo-500 transition-[width] duration-500"
+                style={{ width: `${currentClassProgress.percent}%` }}
+              />
+            </div>
+            <div className="mt-1 text-[10px] sm:text-xs md:text-sm text-indigo-700">
+              已过 {currentClassProgress.elapsedMinutes} 分钟 · {currentClassProgress.percent}% · 还剩{" "}
+              {currentClassProgress.remainingMinutes} 分钟
+            </div>
+          </div>
+        ) : (
+          <h1 className="flex-1 text-sm sm:text-xl md:text-3xl lg:text-4xl font-bold text-indigo-900 px-2 leading-tight">
+            第五临床医学院 临床医学 2023级 6班课表
+          </h1>
+        )}
 
         {/* 占位元素保持标题居中 */}
         <div className="w-10 sm:w-14"></div>

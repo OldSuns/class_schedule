@@ -1,4 +1,5 @@
 import { DISPLAY_MODES } from "./constants";
+import { shouldNotifyForGroup } from "./groupUtils";
 
 /**
  * 课程合并相关工具函数
@@ -177,7 +178,8 @@ export const getDisplayCourses = (courses) => {
 export const mergeCellsByDay = (
   scheduleData,
   currentWeek,
-  displayMode = DISPLAY_MODES.ALL
+  displayMode = DISPLAY_MODES.ALL,
+  userGroup
 ) => {
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const periods = Array.from({ length: 13 }, (_, i) => i + 1);
@@ -200,9 +202,13 @@ export const mergeCellsByDay = (
       const annotatedCourses = courses.map(course => ({
         ...course,
         isCurrentWeek: course.weeks.includes(currentWeek),
+        isGroupMatch: shouldNotifyForGroup(course.group, userGroup)
       }));
 
-      const currentWeekCourses = annotatedCourses.filter(c => c.isCurrentWeek);
+      const currentWeekCourses = annotatedCourses.filter(
+        c => c.isCurrentWeek && c.isGroupMatch
+      );
+      const groupFilteredCourses = annotatedCourses.filter(c => c.isGroupMatch);
 
       if (isCurrentOnly) {
         if (currentWeekCourses.length === 0) {
@@ -226,14 +232,14 @@ export const mergeCellsByDay = (
 
       const orderedCourses =
         currentWeekCourses.length > 0
-          ? annotatedCourses
-          : sortCoursesByNearestWeek(annotatedCourses, currentWeek);
+          ? groupFilteredCourses
+          : sortCoursesByNearestWeek(groupFilteredCourses, currentWeek);
 
       // 优先显示本周课程；无本周课程时优先显示最近未来周次
       const displayCourses =
         currentWeekCourses.length > 0
           ? getDisplayCourses(currentWeekCourses)
-          : getDisplayCourses(orderedCourses);
+          : orderedCourses.slice(0, 1);
       const displayKey =
         currentWeekCourses.length > 0 ? getDisplayKey(currentWeekCourses) : "";
       const otherCoursesCount = Math.max(

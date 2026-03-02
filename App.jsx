@@ -18,6 +18,12 @@ import { useDisplayMode } from "./src/useDisplayMode";
 // 数据和工具
 import { scheduleData } from "./src/scheduleData";
 import { mergeCellsByDay } from "./src/courseUtils";
+import { shouldNotifyForGroup } from "./src/groupUtils";
+import {
+  getCurrentPeriod,
+  getPeriodLabel,
+  getPeriodRangeMinutes
+} from "./src/timeUtils";
 
 const App = () => {
 
@@ -42,6 +48,9 @@ const App = () => {
 
   // 显示模式设置
   const { displayMode, onDisplayModeChange } = useDisplayMode();
+
+  // 当前时间（用于进度条刷新）
+  const [now, setNow] = useState(() => new Date());
 
   // 通知设置
   const {
@@ -85,11 +94,66 @@ const App = () => {
     }
   }, [todayInfo, setCurrentWeek]);
 
+  // 每分钟刷新一次当前时间
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date());
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
+
   // 合并课程单元格
   const mergedCellsByDay = useMemo(() => {
     // 将同日连续课程合并，便于表格渲染
-    return mergeCellsByDay(scheduleData, currentWeek, displayMode);
-  }, [currentWeek, displayMode]);
+    return mergeCellsByDay(scheduleData, currentWeek, displayMode, userGroup);
+  }, [currentWeek, displayMode, userGroup]);
+
+  const currentClassProgress = useMemo(() => {
+    if (!todayInfo) return null;
+    const period = getCurrentPeriod(now);
+    if (!period) return null;
+
+    const dayData = scheduleData.find((day) => day.day === todayInfo.day);
+    const periodData = dayData?.periods.find((item) => item.period === period);
+    const courses = (periodData?.courses ?? []).filter(
+      (course) =>
+        Array.isArray(course.weeks) &&
+        course.weeks.includes(todayInfo.week) &&
+        shouldNotifyForGroup(course.group, userGroup)
+    );
+
+    if (courses.length === 0) return null;
+
+    const range = getPeriodRangeMinutes(period);
+    if (!range) return null;
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+    const duration = Math.max(1, range.endMin - range.startMin);
+    const elapsed = Math.min(Math.max(nowMinutes - range.startMin, 0), duration);
+    const remaining = Math.max(range.endMin - nowMinutes, 0);
+    const percent = Math.min(
+      100,
+      Math.max(0, Math.round((elapsed / duration) * 100))
+    );
+
+    const labels = courses.map((course) =>
+      course.group ? `${course.name}(${course.group})` : course.name
+    );
+    let courseLabel = labels[0];
+    if (labels.length === 2) {
+      courseLabel = `${labels[0]} / ${labels[1]}`;
+    } else if (labels.length > 2) {
+      courseLabel = `${labels[0]} 等`;
+    }
+
+    return {
+      period,
+      periodLabel: getPeriodLabel(period),
+      courseLabel,
+      elapsedMinutes: elapsed,
+      remainingMinutes: remaining,
+      percent
+    };
+  }, [now, todayInfo, userGroup]);
 
   // 处理开学日期变化
   const handleDateChange = async (date) => {
@@ -107,6 +171,7 @@ const App = () => {
         <Header
           todayInfo={todayInfo}
           currentWeek={currentWeek}
+          currentClassProgress={currentClassProgress}
           onOpenMenu={() => setIsSettingsMenuOpen(true)}
           onWeekChange={handleWeekChange}
           onPreviousWeek={handlePreviousWeek}

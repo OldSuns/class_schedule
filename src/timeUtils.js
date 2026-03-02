@@ -24,6 +24,42 @@ export const getPeriodTime = (period) => {
   return timeMap[period] || "";
 };
 
+export const parseTimeToMinutes = (time) => {
+  if (!time) return null;
+  const [hours, minutes] = String(time).split(":").map(Number);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return null;
+  return hours * 60 + minutes;
+};
+
+export const getPeriodRangeMinutes = (period) => {
+  const time = getPeriodTime(period);
+  if (!time || !time.includes("-")) return null;
+  const [start, end] = time.split("-");
+  const startMin = parseTimeToMinutes(start);
+  const endMin = parseTimeToMinutes(end);
+  if (startMin == null || endMin == null) return null;
+  return { startMin, endMin };
+};
+
+export const getPeriodDurationMinutes = (period) => {
+  const range = getPeriodRangeMinutes(period);
+  if (!range) return 0;
+  return Math.max(0, range.endMin - range.startMin);
+};
+
+export const getCurrentPeriod = (now = new Date()) => {
+  const current = now instanceof Date ? now : new Date(now);
+  const nowMinutes = current.getHours() * 60 + current.getMinutes();
+  for (let period = 1; period <= 13; period += 1) {
+    const range = getPeriodRangeMinutes(period);
+    if (!range) continue;
+    if (nowMinutes >= range.startMin && nowMinutes < range.endMin) {
+      return period;
+    }
+  }
+  return null;
+};
+
 // 获取节次开始时间（HH:mm）
 export const getPeriodStartTime = (period) => {
   const time = getPeriodTime(period);
