@@ -74,7 +74,7 @@ const SettingsMenu = ({
             className="fixed left-0 top-0 bottom-0 w-72 sm:w-80 bg-white/20 backdrop-blur-md shadow-2xl z-50 overflow-y-auto"
           >
             {/* 菜单头部 */}
-            <div className="sticky top-0 bg-indigo-600/15 backdrop-blur-sm text-white p-4 flex justify-between items-center">
+            <div className="sticky top-0 bg-indigo-600/15 backdrop-blur-sm text-white p-4 flex justify-between items-center pt-[calc(var(--safe-top)+1rem)]">
               <h2 className="text-xl font-bold">设置</h2>
               <button
                 onClick={onClose}
