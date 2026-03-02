@@ -75,6 +75,19 @@ const App = () => {
           await StatusBar.setOverlaysWebView({ overlay: true });
           if (Capacitor.getPlatform() === 'android') {
             await StatusBar.setBackgroundColor({ color: '#EFF6FF' });
+            const info = await StatusBar.getInfo();
+            const height = Number(info?.height);
+            if (Number.isFinite(height) && height > 0) {
+              document.documentElement.style.setProperty(
+                "--android-statusbar",
+                `${height}px`
+              );
+            } else {
+              document.documentElement.style.setProperty(
+                "--android-statusbar",
+                "0px"
+              );
+            }
           }
           await StatusBar.show();
         } catch (error) {
@@ -165,7 +178,7 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4 pt-[calc(var(--safe-top)+1rem)] pb-[var(--safe-bottom)]">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4 pt-[var(--safe-top)] pb-[var(--safe-bottom)]">
       <div className="max-w-7xl mx-auto">
         {/* 顶部标题和菜单按钮 */}
         <Header
