@@ -2,10 +2,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Clock, Calendar, MapPin, Pencil, Trash2, Plus } from "lucide-react";
 import { getPeriodRangeLabel } from "./timeUtils";
-import { DAY_NAMES, MAX_WEEK, MIN_WEEK } from "./constants";
+import { DAY_NAMES, DISPLAY_MODES, MAX_WEEK, MIN_WEEK } from "./constants";
 import { getCourseLocation, getCourseNote } from "./courseUtils";
 import WeekMultiSelect from "./WeekMultiSelect";
 import { buildCourseIdentity, collectCoursesForRange } from "./scheduleUtils";
+import { shouldNotifyForGroup } from "./groupUtils";
 
 const LEGACY_GROUP_VALUE = "__legacy_group__";
 
@@ -317,6 +318,8 @@ const CourseModal = ({
   isOpen,
   selectedCell,
   currentWeek,
+  displayMode = DISPLAY_MODES.ALL,
+  userGroup,
   scheduleData,
   onAddCourse,
   onUpdateCourse,
@@ -375,13 +378,24 @@ const CourseModal = ({
       selectedCell.periodStart,
       selectedCell.periodEnd
     );
-    return list.map((course) => ({
+    const groupFilteredCourses = list.filter((course) =>
+      shouldNotifyForGroup(course.group, userGroup)
+    );
+    const visibleCourses =
+      displayMode === DISPLAY_MODES.CURRENT_ONLY
+        ? groupFilteredCourses.filter(
+            (course) =>
+              Array.isArray(course.weeks) && course.weeks.includes(currentWeek)
+          )
+        : groupFilteredCourses;
+
+    return visibleCourses.map((course) => ({
       ...course,
       isCurrentWeek: Array.isArray(course.weeks)
         ? course.weeks.includes(currentWeek)
         : false
     }));
-  }, [scheduleData, selectedCell, currentWeek]);
+  }, [scheduleData, selectedCell, currentWeek, displayMode, userGroup]);
 
   if (!selectedCell) return null;
 

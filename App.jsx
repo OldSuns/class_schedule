@@ -295,6 +295,8 @@ const App = () => {
           isOpen={isModalOpen}
           selectedCell={selectedCell}
           currentWeek={currentWeek}
+          displayMode={displayMode}
+          userGroup={userGroup}
           scheduleData={scheduleData}
           onAddCourse={handleAddCourse}
           onUpdateCourse={handleUpdateCourse}
