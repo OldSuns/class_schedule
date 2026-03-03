@@ -1,6 +1,6 @@
 import { Capacitor } from "@capacitor/core";
 import { LocalNotifications } from "@capacitor/local-notifications";
-import { scheduleData } from "./scheduleData";
+import { scheduleData as defaultScheduleData } from "./scheduleData";
 import {
   calculateDateInfo,
   getPeriodLabel,
@@ -83,12 +83,14 @@ const buildCourseNotificationBody = (
 const buildDayCourseBlocks = ({
   semesterStartDate,
   userGroup,
-  currentDate
+  currentDate,
+  scheduleData
 }) => {
   const info = calculateDateInfo(semesterStartDate, currentDate);
   if (!info) return [];
 
-  const daySchedule = scheduleData.find((entry) => entry.day === info.day);
+  const dataSource = scheduleData ?? defaultScheduleData;
+  const daySchedule = dataSource.find((entry) => entry.day === info.day);
   if (!daySchedule) return [];
 
     // 按节次整理当日课程，便于后续合并连续节次
@@ -164,7 +166,8 @@ const collectUpcomingClasses = ({
   semesterStartDate,
   userGroup,
   fromDate,
-  windowDays
+  windowDays,
+  scheduleData
 }) => {
   if (!semesterStartDate) return [];
   const now = new Date(fromDate);
@@ -180,7 +183,8 @@ const collectUpcomingClasses = ({
     const blocks = buildDayCourseBlocks({
       semesterStartDate,
       userGroup,
-      currentDate
+      currentDate,
+      scheduleData
     });
 
     for (const block of blocks) {
@@ -233,7 +237,8 @@ export const openExactAlarmPermissionSettings = async () => {
 
 export const scheduleCourseNotifications = async ({
   semesterStartDate,
-  userGroup
+  userGroup,
+  scheduleData
 }) => {
   if (!Capacitor.isNativePlatform()) {
     return { scheduled: 0, reason: "unsupported" };
@@ -267,7 +272,8 @@ export const scheduleCourseNotifications = async ({
     const blocks = buildDayCourseBlocks({
       semesterStartDate,
       userGroup,
-      currentDate
+      currentDate,
+      scheduleData
     });
 
     for (const block of blocks) {
@@ -295,7 +301,8 @@ export const scheduleCourseNotifications = async ({
 
 export const sendTestNotification = async ({
   semesterStartDate,
-  userGroup
+  userGroup,
+  scheduleData
 }) => {
   if (!Capacitor.isNativePlatform()) {
     return { sent: false, reason: "unsupported" };
@@ -319,7 +326,8 @@ export const sendTestNotification = async ({
     semesterStartDate,
     userGroup,
     fromDate: now,
-    windowDays: NOTIFICATION_WINDOW_DAYS
+    windowDays: NOTIFICATION_WINDOW_DAYS,
+    scheduleData
   });
   const nextClass = upcoming[0];
   const body = nextClass

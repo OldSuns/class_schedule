@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
 import { APP_VERSION, DISPLAY_MODES, GITHUB_RELEASES_URL, MIN_WEEK, MAX_WEEK } from "./constants";
@@ -25,12 +25,20 @@ const SettingsMenu = ({
   notificationStatus = "",
   exactAlarmStatus = "unknown",
   exactAlarmMessage = "",
-  onOpenExactAlarmSettings
+  onOpenExactAlarmSettings,
+  onResetSchedule
 }) => {
   const [showWeekSelector, setShowWeekSelector] = useState(false);
   const [updateStatus, setUpdateStatus] = useState("");
   const [updateUrl, setUpdateUrl] = useState("");
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+  const [resetStatus, setResetStatus] = useState("");
+
+  useEffect(() => {
+    if (!isOpen) {
+      setResetStatus("");
+    }
+  }, [isOpen]);
 
   const handleCheckUpdate = async () => {
     setIsCheckingUpdate(true);
@@ -48,6 +56,20 @@ const SettingsMenu = ({
     const target = updateUrl || GITHUB_RELEASES_URL;
     if (typeof window !== "undefined") {
       window.open(target, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  const handleResetSchedule = async () => {
+    if (!onResetSchedule) return;
+    const confirmed = window.confirm("确认重置课表为默认数据？此操作不可撤销。");
+    if (confirmed) {
+      try {
+        await onResetSchedule();
+        setResetStatus("课表已恢复为默认数据");
+      } catch (error) {
+        console.error("重置课表失败:", error);
+        setResetStatus("重置失败，请稍后重试");
+      }
     }
   };
 
@@ -305,6 +327,27 @@ const SettingsMenu = ({
                   >
                     前往下载页
                   </button>
+                )}
+              </div>
+
+              {/* 课表管理 */}
+              <div className="space-y-3">
+                <label className="block text-lg font-semibold text-indigo-900">
+                  课表管理
+                </label>
+                <button
+                  onClick={handleResetSchedule}
+                  className="w-full px-4 py-2.5 rounded-lg bg-rose-100 text-rose-700 font-semibold text-sm hover:bg-rose-200 transition-colors"
+                >
+                  重置课表
+                </button>
+                <p className="text-xs text-gray-600">
+                  清除所有自定义修改，恢复内置课表数据。
+                </p>
+                {resetStatus && (
+                  <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                    {resetStatus}
+                  </div>
                 )}
               </div>
             </div>

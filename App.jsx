@@ -14,11 +14,12 @@ import { useWeekSelector } from "./src/useWeekSelector";
 import { useCourseModal } from "./src/useCourseModal";
 import { useNotifications } from "./src/useNotifications";
 import { useDisplayMode } from "./src/useDisplayMode";
+import { useScheduleData } from "./src/useScheduleData";
 
 // 数据和工具
-import { scheduleData } from "./src/scheduleData";
 import { mergeCellsByDay } from "./src/courseUtils";
 import { shouldNotifyForGroup } from "./src/groupUtils";
+import { buildCourseIdentity, cloneSchedule } from "./src/scheduleUtils";
 import {
   getCurrentPeriod,
   getPeriodLabel,
@@ -43,6 +44,10 @@ const App = () => {
   // 课程模态框管理
   const { isModalOpen, selectedCell, handleCellClick, closeModal } = useCourseModal();
 
+  // 课表数据（支持本地自定义）
+  const { scheduleData, setScheduleData, resetSchedule, isScheduleLoaded } =
+    useScheduleData();
+
   // 设置菜单状态
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
 
@@ -63,7 +68,7 @@ const App = () => {
     onGroupChange,
     onTestNotification,
     onOpenExactAlarmSettings
-  } = useNotifications(semesterStartDate);
+  } = useNotifications(semesterStartDate, scheduleData);
 
   // 配置移动端状态栏
   useEffect(() => {
@@ -119,7 +124,7 @@ const App = () => {
   const mergedCellsByDay = useMemo(() => {
     // 将同日连续课程合并，便于表格渲染
     return mergeCellsByDay(scheduleData, currentWeek, displayMode, userGroup);
-  }, [currentWeek, displayMode, userGroup]);
+  }, [scheduleData, currentWeek, displayMode, userGroup]);
 
   const currentClassProgress = useMemo(() => {
     if (!todayInfo) return null;
@@ -166,7 +171,69 @@ const App = () => {
       remainingMinutes: remaining,
       percent
     };
-  }, [now, todayInfo, userGroup]);
+  }, [now, todayInfo, userGroup, scheduleData]);
+
+  const updateSchedule = (mutate) => {
+    setScheduleData((prev) => {
+      const next = cloneSchedule(prev);
+      mutate(next);
+      return next;
+    });
+  };
+
+  const normalizePeriods = (periods) =>
+    Array.from(new Set(Array.isArray(periods) ? periods : [])).sort((a, b) => a - b);
+
+  const handleAddCourse = (day, periods, course) => {
+    const targets = normalizePeriods(periods);
+    if (targets.length === 0) return;
+    updateSchedule((next) => {
+      const dayEntry = next.find((entry) => entry.day === day);
+      if (!dayEntry) return;
+      for (const period of targets) {
+        const periodEntry = dayEntry.periods.find((entry) => entry.period === period);
+        if (!periodEntry) continue;
+        periodEntry.courses = [...periodEntry.courses, course];
+      }
+    });
+  };
+
+  const handleUpdateCourse = (day, periods, courseId, course) => {
+    const targets = normalizePeriods(periods);
+    if (targets.length === 0) return;
+    updateSchedule((next) => {
+      const dayEntry = next.find((entry) => entry.day === day);
+      if (!dayEntry) return;
+      for (const period of targets) {
+        const periodEntry = dayEntry.periods.find((entry) => entry.period === period);
+        if (!periodEntry) continue;
+        periodEntry.courses = periodEntry.courses.map((item) =>
+          buildCourseIdentity(item) === courseId ? course : item
+        );
+      }
+    });
+  };
+
+  const handleDeleteCourse = (day, periods, courseId) => {
+    const targets = normalizePeriods(periods);
+    if (targets.length === 0) return;
+    updateSchedule((next) => {
+      const dayEntry = next.find((entry) => entry.day === day);
+      if (!dayEntry) return;
+      for (const period of targets) {
+        const periodEntry = dayEntry.periods.find((entry) => entry.period === period);
+        if (!periodEntry) continue;
+        periodEntry.courses = periodEntry.courses.filter(
+          (item) => buildCourseIdentity(item) !== courseId
+        );
+      }
+    });
+  };
+
+  const handleScheduleCellClick = (day, periodStart, periodEnd) => {
+    if (!isScheduleLoaded) return;
+    handleCellClick(day, periodStart, periodEnd);
+  };
 
   // 处理开学日期变化
   const handleDateChange = async (date) => {
@@ -211,6 +278,7 @@ const App = () => {
           exactAlarmStatus={exactAlarmStatus}
           exactAlarmMessage={exactAlarmMessage}
           onOpenExactAlarmSettings={onOpenExactAlarmSettings}
+          onResetSchedule={resetSchedule}
         />
 
         {/* 课表 */}
@@ -218,7 +286,8 @@ const App = () => {
           mergedCellsByDay={mergedCellsByDay}
           todayInfo={todayInfo}
           currentWeek={currentWeek}
-          onCellClick={handleCellClick}
+          onCellClick={handleScheduleCellClick}
+          isScheduleLoaded={isScheduleLoaded}
         />
 
         {/* 课程详情模态框 */}
@@ -226,6 +295,10 @@ const App = () => {
           isOpen={isModalOpen}
           selectedCell={selectedCell}
           currentWeek={currentWeek}
+          scheduleData={scheduleData}
+          onAddCourse={handleAddCourse}
+          onUpdateCourse={handleUpdateCourse}
+          onDeleteCourse={handleDeleteCourse}
           onClose={closeModal}
         />
       </div>

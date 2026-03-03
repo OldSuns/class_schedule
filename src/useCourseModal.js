@@ -8,8 +8,8 @@ export const useCourseModal = () => {
   const [selectedCell, setSelectedCell] = useState(null);
 
   // 处理单元格点击
-  const handleCellClick = useCallback((day, periodStart, periodEnd, courses) => {
-    setSelectedCell({ day, periodStart, periodEnd, courses });
+  const handleCellClick = useCallback((day, periodStart, periodEnd) => {
+    setSelectedCell({ day, periodStart, periodEnd });
     setIsModalOpen(true);
   }, []);
 

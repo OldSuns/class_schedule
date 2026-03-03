@@ -1,5 +1,6 @@
 import { DISPLAY_MODES } from "./constants";
 import { shouldNotifyForGroup } from "./groupUtils";
+import { buildCourseIdentity } from "./scheduleUtils";
 
 /**
  * 课程合并相关工具函数
@@ -195,7 +196,7 @@ export const mergeCellsByDay = (
       const courses = periodData?.courses ?? [];
 
       if (courses.length === 0) {
-        raw[period] = { empty: true };
+        raw[period] = { empty: true, allCourses: [], hasAnyCourse: false };
         continue;
       }
 
@@ -204,6 +205,7 @@ export const mergeCellsByDay = (
         isCurrentWeek: course.weeks.includes(currentWeek),
         isGroupMatch: shouldNotifyForGroup(course.group, userGroup)
       }));
+      const hasAnyCourse = annotatedCourses.length > 0;
 
       const currentWeekCourses = annotatedCourses.filter(
         c => c.isCurrentWeek && c.isGroupMatch
@@ -212,12 +214,19 @@ export const mergeCellsByDay = (
 
       if (isCurrentOnly) {
         if (currentWeekCourses.length === 0) {
-          raw[period] = { empty: true };
+          raw[period] = {
+            empty: true,
+            allCourses: annotatedCourses,
+            hasAnyCourse,
+            hasCurrentWeekCourse: false
+          };
           continue;
         }
         const displayCourses = getDisplayCourses(currentWeekCourses);
         raw[period] = {
           empty: false,
+          allCourses: annotatedCourses,
+          hasAnyCourse,
           filteredCourses: currentWeekCourses,
           displayCourses,
           displayKey: getDisplayKey(currentWeekCourses),
@@ -226,6 +235,16 @@ export const mergeCellsByDay = (
             0,
             currentWeekCourses.length - displayCourses.length
           ),
+        };
+        continue;
+      }
+
+      if (groupFilteredCourses.length === 0) {
+        raw[period] = {
+          empty: true,
+          allCourses: annotatedCourses,
+          hasAnyCourse,
+          hasCurrentWeekCourse: false
         };
         continue;
       }
@@ -249,6 +268,8 @@ export const mergeCellsByDay = (
 
       raw[period] = {
         empty: false,
+        allCourses: annotatedCourses,
+        hasAnyCourse,
         filteredCourses: orderedCourses,
         displayCourses,
         displayKey,
@@ -263,7 +284,11 @@ export const mergeCellsByDay = (
     while (period <= 13) {
       const cell = raw[period];
       if (!cell || cell.empty) {
-        merged[period] = { empty: true };
+        merged[period] = {
+          empty: true,
+          allCourses: cell?.allCourses ?? [],
+          hasAnyCourse: cell?.hasAnyCourse ?? false
+        };
         period += 1;
         continue;
       }
@@ -272,6 +297,7 @@ export const mergeCellsByDay = (
       if (!cell.hasCurrentWeekCourse) {
         merged[period] = {
           ...cell,
+          allCourses: cell.allCourses ?? cell.filteredCourses ?? [],
           periodStart: period,
           periodEnd: period,
           rowSpan: 1,
@@ -282,6 +308,7 @@ export const mergeCellsByDay = (
 
       let end = period;
       const combinedCoursesMap = new Map();
+      const combinedAllCoursesMap = new Map();
       const addCourses = (list) => {
         // 以课程唯一标识去重，保留“本周课程”标记
         for (const course of list) {
@@ -296,8 +323,16 @@ export const mergeCellsByDay = (
           }
         }
       };
+      const addAllCourses = (list) => {
+        for (const course of list) {
+          const key = buildCourseIdentity(course);
+          if (combinedAllCoursesMap.has(key)) continue;
+          combinedAllCoursesMap.set(key, course);
+        }
+      };
 
-      addCourses(cell.filteredCourses);
+      addCourses(cell.filteredCourses ?? []);
+      addAllCourses(cell.allCourses ?? cell.filteredCourses ?? []);
       let hasCurrentWeekCourse = cell.hasCurrentWeekCourse;
 
       while (end + 1 <= 13) {
@@ -305,12 +340,14 @@ export const mergeCellsByDay = (
         if (!next || next.empty) break;
         if (!next.hasCurrentWeekCourse) break;
         if (next.displayKey !== cell.displayKey) break;
-        addCourses(next.filteredCourses);
+        addCourses(next.filteredCourses ?? []);
+        addAllCourses(next.allCourses ?? next.filteredCourses ?? []);
         hasCurrentWeekCourse = hasCurrentWeekCourse || next.hasCurrentWeekCourse;
         end += 1;
       }
 
       const mergedCourses = Array.from(combinedCoursesMap.values());
+      const mergedAllCourses = Array.from(combinedAllCoursesMap.values());
       const mergedCurrentWeekCourses = mergedCourses.filter(c => c.isCurrentWeek);
       const displayCourses = getDisplayCourses(mergedCurrentWeekCourses);
       const otherCoursesCount = Math.max(0, mergedCourses.length - displayCourses.length);
@@ -321,6 +358,7 @@ export const mergeCellsByDay = (
         displayCourses,
         hasCurrentWeekCourse,
         otherCoursesCount,
+        allCourses: mergedAllCourses,
         periodStart: period,
         periodEnd: end,
         rowSpan: end - period + 1,

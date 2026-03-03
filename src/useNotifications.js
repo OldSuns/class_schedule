@@ -21,7 +21,7 @@ const EXACT_ALARM_MESSAGES = {
   unsupported: "精确闹钟权限仅限 Android 12+"
 };
 
-export const useNotifications = (semesterStartDate) => {
+export const useNotifications = (semesterStartDate, scheduleData) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [userGroup, setUserGroup] = useState(GROUP_TYPES.A);
   const [statusMessage, setStatusMessage] = useState("");
@@ -29,6 +29,7 @@ export const useNotifications = (semesterStartDate) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const schedulingRef = useRef(false);
   const initialRunRef = useRef(true);
+  const prevScheduleRef = useRef(scheduleData);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -114,7 +115,8 @@ export const useNotifications = (semesterStartDate) => {
 
         const result = await scheduleCourseNotifications({
           semesterStartDate,
-          userGroup
+          userGroup,
+          scheduleData
         });
 
         if (result.reason === "permission-denied") {
@@ -148,18 +150,23 @@ export const useNotifications = (semesterStartDate) => {
         schedulingRef.current = false;
       }
     },
-    [notificationsEnabled, semesterStartDate, userGroup]
+    [notificationsEnabled, semesterStartDate, userGroup, scheduleData]
   );
 
   useEffect(() => {
     if (!isLoaded) return;
 
     const showMessage = !initialRunRef.current;
+    const scheduleChanged = prevScheduleRef.current !== scheduleData;
     if (initialRunRef.current) {
       initialRunRef.current = false;
     }
-    scheduleIfNeeded({ force: true, showMessage });
+    scheduleIfNeeded({ force: true, showMessage: showMessage && !scheduleChanged });
   }, [isLoaded, notificationsEnabled, semesterStartDate, userGroup, scheduleIfNeeded]);
+
+  useEffect(() => {
+    prevScheduleRef.current = scheduleData;
+  }, [scheduleData]);
 
   useEffect(() => {
     if (!isLoaded || !Capacitor.isNativePlatform()) return;
@@ -206,7 +213,8 @@ export const useNotifications = (semesterStartDate) => {
       setExactAlarmStatus(alarmStatus);
       const result = await sendTestNotification({
         semesterStartDate,
-        userGroup
+        userGroup,
+        scheduleData
       });
       if (result.reason === "permission-denied") {
         setStatusMessage("请在系统设置中允许通知权限");
@@ -225,7 +233,7 @@ export const useNotifications = (semesterStartDate) => {
       console.error("发送测试通知失败:", error);
       setStatusMessage("测试通知发送失败");
     }
-  }, [semesterStartDate, userGroup]);
+  }, [semesterStartDate, userGroup, scheduleData]);
 
   const handleOpenExactAlarmSettings = useCallback(async () => {
     const status = await openExactAlarmPermissionSettings();

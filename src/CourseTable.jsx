@@ -7,7 +7,13 @@ import { getCourseLocation } from "./courseUtils";
 /**
  * 课程表格组件
  */
-const CourseTable = ({ mergedCellsByDay, todayInfo, currentWeek, onCellClick }) => {
+const CourseTable = ({
+  mergedCellsByDay,
+  todayInfo,
+  currentWeek,
+  onCellClick,
+  isScheduleLoaded = true
+}) => {
   return (
     <div className="bg-white rounded-lg sm:rounded-2xl shadow-xl overflow-hidden border border-indigo-100">
       <div className="overflow-x-auto">
@@ -41,7 +47,36 @@ const CourseTable = ({ mergedCellsByDay, todayInfo, currentWeek, onCellClick }) 
                   if (cell?.skip) return null;
 
                   if (!cell || cell.empty) {
-                    return <td key={`${day}-${period}`} className="py-2 sm:py-3 md:py-4 border border-gray-200" />;
+                    return (
+                      <td
+                        key={`${day}-${period}`}
+                        onClick={() =>
+                          isScheduleLoaded && onCellClick(day, period, period)
+                        }
+                        className={`group py-2 sm:py-3 md:py-4 border border-gray-200 transition-colors ${
+                          isScheduleLoaded
+                            ? "cursor-pointer bg-white hover:bg-indigo-50"
+                            : "cursor-not-allowed bg-gray-50"
+                        }`}
+                        title={isScheduleLoaded ? "点击添加课程" : "课表加载中"}
+                      >
+                        <div
+                          className={`flex items-center justify-center text-xs transition-opacity ${
+                            isScheduleLoaded
+                              ? "text-indigo-400 opacity-0 group-hover:opacity-100"
+                              : "text-gray-400 opacity-100"
+                          }`}
+                        >
+                          <Plus size={12} className="mr-0.5" />
+                          <span className="hidden sm:inline">
+                            {isScheduleLoaded ? "新增课程" : "加载中"}
+                          </span>
+                          <span className="inline sm:hidden">
+                            {isScheduleLoaded ? "新增" : "..."}
+                          </span>
+                        </div>
+                      </td>
+                    );
                   }
 
                   // 检查是否是今天的课程且本周有课
@@ -52,9 +87,12 @@ const CourseTable = ({ mergedCellsByDay, todayInfo, currentWeek, onCellClick }) 
                     <td
                       key={`${day}-${period}`}
                       onClick={() =>
-                        onCellClick(day, cell.periodStart, cell.periodEnd, cell.filteredCourses)
+                        isScheduleLoaded &&
+                        onCellClick(day, cell.periodStart, cell.periodEnd)
                       }
-                      className={`py-2 sm:py-3 md:py-4 px-1 sm:px-1.5 md:px-2 align-middle border cursor-pointer transition-colors duration-200 ${
+                      className={`py-2 sm:py-3 md:py-4 px-1 sm:px-1.5 md:px-2 align-middle border transition-colors duration-200 ${
+                        isScheduleLoaded ? "cursor-pointer" : "cursor-not-allowed"
+                      } ${
                         isTodayAndHasClass
                           ? "bg-green-100 hover:bg-green-200 border-green-400 border-2"
                           : cell.hasCurrentWeekCourse
