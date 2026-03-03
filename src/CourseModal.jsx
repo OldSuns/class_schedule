@@ -273,7 +273,7 @@ const CourseEditor = ({
             value={note}
             onChange={(e) => setNote(e.target.value)}
             className="w-full px-3 py-2 rounded-md border border-indigo-200 text-sm focus:ring-2 focus:ring-indigo-400"
-            placeholder="如：2学时×14"
+            placeholder="如：需要带白大褂"
           />
         </div>
 

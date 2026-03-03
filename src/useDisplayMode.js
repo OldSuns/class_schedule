@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as storage from "../storage";
 import { DISPLAY_MODES, STORAGE_KEYS } from "./constants";
 
@@ -15,19 +15,30 @@ export const useDisplayMode = () => {
     isValidMode(initialMode) ? initialMode : DISPLAY_MODES.ALL
   );
   const [isLoaded, setIsLoaded] = useState(false);
+  const hasUserChangedModeRef = useRef(false);
 
   useEffect(() => {
+    let cancelled = false;
+
     const loadSavedMode = async () => {
       const saved = await storage.getItem(STORAGE_KEYS.DISPLAY_MODE);
-      if (isValidMode(saved)) {
+      if (cancelled) return;
+
+      if (!hasUserChangedModeRef.current && isValidMode(saved)) {
         setDisplayMode(saved);
-      } else if (!saved) {
+      } else if (!saved && !hasUserChangedModeRef.current) {
         await storage.setItem(STORAGE_KEYS.DISPLAY_MODE, DISPLAY_MODES.ALL);
       }
-      setIsLoaded(true);
+      if (!cancelled) {
+        setIsLoaded(true);
+      }
     };
 
     loadSavedMode();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -37,6 +48,7 @@ export const useDisplayMode = () => {
 
   const handleDisplayModeChange = useCallback((mode) => {
     if (isValidMode(mode)) {
+      hasUserChangedModeRef.current = true;
       setDisplayMode(mode);
     }
   }, []);

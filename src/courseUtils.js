@@ -184,15 +184,24 @@ export const mergeCellsByDay = (
 ) => {
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const periods = Array.from({ length: 13 }, (_, i) => i + 1);
+  const dayMap = new Map(
+    (Array.isArray(scheduleData) ? scheduleData : []).map((entry) => [
+      entry.day,
+      entry
+    ])
+  );
   const result = {};
   const isCurrentOnly = displayMode === DISPLAY_MODES.CURRENT_ONLY;
 
   for (const day of days) {
-    const dayData = scheduleData.find(d => d.day === day);
+    const dayData = dayMap.get(day);
+    const periodMap = new Map(
+      (dayData?.periods ?? []).map((entry) => [entry.period, entry])
+    );
     const raw = {};
 
     for (const period of periods) {
-      const periodData = dayData?.periods.find(p => p.period === period);
+      const periodData = periodMap.get(period);
       const courses = periodData?.courses ?? [];
 
       if (courses.length === 0) {
@@ -202,7 +211,8 @@ export const mergeCellsByDay = (
 
       const annotatedCourses = courses.map(course => ({
         ...course,
-        isCurrentWeek: course.weeks.includes(currentWeek),
+        isCurrentWeek:
+          Array.isArray(course.weeks) && course.weeks.includes(currentWeek),
         isGroupMatch: shouldNotifyForGroup(course.group, userGroup)
       }));
       const hasAnyCourse = annotatedCourses.length > 0;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as storage from "../storage";
 import { STORAGE_KEYS } from "./constants";
 import { scheduleData as defaultScheduleData } from "./scheduleData";
@@ -12,10 +12,20 @@ export const useScheduleData = () => {
   );
   const [isScheduleLoaded, setIsScheduleLoaded] = useState(false);
   const [hasCustomSchedule, setHasCustomSchedule] = useState(false);
+  const hasUserChangedScheduleRef = useRef(false);
 
   useEffect(() => {
+    let cancelled = false;
+
     const loadSchedule = async () => {
       const saved = await storage.getItem(STORAGE_KEYS.CUSTOM_SCHEDULE);
+      if (cancelled || hasUserChangedScheduleRef.current) {
+        if (!cancelled) {
+          setIsScheduleLoaded(true);
+        }
+        return;
+      }
+
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -35,13 +45,20 @@ export const useScheduleData = () => {
       } else {
         setHasCustomSchedule(false);
       }
-      setIsScheduleLoaded(true);
+      if (!cancelled) {
+        setIsScheduleLoaded(true);
+      }
     };
 
     loadSchedule();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const updateScheduleData = useCallback((updater) => {
+    hasUserChangedScheduleRef.current = true;
     setHasCustomSchedule(true);
     setScheduleData((prev) =>
       typeof updater === "function" ? updater(prev) : updater
@@ -62,6 +79,7 @@ export const useScheduleData = () => {
   }, [scheduleData, hasCustomSchedule, isScheduleLoaded]);
 
   const resetSchedule = async () => {
+    hasUserChangedScheduleRef.current = true;
     setHasCustomSchedule(false);
     setScheduleData(normalizeSchedule(defaultScheduleData));
   };
