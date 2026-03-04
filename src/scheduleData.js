@@ -175,19 +175,23 @@ export const scheduleData = [
       { period: 4, courses: [] },
       { period: 5, courses: [] },
       { period: 6, courses: [
-          { name: "形势与政策A", weeks: [4,14,15], group: null, note: { default: "", weeks: {} }, location: "未排地点" }
+          { name: "形势与政策A", weeks: [4,14], group: null, note: { default: "", weeks: { 4: "讲座", 14: "网课" } }, location: "未排地点" }
         ]},
-      { period: 7, courses: [] },
+      { period: 7, courses: [
+          { name: "形势与政策A", weeks: [4], group: null, note: "讲座", location: "未排地点" }
+        ] },
       { period: 8, courses: [] },
       { period: 9, courses: [] },
       { period: 10, courses: [] },
       { period: 11, courses: [
-          { name: "形势与政策A", weeks: [14,15], group: null, note: { default: "", weeks: {} }, location: "未排地点" }
+          { name: "形势与政策A", weeks: [14,15], group: null, note: { default: "", weeks: { 14: "陈超怡", 15: "陈超怡" } }, location: "未排地点" }
         ]},
       { period: 12, courses: [
-          { name: "形势与政策A", weeks: [14,15], group: null, note: { default: "", weeks: {} }, location: "未排地点" }
+          { name: "形势与政策A", weeks: [14,15], group: null, note: { default: "", weeks: { 14: "陈超怡", 15: "陈超怡" } }, location: "未排地点" }
         ]},
-      { period: 13, courses: [] }
+      { period: 13, courses: [
+          { name: "形势与政策A", weeks: [14,15], group: null, note: "陈超怡", location: "未排地点" }
+        ] }
     ]
   },
   // 星期四
@@ -245,13 +249,14 @@ export const scheduleData = [
           { name: "内科学A(I)", weeks: [1,3,5,7,9,11,13,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
         ]},
       { period: 7, courses: [
-          { name: "内科学A(I)", weeks: [1,3,5,7,9,11,13,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
-          { name: "外科学A(I)", weeks: [2,4,6,8,10,12,14,16], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
+          { name: "内科学A(I)", weeks: [1,3,5,7,9,11,13,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
         ]},
       { period: 8, courses: [
           { name: "外科学A(I)", weeks: [2,4,6,8,10,12,14,16], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
         ]},
-      { period: 9, courses: [] },
+      { period: 9, courses: [
+          { name: "外科学A(I)", weeks: [2,4,6,8,10,12,14,16], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
+        ] },
       { period: 10, courses: [] },
       { period: 11, courses: [] }
     ]
@@ -271,17 +276,17 @@ export const scheduleData = [
       { period: 3, courses: [
           { name: "口腔科学A", weeks: [1,10], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
           { name: "外科学见习", weeks: [12,14], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "外科学见习", weeks: [8,13], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
+          { name: "外科学见习", weeks: [8,13], group: "7班D组", note: { default: "", weeks: { 13: "第13周是理论课后再去上见习课" } }, location: "未排地点" }
         ] },
       { period: 4, courses: [
           { name: "口腔科学A", weeks: [1,10], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
           { name: "外科学见习", weeks: [12,14], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "外科学见习", weeks: [8,13], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
+          { name: "外科学见习", weeks: [8,13], group: "7班D组", note: { default: "", weeks: { 13: "第13周是理论课后再去上见习课" } }, location: "未排地点" }
         ]},
       { period: 5, courses: [
           { name: "口腔科学A", weeks: [1,10], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
           { name: "外科学见习", weeks: [12,14], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "外科学见习", weeks: [8,13], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
+          { name: "外科学见习", weeks: [8,13], group: "7班D组", note: { default: "", weeks: { 13: "第13周是理论课后再去上见习课" } }, location: "未排地点" }
         ]},
       { period: 6, courses: [
           { name: "儿科学见习", weeks: [12], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
