@@ -15,7 +15,7 @@ export const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 // 周数范围
 export const MIN_WEEK = 1;
-export const MAX_WEEK = 16;
+export const MAX_WEEK = 17;
 
 // 节次范围
 export const MIN_PERIOD = 1;
@@ -31,7 +31,7 @@ export const DISPLAY_MODES = {
 };
 
 // 当前应用版本（用于更新检查）
-export const APP_VERSION = "1.9.4";
+export const APP_VERSION = "1.9.5";
 
 // GitHub Releases
 export const GITHUB_RELEASES_URL =
@@ -39,11 +39,18 @@ export const GITHUB_RELEASES_URL =
 export const GITHUB_RELEASES_API_LATEST =
   "https://api.github.com/repos/OldSuns/class_schedule/releases/latest";
 
+// 通知提前量（分钟）
+export const DEFAULT_NOTIFICATION_LEAD_MINUTES = 15;
+export const NOTIFICATION_LEAD_MINUTE_OPTIONS = [10, 15, 20, 30];
+
 // 本地存储键名
 export const STORAGE_KEYS = {
   SEMESTER_START_DATE: "semesterStartDate",
   NOTIFICATIONS_ENABLED: "notificationsEnabled",
   NOTIFICATIONS_LAST_SCHEDULED_AT: "notificationsLastScheduledAt",
+  NOTIFICATIONS_LAST_RECONCILED_AT: "notificationsLastReconciledAt",
+  NOTIFICATION_PLAN_SNAPSHOT: "notificationPlanSnapshot",
+  NOTIFICATION_LEAD_MINUTES: "notificationLeadMinutes",
   USER_GROUP: "userGroup",
   DISPLAY_MODE: "displayMode",
   CUSTOM_SCHEDULE: "customSchedule"

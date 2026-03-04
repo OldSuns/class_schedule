@@ -1,29 +1,57 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import * as storage from "../storage";
-import { STORAGE_KEYS } from "./constants";
-import { GROUP_TYPES } from "./groupUtils";
+import {
+  DEFAULT_NOTIFICATION_LEAD_MINUTES,
+  NOTIFICATION_LEAD_MINUTE_OPTIONS,
+  STORAGE_KEYS
+} from "./constants";
+import { GROUP_TYPES, SELECTABLE_GROUP_TYPES } from "./groupUtils";
 import {
   cancelAllScheduledNotifications,
   checkExactAlarmPermission,
+  clearNotificationPlanSnapshot,
+  loadNotificationPlanSnapshot,
   openExactAlarmPermissionSettings,
+  persistNotificationPlanSnapshot,
+  sanitizeLeadMinutes,
   scheduleCourseNotifications,
   sendTestNotification
 } from "./notificationScheduler";
 
-// 12 小时内不重复排程，避免频繁写入
-const RESCHEDULE_INTERVAL_MS = 12 * 60 * 60 * 1000;
+const APP_ACTIVE_RESCHEDULE_INTERVAL_MS = 2 * 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
+const DAILY_RECONCILE_HOUR = 0;
+const DAILY_RECONCILE_MINUTE = 5;
+const DEFAULT_USER_GROUP = GROUP_TYPES.G6A;
+const LEGACY_GROUP_VALUES = new Set(["A", "B"]);
 const EXACT_ALARM_MESSAGES = {
-  granted: "精确闹钟权限：已开启",
+  granted: "精确闹钟权限：已开启（高可靠）",
   denied: "精确闹钟权限未开启，提醒可能延迟",
   unknown: "精确闹钟权限状态未知",
   unsupported: "精确闹钟权限仅限 Android 12+"
 };
 
+const isSelectableGroupType = (group) =>
+  SELECTABLE_GROUP_TYPES.includes(group);
+
+const getMsUntilNextDailyReconcile = () => {
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(DAILY_RECONCILE_HOUR, DAILY_RECONCILE_MINUTE, 0, 0);
+  if (next <= now) {
+    next.setDate(next.getDate() + 1);
+  }
+  return Math.max(1_000, next.getTime() - now.getTime());
+};
+
 export const useNotifications = (semesterStartDate, scheduleData) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [userGroup, setUserGroup] = useState(GROUP_TYPES.A);
+  const [userGroup, setUserGroup] = useState(DEFAULT_USER_GROUP);
+  const [leadMinutes, setLeadMinutes] = useState(
+    DEFAULT_NOTIFICATION_LEAD_MINUTES
+  );
   const [statusMessage, setStatusMessage] = useState("");
   const [exactAlarmStatus, setExactAlarmStatus] = useState("unknown");
   const [isLoaded, setIsLoaded] = useState(false);
@@ -33,16 +61,22 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
 
   useEffect(() => {
     const loadSettings = async () => {
-      const savedEnabled = await storage.getItem(
-        STORAGE_KEYS.NOTIFICATIONS_ENABLED
-      );
-      const savedGroup = await storage.getItem(STORAGE_KEYS.USER_GROUP);
+      const [savedEnabled, savedGroup, savedLeadMinutes] = await Promise.all([
+        storage.getItem(STORAGE_KEYS.NOTIFICATIONS_ENABLED),
+        storage.getItem(STORAGE_KEYS.USER_GROUP),
+        storage.getItem(STORAGE_KEYS.NOTIFICATION_LEAD_MINUTES)
+      ]);
 
       if (savedEnabled != null) {
         setNotificationsEnabled(savedEnabled === "true");
       }
-      if (savedGroup === GROUP_TYPES.A || savedGroup === GROUP_TYPES.B) {
+      if (isSelectableGroupType(savedGroup)) {
         setUserGroup(savedGroup);
+      } else if (LEGACY_GROUP_VALUES.has(savedGroup)) {
+        setUserGroup(DEFAULT_USER_GROUP);
+      }
+      if (savedLeadMinutes != null) {
+        setLeadMinutes(sanitizeLeadMinutes(savedLeadMinutes));
       }
 
       setIsLoaded(true);
@@ -60,7 +94,6 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
     loadExactAlarmStatus();
   }, [isLoaded]);
 
-
   useEffect(() => {
     if (!isLoaded) return;
     storage.setItem(
@@ -74,14 +107,24 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
     storage.setItem(STORAGE_KEYS.USER_GROUP, userGroup);
   }, [userGroup, isLoaded]);
 
+  useEffect(() => {
+    if (!isLoaded) return;
+    storage.setItem(
+      STORAGE_KEYS.NOTIFICATION_LEAD_MINUTES,
+      String(sanitizeLeadMinutes(leadMinutes))
+    );
+  }, [leadMinutes, isLoaded]);
+
   const scheduleIfNeeded = useCallback(
-    async ({ force = false, showMessage = false } = {}) => {
+    async ({ force = false, showMessage = false, source = "manual" } = {}) => {
       if (schedulingRef.current) return;
       // 避免并发排程，确保一次只跑一个任务
       schedulingRef.current = true;
       try {
         if (!notificationsEnabled) {
           await cancelAllScheduledNotifications();
+          await clearNotificationPlanSnapshot();
+          await storage.removeItem(STORAGE_KEYS.NOTIFICATIONS_LAST_RECONCILED_AT);
           if (showMessage) {
             setStatusMessage("已关闭课程提醒");
           }
@@ -90,6 +133,8 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
 
         if (!semesterStartDate) {
           await cancelAllScheduledNotifications();
+          await clearNotificationPlanSnapshot();
+          await storage.removeItem(STORAGE_KEYS.NOTIFICATIONS_LAST_RECONCILED_AT);
           if (showMessage) {
             setStatusMessage("请先设置开学日期");
           }
@@ -99,24 +144,28 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
         const alarmStatus = await checkExactAlarmPermission();
         setExactAlarmStatus(alarmStatus);
 
-        if (!force) {
-          // 非强制模式下，按时间窗口决定是否需要重新排程
-          const lastScheduled = await storage.getItem(
-            STORAGE_KEYS.NOTIFICATIONS_LAST_SCHEDULED_AT
+        if (!force && source === "app-active") {
+          // 前台补排轻节流：2 小时内不重复
+          const lastReconciled = await storage.getItem(
+            STORAGE_KEYS.NOTIFICATIONS_LAST_RECONCILED_AT
           );
-          if (lastScheduled) {
-            const lastTime = Number(lastScheduled);
+          if (lastReconciled) {
+            const lastTime = Number(lastReconciled);
             if (!Number.isNaN(lastTime)) {
               const diff = Date.now() - lastTime;
-              if (diff < RESCHEDULE_INTERVAL_MS) return;
+              if (diff < APP_ACTIVE_RESCHEDULE_INTERVAL_MS) return;
             }
           }
         }
 
+        const previousSnapshot = await loadNotificationPlanSnapshot();
         const result = await scheduleCourseNotifications({
           semesterStartDate,
           userGroup,
-          scheduleData
+          scheduleData,
+          leadMinutes,
+          force,
+          previousSnapshot
         });
 
         if (result.reason === "permission-denied") {
@@ -133,13 +182,29 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
           return;
         }
 
+        if (result.reason !== "scheduled") {
+          if (showMessage) {
+            setStatusMessage("提醒同步失败，请稍后重试");
+          }
+          return;
+        }
+
+        if (result.snapshot) {
+          await persistNotificationPlanSnapshot(result.snapshot);
+        }
         await storage.setItem(
-          STORAGE_KEYS.NOTIFICATIONS_LAST_SCHEDULED_AT,
+          STORAGE_KEYS.NOTIFICATIONS_LAST_RECONCILED_AT,
           String(Date.now())
         );
 
         if (showMessage) {
-          setStatusMessage(`已排程 ${result.scheduled} 条提醒`);
+          if (result.planned > 0) {
+            setStatusMessage(
+              `已同步 ${result.planned} 条提醒（新增 ${result.scheduled}，清理 ${result.canceled}）`
+            );
+          } else {
+            setStatusMessage("未来 30 天暂无可排程课程提醒");
+          }
         }
       } catch (error) {
         console.error("通知排程失败:", error);
@@ -150,7 +215,7 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
         schedulingRef.current = false;
       }
     },
-    [notificationsEnabled, semesterStartDate, userGroup, scheduleData]
+    [notificationsEnabled, semesterStartDate, userGroup, scheduleData, leadMinutes]
   );
 
   useEffect(() => {
@@ -161,8 +226,12 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
     if (initialRunRef.current) {
       initialRunRef.current = false;
     }
-    scheduleIfNeeded({ force: true, showMessage: showMessage && !scheduleChanged });
-  }, [isLoaded, notificationsEnabled, semesterStartDate, userGroup, scheduleIfNeeded]);
+    scheduleIfNeeded({
+      force: true,
+      showMessage: showMessage && !scheduleChanged,
+      source: "settings-change"
+    });
+  }, [isLoaded, notificationsEnabled, semesterStartDate, userGroup, leadMinutes, scheduleIfNeeded, scheduleData]);
 
   useEffect(() => {
     prevScheduleRef.current = scheduleData;
@@ -177,8 +246,11 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
         "appStateChange",
         async ({ isActive }) => {
           if (isActive) {
-            // 回到前台时补齐近期通知
-            await scheduleIfNeeded({ force: false, showMessage: false });
+            await scheduleIfNeeded({
+              force: false,
+              showMessage: false,
+              source: "app-active"
+            });
           }
         }
       );
@@ -193,17 +265,42 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
     };
   }, [isLoaded, scheduleIfNeeded]);
 
-  const handleToggleNotifications = useCallback(
-    (enabled) => {
-      setNotificationsEnabled(enabled);
-    },
-    []
-  );
+  useEffect(() => {
+    if (!isLoaded || !Capacitor.isNativePlatform() || !notificationsEnabled) return;
+
+    let timeoutId = null;
+    let intervalId = null;
+
+    const scheduleDailyReconcile = () => {
+      const delay = getMsUntilNextDailyReconcile();
+      timeoutId = setTimeout(() => {
+        scheduleIfNeeded({ force: false, showMessage: false, source: "daily" });
+        intervalId = setInterval(() => {
+          scheduleIfNeeded({ force: false, showMessage: false, source: "daily" });
+        }, DAY_MS);
+      }, delay);
+    };
+
+    scheduleDailyReconcile();
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isLoaded, notificationsEnabled, scheduleIfNeeded]);
+
+  const handleToggleNotifications = useCallback((enabled) => {
+    setNotificationsEnabled(enabled);
+  }, []);
 
   const handleGroupChange = useCallback((group) => {
-    if (group === GROUP_TYPES.A || group === GROUP_TYPES.B) {
+    if (isSelectableGroupType(group)) {
       setUserGroup(group);
     }
+  }, []);
+
+  const handleLeadMinutesChange = useCallback((minutes) => {
+    setLeadMinutes(sanitizeLeadMinutes(minutes));
   }, []);
 
   const handleTestNotification = useCallback(async () => {
@@ -214,7 +311,8 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
       const result = await sendTestNotification({
         semesterStartDate,
         userGroup,
-        scheduleData
+        scheduleData,
+        leadMinutes
       });
       if (result.reason === "permission-denied") {
         setStatusMessage("请在系统设置中允许通知权限");
@@ -233,27 +331,41 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
       console.error("发送测试通知失败:", error);
       setStatusMessage("测试通知发送失败");
     }
-  }, [semesterStartDate, userGroup, scheduleData]);
+  }, [semesterStartDate, userGroup, scheduleData, leadMinutes]);
 
   const handleOpenExactAlarmSettings = useCallback(async () => {
     const status = await openExactAlarmPermissionSettings();
     setExactAlarmStatus(status);
     if (status === "granted") {
-      setStatusMessage("已开启精确闹钟权限");
+      await scheduleIfNeeded({
+        force: true,
+        showMessage: false,
+        source: "settings-change"
+      });
+      setStatusMessage("已开启精确闹钟权限并重新同步提醒");
     } else if (status === "denied") {
       setStatusMessage("精确闹钟权限仍未开启");
     }
-  }, []);
+  }, [scheduleIfNeeded]);
+
+  const reliabilityMode = useMemo(
+    () => (exactAlarmStatus === "granted" ? "high" : "degraded"),
+    [exactAlarmStatus]
+  );
 
   return {
     notificationsEnabled,
     userGroup,
+    leadMinutes,
+    leadMinuteOptions: NOTIFICATION_LEAD_MINUTE_OPTIONS,
     statusMessage,
     exactAlarmStatus,
+    reliabilityMode,
     exactAlarmMessage:
       EXACT_ALARM_MESSAGES[exactAlarmStatus] || EXACT_ALARM_MESSAGES.unknown,
     onToggleNotifications: handleToggleNotifications,
     onGroupChange: handleGroupChange,
+    onLeadMinutesChange: handleLeadMinutesChange,
     onTestNotification: handleTestNotification,
     onOpenExactAlarmSettings: handleOpenExactAlarmSettings
   };

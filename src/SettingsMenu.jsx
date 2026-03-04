@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
 import { APP_VERSION, DISPLAY_MODES, GITHUB_RELEASES_URL, MIN_WEEK, MAX_WEEK } from "./constants";
+import { GROUP_TYPES } from "./groupUtils";
 import { checkForUpdates } from "./updateChecker";
 
 /**
@@ -19,11 +20,15 @@ const SettingsMenu = ({
   onDisplayModeChange,
   notificationsEnabled = false,
   onToggleNotifications,
-  userGroup = "A",
+  userGroup = GROUP_TYPES.G6A,
   onGroupChange,
+  leadMinutes = 15,
+  leadMinuteOptions = [10, 15, 20, 30],
+  onLeadMinutesChange,
   onTestNotification,
   notificationStatus = "",
   exactAlarmStatus = "unknown",
+  reliabilityMode = "degraded",
   exactAlarmMessage = "",
   onOpenExactAlarmSettings,
   onResetSchedule
@@ -238,7 +243,14 @@ const SettingsMenu = ({
                   </button>
                 </div>
                 <p className="text-xs text-gray-600">
-                  每节课开始前 15 分钟提醒（仅 Android）
+                  每节课开始前 {leadMinutes} 分钟提醒（仅 Android）
+                </p>
+                <p
+                  className={`text-xs font-medium ${
+                    reliabilityMode === "high" ? "text-green-700" : "text-amber-700"
+                  }`}
+                >
+                  {reliabilityMode === "high" ? "可靠性：高" : "可靠性：受系统限制"}
                 </p>
 
                 <div className="space-y-2">
@@ -247,25 +259,66 @@ const SettingsMenu = ({
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <button
-                      onClick={() => onGroupChange("A")}
+                      onClick={() => onGroupChange(GROUP_TYPES.G6A)}
                       className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
-                        userGroup === "A"
+                        userGroup === GROUP_TYPES.G6A
                           ? "bg-indigo-600 text-white"
                           : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
                       }`}
                     >
-                      A组
+                      6班A组
                     </button>
                     <button
-                      onClick={() => onGroupChange("B")}
+                      onClick={() => onGroupChange(GROUP_TYPES.G6B)}
                       className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
-                        userGroup === "B"
+                        userGroup === GROUP_TYPES.G6B
                           ? "bg-indigo-600 text-white"
                           : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
                       }`}
                     >
-                      B组
+                      6班B组
                     </button>
+                    <button
+                      onClick={() => onGroupChange(GROUP_TYPES.G7C)}
+                      className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
+                        userGroup === GROUP_TYPES.G7C
+                          ? "bg-indigo-600 text-white"
+                          : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                      }`}
+                    >
+                      7班C组
+                    </button>
+                    <button
+                      onClick={() => onGroupChange(GROUP_TYPES.G7D)}
+                      className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
+                        userGroup === GROUP_TYPES.G7D
+                          ? "bg-indigo-600 text-white"
+                          : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                      }`}
+                    >
+                      7班D组
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-indigo-900">
+                    提前量（分钟）
+                  </div>
+                  <div className="grid grid-cols-4 gap-2">
+                    {leadMinuteOptions.map((minutes) => (
+                      <button
+                        key={minutes}
+                        onClick={() => onLeadMinutesChange?.(minutes)}
+                        className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
+                          leadMinutes === minutes
+                            ? "bg-indigo-600 text-white"
+                            : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                        }`}
+                      >
+                        {minutes}
+                      </button>
+                    ))}
                   </div>
                 </div>
 

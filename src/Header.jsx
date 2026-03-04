@@ -53,7 +53,7 @@ const Header = ({
           </div>
         ) : (
           <h1 className="flex-1 text-sm sm:text-xl md:text-3xl lg:text-4xl font-bold text-indigo-900 px-2 leading-tight">
-            第五临床医学院 临床医学 2023级 6班课表
+            五临 2023级6班7班课表（2026-1）
           </h1>
         )}
 

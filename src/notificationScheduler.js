@@ -1,5 +1,11 @@
 import { Capacitor } from "@capacitor/core";
 import { LocalNotifications } from "@capacitor/local-notifications";
+import * as storage from "../storage";
+import {
+  DEFAULT_NOTIFICATION_LEAD_MINUTES,
+  NOTIFICATION_LEAD_MINUTE_OPTIONS,
+  STORAGE_KEYS
+} from "./constants";
 import { scheduleData as defaultScheduleData } from "./scheduleData";
 import {
   calculateDateInfo,
@@ -11,10 +17,8 @@ import { shouldNotifyForGroup } from "./groupUtils";
 import { getCourseLocation, getDisplayKey } from "./courseUtils";
 
 export const NOTIFICATION_CHANNEL_ID = "course-reminders";
-// 未来多少天内生成提醒
-const NOTIFICATION_WINDOW_DAYS = 14;
-// 提前多少分钟提醒
-const NOTIFICATION_LEAD_MINUTES = 15;
+export const NOTIFICATION_WINDOW_DAYS = 30;
+const NOTIFICATION_PLAN_VERSION = 1;
 
 const toYyyyMmDd = (date) => {
   const yyyy = String(date.getFullYear());
@@ -28,19 +32,63 @@ const buildNotificationId = (date, period, suffix = "") => {
   return Number(base);
 };
 
-export const ensureNotificationChannel = async () => {
-  if (!Capacitor.isNativePlatform()) return;
-  try {
-    await LocalNotifications.createChannel({
-      id: NOTIFICATION_CHANNEL_ID,
-      name: "课程提醒",
-      description: "上课前提醒",
-      importance: 4
-    });
-  } catch (error) {
-    console.warn("通知渠道创建失败:", error);
-  }
+const toEpochMs = (value) => {
+  if (value instanceof Date) return value.getTime();
+  const timestamp = Number(value);
+  return Number.isFinite(timestamp) ? timestamp : NaN;
 };
+
+export const sanitizeLeadMinutes = (value) => {
+  const parsed = Number(value);
+  return NOTIFICATION_LEAD_MINUTE_OPTIONS.includes(parsed)
+    ? parsed
+    : DEFAULT_NOTIFICATION_LEAD_MINUTES;
+};
+
+const buildPlanSignature = ({ id, title, body, channelId, at }) =>
+  `${id}|${title ?? ""}|${body ?? ""}|${channelId ?? ""}|${at}`;
+
+const normalizeSnapshot = (snapshot) => {
+  if (!snapshot || typeof snapshot !== "object") return null;
+  const notificationsRaw = Array.isArray(snapshot.notifications)
+    ? snapshot.notifications
+    : [];
+
+  const notifications = notificationsRaw
+    .map((item) => {
+      if (!item || typeof item !== "object") return null;
+      const id = Number(item.id);
+      const at = toEpochMs(item.at);
+      if (!Number.isInteger(id) || !Number.isFinite(at) || at <= 0) return null;
+      const title = item.title ?? "上课提醒";
+      const body = item.body ?? "";
+      const channelId = item.channelId ?? NOTIFICATION_CHANNEL_ID;
+      const signature =
+        typeof item.signature === "string" && item.signature.length > 0
+          ? item.signature
+          : buildPlanSignature({ id, title, body, channelId, at });
+      return { id, title, body, channelId, at, signature };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.at - b.at || a.id - b.id);
+
+  return {
+    version: Number(snapshot.version) || NOTIFICATION_PLAN_VERSION,
+    generatedAt: Number(snapshot.generatedAt) || Date.now(),
+    windowDays: Number(snapshot.windowDays) || NOTIFICATION_WINDOW_DAYS,
+    leadMinutes: sanitizeLeadMinutes(snapshot.leadMinutes),
+    notifications
+  };
+};
+
+const buildNotificationPayload = (notification) => ({
+  id: notification.id,
+  title: notification.title,
+  body: notification.body,
+  schedule: { at: new Date(notification.at), allowWhileIdle: true },
+  channelId: notification.channelId,
+  extra: { planSignature: notification.signature }
+});
 
 const getStartTimeParts = (period) => {
   const startTime = getPeriodStartTime(period);
@@ -93,32 +141,32 @@ const buildDayCourseBlocks = ({
   const daySchedule = dataSource.find((entry) => entry.day === info.day);
   if (!daySchedule) return [];
 
-    // 按节次整理当日课程，便于后续合并连续节次
-    const periodMap = new Map();
-    for (const periodEntry of daySchedule.periods) {
-      const startTimeParts = getStartTimeParts(periodEntry.period);
-      if (!startTimeParts) continue;
+  // 按节次整理当日课程，便于后续合并连续节次
+  const periodMap = new Map();
+  for (const periodEntry of daySchedule.periods) {
+    const startTimeParts = getStartTimeParts(periodEntry.period);
+    if (!startTimeParts) continue;
 
-      const matchingCourses = (periodEntry.courses || [])
-        .filter((course) => course.weeks.includes(info.week))
-        .filter((course) => shouldNotifyForGroup(course.group, userGroup));
+    const matchingCourses = (periodEntry.courses || [])
+      .filter((course) => course.weeks.includes(info.week))
+      .filter((course) => shouldNotifyForGroup(course.group, userGroup));
 
-      if (!matchingCourses.length) continue;
+    if (!matchingCourses.length) continue;
 
-      // 课程地点去重后参与合并判断
-      const locations = matchingCourses
-        .map((course) => getCourseLocation(course.location, info.week))
-        .filter((location) => location && location.trim().length > 0);
-      const uniqueLocations = Array.from(new Set(locations));
-      const locationKey = [...uniqueLocations].sort().join("||");
+    // 课程地点去重后参与合并判断
+    const locations = matchingCourses
+      .map((course) => getCourseLocation(course.location, info.week))
+      .filter((location) => location && location.trim().length > 0);
+    const uniqueLocations = Array.from(new Set(locations));
+    const locationKey = [...uniqueLocations].sort().join("||");
 
-      periodMap.set(periodEntry.period, {
-        courses: matchingCourses,
-        startTimeParts,
-        key: `${getDisplayKey(matchingCourses)}::${locationKey}`,
-        locationText: uniqueLocations.join(" / ")
-      });
-    }
+    periodMap.set(periodEntry.period, {
+      courses: matchingCourses,
+      startTimeParts,
+      key: `${getDisplayKey(matchingCourses)}::${locationKey}`,
+      locationText: uniqueLocations.join(" / ")
+    });
+  }
 
   const blocks = [];
   let period = 1;
@@ -197,6 +245,54 @@ const collectUpcomingClasses = ({
   return upcoming;
 };
 
+const buildSnapshotFromNotifications = ({
+  notifications,
+  leadMinutes,
+  windowDays
+}) => {
+  const normalized = notifications
+    .map((notification) => {
+      const id = Number(notification.id);
+      const at = toEpochMs(notification.at);
+      if (!Number.isInteger(id) || !Number.isFinite(at)) return null;
+      const title = notification.title ?? "上课提醒";
+      const body = notification.body ?? "";
+      const channelId = notification.channelId ?? NOTIFICATION_CHANNEL_ID;
+      return {
+        id,
+        title,
+        body,
+        channelId,
+        at,
+        signature: buildPlanSignature({ id, title, body, channelId, at })
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.at - b.at || a.id - b.id);
+
+  return normalizeSnapshot({
+    version: NOTIFICATION_PLAN_VERSION,
+    generatedAt: Date.now(),
+    leadMinutes: sanitizeLeadMinutes(leadMinutes),
+    windowDays,
+    notifications: normalized
+  });
+};
+
+export const ensureNotificationChannel = async () => {
+  if (!Capacitor.isNativePlatform()) return;
+  try {
+    await LocalNotifications.createChannel({
+      id: NOTIFICATION_CHANNEL_ID,
+      name: "课程提醒",
+      description: "上课前提醒",
+      importance: 4
+    });
+  } catch (error) {
+    console.warn("通知渠道创建失败:", error);
+  }
+};
+
 export const cancelAllScheduledNotifications = async () => {
   if (!Capacitor.isNativePlatform()) return 0;
   try {
@@ -235,37 +331,30 @@ export const openExactAlarmPermissionSettings = async () => {
   }
 };
 
-export const scheduleCourseNotifications = async ({
+export const buildNotificationPlan = ({
   semesterStartDate,
   userGroup,
-  scheduleData
+  scheduleData,
+  leadMinutes = DEFAULT_NOTIFICATION_LEAD_MINUTES,
+  fromDate = new Date(),
+  windowDays = NOTIFICATION_WINDOW_DAYS
 }) => {
-  if (!Capacitor.isNativePlatform()) {
-    return { scheduled: 0, reason: "unsupported" };
-  }
+  const normalizedLeadMinutes = sanitizeLeadMinutes(leadMinutes);
   if (!semesterStartDate) {
-    return { scheduled: 0, reason: "no-start-date" };
+    return buildSnapshotFromNotifications({
+      notifications: [],
+      leadMinutes: normalizedLeadMinutes,
+      windowDays
+    });
   }
 
-  // 先清理旧通知，再重新生成
-  await cancelAllScheduledNotifications();
-
-  // 必须先请求通知权限
-  const permission = await LocalNotifications.requestPermissions();
-  if (permission.display !== "granted") {
-    return { scheduled: 0, reason: "permission-denied" };
-  }
-
-  await ensureNotificationChannel();
-
-  const now = new Date();
-  const today = new Date();
+  const now = new Date(fromDate);
+  const today = new Date(now);
   today.setHours(0, 0, 0, 0);
 
   const notifications = [];
 
-  for (let offset = 0; offset < NOTIFICATION_WINDOW_DAYS; offset += 1) {
-    // 逐日生成未来课程提醒
+  for (let offset = 0; offset < windowDays; offset += 1) {
     const currentDate = new Date(today);
     currentDate.setDate(today.getDate() + offset);
 
@@ -278,31 +367,199 @@ export const scheduleCourseNotifications = async ({
 
     for (const block of blocks) {
       const notifyAt = new Date(
-        block.classStart.getTime() - NOTIFICATION_LEAD_MINUTES * 60 * 1000
+        block.classStart.getTime() - normalizedLeadMinutes * 60 * 1000
       );
       if (notifyAt <= now) continue;
-
       notifications.push({
         id: buildNotificationId(currentDate, block.periodStart),
         title: "上课提醒",
         body: block.body,
-        schedule: { at: notifyAt, allowWhileIdle: true },
-        channelId: NOTIFICATION_CHANNEL_ID
+        channelId: NOTIFICATION_CHANNEL_ID,
+        at: notifyAt.getTime()
       });
     }
   }
 
-  if (notifications.length > 0) {
-    await LocalNotifications.schedule({ notifications });
+  return buildSnapshotFromNotifications({
+    notifications,
+    leadMinutes: normalizedLeadMinutes,
+    windowDays
+  });
+};
+
+export const loadNotificationPlanSnapshot = async () => {
+  const raw = await storage.getItem(STORAGE_KEYS.NOTIFICATION_PLAN_SNAPSHOT);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw);
+    return normalizeSnapshot(parsed);
+  } catch (error) {
+    console.warn("通知计划快照解析失败:", error);
+    return null;
+  }
+};
+
+export const persistNotificationPlanSnapshot = async (snapshot) => {
+  const normalized = normalizeSnapshot(snapshot);
+  if (!normalized) return;
+  await storage.setItem(
+    STORAGE_KEYS.NOTIFICATION_PLAN_SNAPSHOT,
+    JSON.stringify(normalized)
+  );
+};
+
+export const clearNotificationPlanSnapshot = async () => {
+  await storage.removeItem(STORAGE_KEYS.NOTIFICATION_PLAN_SNAPSHOT);
+};
+
+export const reconcileScheduledNotifications = async ({
+  planSnapshot,
+  previousSnapshot,
+  force = false
+}) => {
+  if (!Capacitor.isNativePlatform()) {
+    return { scheduled: 0, canceled: 0, planned: 0, reason: "unsupported" };
+  }
+  const normalizedPlan = normalizeSnapshot(planSnapshot);
+  if (!normalizedPlan) {
+    return { scheduled: 0, canceled: 0, planned: 0, reason: "invalid-plan" };
   }
 
-  return { scheduled: notifications.length, reason: "scheduled" };
+  const permission = await LocalNotifications.requestPermissions();
+  if (permission.display !== "granted") {
+    return {
+      scheduled: 0,
+      canceled: 0,
+      planned: normalizedPlan.notifications.length,
+      reason: "permission-denied"
+    };
+  }
+
+  await ensureNotificationChannel();
+
+  const pending = await LocalNotifications.getPending();
+  const pendingNotifications = Array.isArray(pending?.notifications)
+    ? pending.notifications
+    : [];
+  const pendingIds = new Set();
+  const pendingSignatureMap = new Map();
+  for (const pendingNotification of pendingNotifications) {
+    const id = Number(pendingNotification?.id);
+    if (!Number.isInteger(id)) continue;
+    pendingIds.add(id);
+    const signature = pendingNotification?.extra?.planSignature;
+    if (typeof signature === "string" && signature.length > 0) {
+      pendingSignatureMap.set(id, signature);
+    }
+  }
+
+  const previousMap = new Map();
+  const normalizedPrevious = normalizeSnapshot(previousSnapshot);
+  for (const notification of normalizedPrevious?.notifications ?? []) {
+    previousMap.set(notification.id, notification.signature);
+  }
+
+  const desiredMap = new Map();
+  for (const notification of normalizedPlan.notifications) {
+    desiredMap.set(notification.id, notification);
+  }
+
+  const changedIds = new Set();
+  if (force) {
+    for (const notification of normalizedPlan.notifications) {
+      changedIds.add(notification.id);
+    }
+  } else {
+    for (const notification of normalizedPlan.notifications) {
+      if (!pendingIds.has(notification.id)) continue;
+      const pendingSignature = pendingSignatureMap.get(notification.id);
+      if (pendingSignature) {
+        if (pendingSignature !== notification.signature) {
+          changedIds.add(notification.id);
+        }
+        continue;
+      }
+      const previousSignature = previousMap.get(notification.id);
+      if (!previousSignature || previousSignature !== notification.signature) {
+        changedIds.add(notification.id);
+      }
+    }
+  }
+
+  const idsToCancel = [];
+  for (const pendingId of pendingIds) {
+    if (force || !desiredMap.has(pendingId) || changedIds.has(pendingId)) {
+      idsToCancel.push(pendingId);
+    }
+  }
+
+  const notificationsToSchedule = [];
+  for (const notification of normalizedPlan.notifications) {
+    if (force || !pendingIds.has(notification.id) || changedIds.has(notification.id)) {
+      notificationsToSchedule.push(notification);
+    }
+  }
+
+  if (idsToCancel.length > 0) {
+    await LocalNotifications.cancel({
+      notifications: idsToCancel.map((id) => ({ id }))
+    });
+  }
+
+  if (notificationsToSchedule.length > 0) {
+    await LocalNotifications.schedule({
+      notifications: notificationsToSchedule.map(buildNotificationPayload)
+    });
+  }
+
+  return {
+    scheduled: notificationsToSchedule.length,
+    canceled: idsToCancel.length,
+    planned: normalizedPlan.notifications.length,
+    reason: "scheduled"
+  };
+};
+
+export const scheduleCourseNotifications = async ({
+  semesterStartDate,
+  userGroup,
+  scheduleData,
+  leadMinutes = DEFAULT_NOTIFICATION_LEAD_MINUTES,
+  force = false,
+  previousSnapshot = null
+}) => {
+  if (!Capacitor.isNativePlatform()) {
+    return { scheduled: 0, canceled: 0, planned: 0, reason: "unsupported" };
+  }
+  if (!semesterStartDate) {
+    return { scheduled: 0, canceled: 0, planned: 0, reason: "no-start-date" };
+  }
+
+  const planSnapshot = buildNotificationPlan({
+    semesterStartDate,
+    userGroup,
+    scheduleData,
+    leadMinutes
+  });
+
+  const result = await reconcileScheduledNotifications({
+    planSnapshot,
+    previousSnapshot,
+    force
+  });
+
+  if (result.reason !== "scheduled") {
+    return { ...result, snapshot: planSnapshot };
+  }
+
+  return { ...result, snapshot: planSnapshot };
 };
 
 export const sendTestNotification = async ({
   semesterStartDate,
   userGroup,
-  scheduleData
+  scheduleData,
+  leadMinutes = DEFAULT_NOTIFICATION_LEAD_MINUTES
 }) => {
   if (!Capacitor.isNativePlatform()) {
     return { sent: false, reason: "unsupported" };
@@ -333,6 +590,13 @@ export const sendTestNotification = async ({
   const body = nextClass
     ? nextClass.body
     : "暂无近期课程（请检查开学日期与周次）";
+  const signature = buildPlanSignature({
+    id,
+    title: "上课提醒",
+    body,
+    channelId: NOTIFICATION_CHANNEL_ID,
+    at: fireAt.getTime()
+  });
 
   await LocalNotifications.schedule({
     notifications: [
@@ -341,7 +605,11 @@ export const sendTestNotification = async ({
         title: "上课提醒",
         body,
         schedule: { at: fireAt, allowWhileIdle: true },
-        channelId: NOTIFICATION_CHANNEL_ID
+        channelId: NOTIFICATION_CHANNEL_ID,
+        extra: {
+          planSignature: signature,
+          leadMinutes: sanitizeLeadMinutes(leadMinutes)
+        }
       }
     ]
   });

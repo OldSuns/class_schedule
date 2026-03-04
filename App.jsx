@@ -61,11 +61,15 @@ const App = () => {
   const {
     notificationsEnabled,
     userGroup,
+    leadMinutes,
+    leadMinuteOptions,
     statusMessage,
     exactAlarmStatus,
+    reliabilityMode,
     exactAlarmMessage,
     onToggleNotifications,
     onGroupChange,
+    onLeadMinutesChange,
     onTestNotification,
     onOpenExactAlarmSettings
   } = useNotifications(semesterStartDate, scheduleData);
@@ -273,9 +277,13 @@ const App = () => {
           onToggleNotifications={onToggleNotifications}
           userGroup={userGroup}
           onGroupChange={onGroupChange}
+          leadMinutes={leadMinutes}
+          leadMinuteOptions={leadMinuteOptions}
+          onLeadMinutesChange={onLeadMinutesChange}
           onTestNotification={onTestNotification}
           notificationStatus={statusMessage}
           exactAlarmStatus={exactAlarmStatus}
+          reliabilityMode={reliabilityMode}
           exactAlarmMessage={exactAlarmMessage}
           onOpenExactAlarmSettings={onOpenExactAlarmSettings}
           onResetSchedule={resetSchedule}

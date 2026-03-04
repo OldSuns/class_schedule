@@ -9,6 +9,11 @@ import { buildCourseIdentity, collectCoursesForRange } from "./scheduleUtils";
 import { shouldNotifyForGroup } from "./groupUtils";
 
 const LEGACY_GROUP_VALUE = "__legacy_group__";
+const EDITOR_GROUP_OPTIONS = ["6班A组", "6班B组", "7班C组", "7班D组"];
+const LEGACY_GROUP_ALIAS_MAP = {
+  "A组": "6班A组",
+  "B组": "6班B组"
+};
 
 const resolveTextValue = (value) => {
   if (typeof value === "string") return value;
@@ -24,7 +29,10 @@ const normalizeNumbers = (list) => {
 };
 
 const getKnownGroup = (value) => {
-  if (value === "A组" || value === "B组") return value;
+  if (EDITOR_GROUP_OPTIONS.includes(value)) return value;
+  if (typeof value === "string" && LEGACY_GROUP_ALIAS_MAP[value]) {
+    return LEGACY_GROUP_ALIAS_MAP[value];
+  }
   return "";
 };
 
@@ -32,7 +40,8 @@ const getLegacyGroup = (value) => {
   if (typeof value !== "string") return "";
   const normalized = value.trim();
   if (!normalized) return "";
-  if (normalized === "A组" || normalized === "B组") return "";
+  if (EDITOR_GROUP_OPTIONS.includes(normalized)) return "";
+  if (LEGACY_GROUP_ALIAS_MAP[normalized]) return "";
   return normalized;
 };
 
@@ -164,7 +173,7 @@ const CourseEditor = ({
     const normalizedGroup =
       group === LEGACY_GROUP_VALUE
         ? legacyGroup || null
-        : group === "A组" || group === "B组"
+        : EDITOR_GROUP_OPTIONS.includes(group)
         ? group
         : null;
 
@@ -238,8 +247,10 @@ const CourseEditor = ({
           className="w-full px-3 py-2 rounded-md border border-indigo-200 text-sm focus:ring-2 focus:ring-indigo-400 bg-white"
         >
           <option value="">无</option>
-          <option value="A组">A组</option>
-          <option value="B组">B组</option>
+          <option value="6班A组">6班A组</option>
+          <option value="6班B组">6班B组</option>
+          <option value="7班C组">7班C组</option>
+          <option value="7班D组">7班D组</option>
           {legacyGroup && (
             <option value={LEGACY_GROUP_VALUE}>保留原值（{legacyGroup}）</option>
           )}
