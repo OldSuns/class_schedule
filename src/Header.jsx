@@ -53,7 +53,7 @@ const Header = ({
           </div>
         ) : (
           <h1 className="flex-1 text-sm sm:text-xl md:text-3xl lg:text-4xl font-bold text-indigo-900 px-2 leading-tight">
-            五临 2023级6班7班课表（2026-1）
+            五临 2023级课表（2026-1）
           </h1>
         )}
 
