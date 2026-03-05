@@ -31,7 +31,7 @@ export const DISPLAY_MODES = {
 };
 
 // 当前应用版本（用于更新检查）
-export const APP_VERSION = "1.9.6";
+export const APP_VERSION = "1.9.7";
 
 // GitHub Releases
 export const GITHUB_RELEASES_URL =
@@ -53,5 +53,7 @@ export const STORAGE_KEYS = {
   NOTIFICATION_LEAD_MINUTES: "notificationLeadMinutes",
   USER_GROUP: "userGroup",
   DISPLAY_MODE: "displayMode",
-  CUSTOM_SCHEDULE: "customSchedule"
+  CUSTOM_SCHEDULE: "customSchedule",
+  UPDATE_LAST_CHECK_DATE: "updateLastCheckDate",
+  UPDATE_LAST_TOAST_DATE: "updateLastToastDate"
 };

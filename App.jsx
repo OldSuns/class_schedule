@@ -7,6 +7,7 @@ import Header from "./src/Header";
 import SettingsMenu from "./src/SettingsMenu";
 import CourseTable from "./src/CourseTable";
 import CourseModal from "./src/CourseModal";
+import Toast from "./src/Toast";
 
 // Hooks
 import { useSemesterDate } from "./src/useSemesterDate";
@@ -25,6 +26,18 @@ import {
   getPeriodLabel,
   getPeriodRangeMinutes
 } from "./src/timeUtils";
+import { checkForUpdates } from "./src/updateChecker";
+import { APP_VERSION, STORAGE_KEYS } from "./src/constants";
+import { getItem, setItem } from "./storage";
+
+const UPDATE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
+
+const getTodayKey = (date = new Date()) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 const App = () => {
 
@@ -56,6 +69,8 @@ const App = () => {
 
   // 当前时间（用于进度条刷新）
   const [now, setNow] = useState(() => new Date());
+
+  const [updateToast, setUpdateToast] = useState({ isOpen: false, message: "" });
 
   // 通知设置
   const {
@@ -122,6 +137,47 @@ const App = () => {
       setNow(new Date());
     }, 60000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    let inFlight = false;
+
+    const checkUpdates = async () => {
+      if (inFlight) return;
+      inFlight = true;
+      const today = getTodayKey();
+      const lastCheck = await getItem(STORAGE_KEYS.UPDATE_LAST_CHECK_DATE);
+      if (lastCheck === today) {
+        inFlight = false;
+        return;
+      }
+
+      const result = await checkForUpdates(APP_VERSION);
+      await setItem(STORAGE_KEYS.UPDATE_LAST_CHECK_DATE, today);
+
+      if (!cancelled && result?.status === "update") {
+        const lastToast = await getItem(STORAGE_KEYS.UPDATE_LAST_TOAST_DATE);
+        if (lastToast !== today) {
+          const versionLabel = result.latestVersion ? ` v${result.latestVersion}` : "";
+          setUpdateToast({
+            isOpen: true,
+            message: `发现新版本${versionLabel}`
+          });
+          await setItem(STORAGE_KEYS.UPDATE_LAST_TOAST_DATE, today);
+        }
+      }
+
+      inFlight = false;
+    };
+
+    checkUpdates();
+    const timer = setInterval(checkUpdates, UPDATE_CHECK_INTERVAL_MS);
+
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
   }, []);
 
   // 合并课程单元格
@@ -248,6 +304,10 @@ const App = () => {
     }
   };
 
+  const closeUpdateToast = () => {
+    setUpdateToast((prev) => (prev.isOpen ? { ...prev, isOpen: false } : prev));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4 pt-[var(--safe-top)] pb-[var(--safe-bottom)]">
       <div className="max-w-7xl mx-auto">
@@ -310,6 +370,12 @@ const App = () => {
           onUpdateCourse={handleUpdateCourse}
           onDeleteCourse={handleDeleteCourse}
           onClose={closeModal}
+        />
+
+        <Toast
+          isOpen={updateToast.isOpen}
+          message={updateToast.message}
+          onClose={closeUpdateToast}
         />
       </div>
     </div>
