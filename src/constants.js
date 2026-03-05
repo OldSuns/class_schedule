@@ -31,7 +31,7 @@ export const DISPLAY_MODES = {
 };
 
 // 当前应用版本（用于更新检查）
-export const APP_VERSION = "1.9.5";
+export const APP_VERSION = "1.9.6";
 
 // GitHub Releases
 export const GITHUB_RELEASES_URL =
