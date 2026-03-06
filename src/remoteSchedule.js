@@ -20,20 +20,35 @@ const normalizeRemotePayload = (payload) => {
 };
 
 export const fetchRemoteSchedule = async ({ etag, lastModified } = {}) => {
-  const headers = {
-    Accept: "application/json"
-  };
+  const request = async (headers) =>
+    fetch(SCHEDULE_REMOTE_URL, {
+      headers,
+      cache: "no-store"
+    });
+
+  const baseHeaders = { Accept: "application/json" };
+  const conditionalHeaders = { ...baseHeaders };
   if (etag) {
-    headers["If-None-Match"] = etag;
+    conditionalHeaders["If-None-Match"] = etag;
   }
   if (lastModified) {
-    headers["If-Modified-Since"] = lastModified;
+    conditionalHeaders["If-Modified-Since"] = lastModified;
   }
 
-  const response = await fetch(SCHEDULE_REMOTE_URL, {
-    headers,
-    cache: "no-store"
-  });
+  let response = null;
+  try {
+    response = await request(conditionalHeaders);
+  } catch (error) {
+    // 条件请求失败时回退到普通 GET，规避跨源切换后的缓存头兼容问题
+    if (!etag && !lastModified) {
+      return { status: "error", message: "网络连接失败或更新源不可达" };
+    }
+    try {
+      response = await request(baseHeaders);
+    } catch (fallbackError) {
+      return { status: "error", message: "网络连接失败或更新源不可达" };
+    }
+  }
 
   if (response.status === 304) {
     return { status: "not-modified" };
@@ -60,7 +75,8 @@ export const fetchRemoteSchedule = async ({ etag, lastModified } = {}) => {
       etag: response.headers.get("etag") || "",
       lastModified: response.headers.get("last-modified") || "",
       updatedAt: snapshot.updatedAt || "",
-      signature
+      signature,
+      sourceUrl: SCHEDULE_REMOTE_URL
     };
     return { status: "updated", snapshot, meta };
   } catch (error) {

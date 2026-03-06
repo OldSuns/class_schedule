@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as storage from "../storage";
-import { STORAGE_KEYS } from "./constants";
+import { SCHEDULE_REMOTE_URL, STORAGE_KEYS } from "./constants";
 import { scheduleData as defaultScheduleData } from "./scheduleData";
 import { normalizeSchedule } from "./scheduleUtils";
 import {
@@ -42,7 +42,8 @@ const parseRemoteMeta = (raw) => {
       lastModified:
         typeof parsed.lastModified === "string" ? parsed.lastModified : "",
       updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : "",
-      signature: typeof parsed.signature === "string" ? parsed.signature : ""
+      signature: typeof parsed.signature === "string" ? parsed.signature : "",
+      sourceUrl: typeof parsed.sourceUrl === "string" ? parsed.sourceUrl : ""
     };
   } catch (error) {
     console.warn("远端课表元信息解析失败:", error);
@@ -190,6 +191,7 @@ export const useScheduleData = () => {
     setScheduleData(normalizeSchedule(defaultScheduleData));
     setRemoteSnapshot(null);
     setRemoteMeta(null);
+    setPendingRemoteSnapshot(null);
     await storage.removeItem(STORAGE_KEYS.REMOTE_SCHEDULE_SNAPSHOT);
     await storage.removeItem(STORAGE_KEYS.REMOTE_SCHEDULE_META);
   };
@@ -201,8 +203,14 @@ export const useScheduleData = () => {
     setIsCheckingRemote(true);
     try {
       const result = await fetchRemoteSchedule({
-        etag: remoteMeta?.etag,
-        lastModified: remoteMeta?.lastModified
+        etag:
+          remoteMeta?.sourceUrl === SCHEDULE_REMOTE_URL
+            ? remoteMeta?.etag
+            : "",
+        lastModified:
+          remoteMeta?.sourceUrl === SCHEDULE_REMOTE_URL
+            ? remoteMeta?.lastModified
+            : ""
       });
 
       let nextSnapshot = remoteSnapshot;
@@ -258,9 +266,7 @@ export const useScheduleData = () => {
     isCheckingRemote,
     remoteMeta,
     remoteSnapshot,
-    scheduleData,
-    hasCustomSchedule,
-    applyRemoteSchedule
+    scheduleData
   ]);
 
   return {

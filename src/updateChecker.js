@@ -1,4 +1,7 @@
-import { GITHUB_RELEASES_API_LATEST } from "./constants";
+import {
+  GITHUB_RELEASES_API_LATEST,
+  GITHUB_RELEASES_URL
+} from "./constants";
 
 // 统一版本格式：去掉前缀 v 与构建/预发布标记
 const normalizeVersion = (input) => {
@@ -36,7 +39,7 @@ export const checkForUpdates = async (currentVersion) => {
   try {
     const response = await fetch(GITHUB_RELEASES_API_LATEST, {
       headers: {
-        Accept: "application/vnd.github+json"
+        Accept: "application/json"
       }
     });
 
@@ -63,7 +66,7 @@ export const checkForUpdates = async (currentVersion) => {
       return {
         status: "update",
         latestVersion,
-        url: data.html_url,
+        url: data.html_url || GITHUB_RELEASES_URL,
         message: `发现新版本 v${latestVersion}`
       };
     }

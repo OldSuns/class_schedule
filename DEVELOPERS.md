@@ -31,7 +31,7 @@
 - `src/groupUtils.js` 组别解析与过滤（A/B）。
 - `src/timeUtils.js` 节次时间表与日期/周次计算。
 - `src/constants.js` 周次范围、默认开学日期、版本号与更新地址。
-- `src/updateChecker.js` GitHub Releases 更新检查。
+- `src/updateChecker.js` Gitee Releases 更新检查。
 - `src/notificationScheduler.js` Android 通知排程与文案格式。
 - `storage.js` 跨平台存储（Web localStorage / Android Preferences）。
 
@@ -47,6 +47,7 @@
 ## 课表软更新发布说明
 
 软更新使用仓库根目录 `schedule.json` 作为远端数据源（Raw URL 拉取）。
+当前线上地址：`https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json`
 发布课表更新时必须先生成并提交该文件：
 
 ```bash

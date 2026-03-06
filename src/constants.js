@@ -31,17 +31,17 @@ export const DISPLAY_MODES = {
 };
 
 // 当前应用版本（用于更新检查）
-export const APP_VERSION = "1.9.7";
+export const APP_VERSION = "1.9.5";
 
-// GitHub Releases
+// Gitee Releases
 export const GITHUB_RELEASES_URL =
-  "https://github.com/OldSuns/class_schedule/releases";
+  "https://gitee.com/oldsuns/class_schedule/releases";
 export const GITHUB_RELEASES_API_LATEST =
-  "https://api.github.com/repos/OldSuns/class_schedule/releases/latest";
+  "https://gitee.com/api/v5/repos/oldsuns/class_schedule/releases/latest";
 
 // 远端课表更新（软更新）
 export const SCHEDULE_REMOTE_URL =
-  "https://raw.githubusercontent.com/OldSuns/class_schedule/refs/heads/main/schedule.json";
+  "https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json";
 
 // 通知提前量（分钟）
 export const DEFAULT_NOTIFICATION_LEAD_MINUTES = 15;
