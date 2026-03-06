@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useState } from "react";
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
+import { App as CapacitorApp } from "@capacitor/app";
 
 // 组件
 import Header from "./src/Header";
@@ -130,6 +131,43 @@ const App = () => {
       setCurrentWeek(todayInfo.week);
     }
   }, [todayInfo, setCurrentWeek]);
+
+  // 前台恢复时刷新当前时间，避免后台暂停导致进度条不更新
+  useEffect(() => {
+    const refreshNow = () => {
+      setNow(new Date());
+    };
+
+    let listenerHandle = null;
+    const setupListener = async () => {
+      if (Capacitor.isNativePlatform()) {
+        listenerHandle = await CapacitorApp.addListener(
+          "appStateChange",
+          ({ isActive }) => {
+            if (isActive) {
+              refreshNow();
+            }
+          }
+        );
+      }
+    };
+
+    setupListener();
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        refreshNow();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      if (listenerHandle) {
+        listenerHandle.remove();
+      }
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, []);
 
   // 每分钟刷新一次当前时间
   useEffect(() => {

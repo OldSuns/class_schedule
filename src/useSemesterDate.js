@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { App } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
 import * as storage from "../storage";
 import { calculateTodayInfo } from "./timeUtils";
 import { DEFAULT_SEMESTER_START_DATE, STORAGE_KEYS } from "./constants";
@@ -80,6 +82,45 @@ export const useSemesterDate = () => {
       if (intervalId != null) {
         clearInterval(intervalId);
       }
+    };
+  }, [semesterStartDate]);
+
+  // 前台恢复时刷新今天信息，避免跨天后状态过期
+  useEffect(() => {
+    if (!semesterStartDate) return;
+
+    const refreshTodayInfo = () => {
+      setTodayInfo(calculateTodayInfo(semesterStartDate));
+    };
+
+    let listenerHandle = null;
+    const setupListener = async () => {
+      if (Capacitor.isNativePlatform()) {
+        listenerHandle = await App.addListener(
+          "appStateChange",
+          ({ isActive }) => {
+            if (isActive) {
+              refreshTodayInfo();
+            }
+          }
+        );
+      }
+    };
+
+    setupListener();
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        refreshTodayInfo();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      if (listenerHandle) {
+        listenerHandle.remove();
+      }
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, [semesterStartDate]);
 

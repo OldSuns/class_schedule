@@ -56,6 +56,8 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
   const [exactAlarmStatus, setExactAlarmStatus] = useState("unknown");
   const [isLoaded, setIsLoaded] = useState(false);
   const schedulingRef = useRef(false);
+  const pendingScheduleRef = useRef(null);
+  const scheduleIfNeededRef = useRef(null);
   const initialRunRef = useRef(true);
   const prevScheduleRef = useRef(scheduleData);
 
@@ -117,7 +119,10 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
 
   const scheduleIfNeeded = useCallback(
     async ({ force = false, showMessage = false, source = "manual" } = {}) => {
-      if (schedulingRef.current) return;
+      if (schedulingRef.current) {
+        pendingScheduleRef.current = { force, showMessage, source };
+        return;
+      }
       // 避免并发排程，确保一次只跑一个任务
       schedulingRef.current = true;
       try {
@@ -213,10 +218,20 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
         }
       } finally {
         schedulingRef.current = false;
+        const pending = pendingScheduleRef.current;
+        if (pending) {
+          pendingScheduleRef.current = null;
+          const runner = scheduleIfNeededRef.current;
+          if (runner) {
+            void runner(pending);
+          }
+        }
       }
     },
     [notificationsEnabled, semesterStartDate, userGroup, scheduleData, leadMinutes]
   );
+
+  scheduleIfNeededRef.current = scheduleIfNeeded;
 
   useEffect(() => {
     if (!isLoaded) return;
