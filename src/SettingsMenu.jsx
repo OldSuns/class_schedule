@@ -31,6 +31,12 @@ const SettingsMenu = ({
   reliabilityMode = "degraded",
   exactAlarmMessage = "",
   onOpenExactAlarmSettings,
+  onSoftUpdateSchedule,
+  onConfirmRemoteUpdate,
+  onCancelRemoteUpdate,
+  pendingRemoteSnapshot = null,
+  isSoftUpdating = false,
+  remoteUpdatedAt = "",
   onResetSchedule
 }) => {
   const [showWeekSelector, setShowWeekSelector] = useState(false);
@@ -38,10 +44,20 @@ const SettingsMenu = ({
   const [updateUrl, setUpdateUrl] = useState("");
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
   const [resetStatus, setResetStatus] = useState("");
+  const [softUpdateStatus, setSoftUpdateStatus] = useState("");
+  const [showRemoteConfirm, setShowRemoteConfirm] = useState(false);
+  const [showAdvancedReminder, setShowAdvancedReminder] = useState(false);
+  const [showUpdateSection, setShowUpdateSection] = useState(false);
+  const [showScheduleManagement, setShowScheduleManagement] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
       setResetStatus("");
+      setSoftUpdateStatus("");
+      setShowRemoteConfirm(false);
+      setShowAdvancedReminder(false);
+      setShowUpdateSection(false);
+      setShowScheduleManagement(false);
     }
   }, [isOpen]);
 
@@ -76,6 +92,30 @@ const SettingsMenu = ({
         setResetStatus("重置失败，请稍后重试");
       }
     }
+  };
+
+  const handleSoftUpdateSchedule = async () => {
+    if (!onSoftUpdateSchedule) return;
+    if (isSoftUpdating) return;
+    setSoftUpdateStatus("");
+    const result = await onSoftUpdateSchedule();
+    if (result?.status === "update-available") {
+      setShowRemoteConfirm(true);
+      return;
+    }
+    setSoftUpdateStatus(result?.message || "检查完成");
+  };
+
+  const handleConfirmRemoteUpdate = () => {
+    const result = onConfirmRemoteUpdate?.();
+    setShowRemoteConfirm(false);
+    setSoftUpdateStatus(result?.message || "课表已更新");
+  };
+
+  const handleCancelRemoteUpdate = () => {
+    const result = onCancelRemoteUpdate?.();
+    setShowRemoteConfirm(false);
+    setSoftUpdateStatus(result?.message || "已暂不更新");
   };
 
   return (
@@ -114,33 +154,7 @@ const SettingsMenu = ({
 
             {/* 菜单内容 */}
             <div className="p-6 space-y-8">
-              {/* 开学日期设置 */}
-              <div className="space-y-3">
-                <label className="block text-lg font-semibold text-indigo-900">
-                  开学日期
-                </label>
-                <input
-                  type="date"
-                  value={semesterStartDate}
-                  onChange={(e) => onStartDateChange(e.target.value)}
-                  lang="zh-CN"
-                  placeholder="选择开学日期"
-                  className="w-full px-4 py-3 border-2 border-indigo-300 rounded-lg text-base font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer"
-                  style={{
-                    colorScheme: 'light'
-                  }}
-                />
-                {todayInfo && (
-                  <div className="text-sm text-green-600 font-medium bg-green-50 p-3 rounded-lg">
-                    今天是第{todayInfo.week}周 星期{["一", "二", "三", "四", "五"][todayInfo.dayOfWeek - 1]}
-                  </div>
-                )}
-                {!todayInfo && semesterStartDate && (
-                  <div className="text-sm text-gray-500 font-medium bg-gray-50 p-3 rounded-lg">
-                    今天不在上课时间
-                  </div>
-                )}
-              </div>
+
 
               {/* 快速周数选择 */}
               <div className="space-y-3">
@@ -221,7 +235,7 @@ const SettingsMenu = ({
                 </p>
               </div>
 
-              {/* 课程提醒设置 */}
+              {/* 课程提醒 */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <label className="block text-lg font-semibold text-indigo-900">
@@ -252,101 +266,6 @@ const SettingsMenu = ({
                 >
                   {reliabilityMode === "high" ? "可靠性：高" : "可靠性：受系统限制"}
                 </p>
-
-                <div className="space-y-2">
-                  <div className="text-sm font-medium text-indigo-900">
-                    我的组别
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => onGroupChange(GROUP_TYPES.G6A)}
-                      className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
-                        userGroup === GROUP_TYPES.G6A
-                          ? "bg-indigo-600 text-white"
-                          : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
-                      }`}
-                    >
-                      6班A组
-                    </button>
-                    <button
-                      onClick={() => onGroupChange(GROUP_TYPES.G6B)}
-                      className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
-                        userGroup === GROUP_TYPES.G6B
-                          ? "bg-indigo-600 text-white"
-                          : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
-                      }`}
-                    >
-                      6班B组
-                    </button>
-                    <button
-                      onClick={() => onGroupChange(GROUP_TYPES.G7C)}
-                      className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
-                        userGroup === GROUP_TYPES.G7C
-                          ? "bg-indigo-600 text-white"
-                          : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
-                      }`}
-                    >
-                      7班C组
-                    </button>
-                    <button
-                      onClick={() => onGroupChange(GROUP_TYPES.G7D)}
-                      className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
-                        userGroup === GROUP_TYPES.G7D
-                          ? "bg-indigo-600 text-white"
-                          : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
-                      }`}
-                    >
-                      7班D组
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="text-sm font-medium text-indigo-900">
-                    提前量（分钟）
-                  </div>
-                  <div className="grid grid-cols-4 gap-2">
-                    {leadMinuteOptions.map((minutes) => (
-                      <button
-                        key={minutes}
-                        onClick={() => onLeadMinutesChange?.(minutes)}
-                        className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
-                          leadMinutes === minutes
-                            ? "bg-indigo-600 text-white"
-                            : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
-                        }`}
-                      >
-                        {minutes}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {exactAlarmMessage && (
-                  <div className="flex items-center justify-between gap-2 bg-amber-50 text-amber-700 text-xs font-medium p-2 rounded-lg">
-                    <span>{exactAlarmMessage}</span>
-                    {exactAlarmStatus === "denied" && (
-                      <button
-                        onClick={onOpenExactAlarmSettings}
-                        className="px-2 py-1 rounded-md bg-amber-200 text-amber-900 hover:bg-amber-300 transition-colors"
-                      >
-                        去开启
-                      </button>
-                    )}
-                  </div>
-                )}
-
-                <button
-                  onClick={onTestNotification}
-                  className="w-full px-4 py-2.5 rounded-lg bg-indigo-100 text-indigo-700 font-semibold text-sm hover:bg-indigo-200 transition-colors"
-                >
-                  发送测试通知
-                </button>
-                {notificationStatus && (
-                  <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
-                    {notificationStatus}
-                  </div>
-                )}
               </div>
 
               {/* 检查更新 */}
@@ -383,28 +302,289 @@ const SettingsMenu = ({
                 )}
               </div>
 
+              {/* 提醒高级 */}
+              <div className="space-y-3">
+                <button
+                  onClick={() => setShowAdvancedReminder(!showAdvancedReminder)}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-indigo-100 text-indigo-700 text-base font-medium rounded-lg hover:bg-indigo-200 transition-colors"
+                >
+                  <span>提醒高级</span>
+                  {showAdvancedReminder ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                </button>
+                <AnimatePresence>
+                  {showAdvancedReminder && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="bg-white/30 backdrop-blur-sm rounded-lg p-3 sm:p-4 border-2 border-indigo-300 space-y-4">
+                        <div className="space-y-2">
+                          <div className="text-sm font-medium text-indigo-900">
+                            我的组别
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            <button
+                              onClick={() => onGroupChange(GROUP_TYPES.G6A)}
+                              className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
+                                userGroup === GROUP_TYPES.G6A
+                                  ? "bg-indigo-600 text-white"
+                                  : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                              }`}
+                            >
+                              6班A组
+                            </button>
+                            <button
+                              onClick={() => onGroupChange(GROUP_TYPES.G6B)}
+                              className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
+                                userGroup === GROUP_TYPES.G6B
+                                  ? "bg-indigo-600 text-white"
+                                  : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                              }`}
+                            >
+                              6班B组
+                            </button>
+                            <button
+                              onClick={() => onGroupChange(GROUP_TYPES.G7C)}
+                              className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
+                                userGroup === GROUP_TYPES.G7C
+                                  ? "bg-indigo-600 text-white"
+                                  : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                              }`}
+                            >
+                              7班C组
+                            </button>
+                            <button
+                              onClick={() => onGroupChange(GROUP_TYPES.G7D)}
+                              className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
+                                userGroup === GROUP_TYPES.G7D
+                                  ? "bg-indigo-600 text-white"
+                                  : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                              }`}
+                            >
+                              7班D组
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="text-sm font-medium text-indigo-900">
+                            提前量（分钟）
+                          </div>
+                          <div className="grid grid-cols-4 gap-2">
+                            {leadMinuteOptions.map((minutes) => (
+                              <button
+                                key={minutes}
+                                onClick={() => onLeadMinutesChange?.(minutes)}
+                                className={`py-2 rounded-lg text-sm font-semibold transition-colors ${
+                                  leadMinutes === minutes
+                                    ? "bg-indigo-600 text-white"
+                                    : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                                }`}
+                              >
+                                {minutes}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {exactAlarmMessage && (
+                          <div className="flex items-center justify-between gap-2 bg-amber-50 text-amber-700 text-xs font-medium p-2 rounded-lg">
+                            <span>{exactAlarmMessage}</span>
+                            {exactAlarmStatus === "denied" && (
+                              <button
+                                onClick={onOpenExactAlarmSettings}
+                                className="px-2 py-1 rounded-md bg-amber-200 text-amber-900 hover:bg-amber-300 transition-colors"
+                              >
+                                去开启
+                              </button>
+                            )}
+                          </div>
+                        )}
+
+                        <button
+                          onClick={onTestNotification}
+                          className="w-full px-4 py-2.5 rounded-lg bg-indigo-100 text-indigo-700 font-semibold text-sm hover:bg-indigo-200 transition-colors"
+                        >
+                          发送测试通知
+                        </button>
+                        {notificationStatus && (
+                          <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                            {notificationStatus}
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* 更新与发布 */}
+              <div className="space-y-3">
+                <button
+                  onClick={() => setShowUpdateSection(!showUpdateSection)}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-indigo-100 text-indigo-700 text-base font-medium rounded-lg hover:bg-indigo-200 transition-colors"
+                >
+                  <span>更新与发布</span>
+                  {showUpdateSection ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                </button>
+                <AnimatePresence>
+                  {showUpdateSection && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="bg-white/30 backdrop-blur-sm rounded-lg p-3 sm:p-4 border-2 border-indigo-300 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="text-sm font-semibold text-indigo-900">
+                            课表软更新
+                          </div>
+                          {remoteUpdatedAt && (
+                            <span className="text-xs text-gray-500">
+                              更新时间 {remoteUpdatedAt}
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          onClick={handleSoftUpdateSchedule}
+                          disabled={isSoftUpdating}
+                          className={`w-full px-4 py-2.5 rounded-lg font-semibold text-sm transition-colors ${
+                            isSoftUpdating
+                              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                              : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                          }`}
+                        >
+                          {isSoftUpdating ? "更新中..." : "软更新课表"}
+                        </button>
+                        {softUpdateStatus && (
+                          <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                            {softUpdateStatus}
+                          </div>
+                        )}
+                        <p className="text-xs text-gray-600">
+                          点击后从远端拉取最新课表，检测到更新时会提示确认。
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
               {/* 课表管理 */}
               <div className="space-y-3">
-                <label className="block text-lg font-semibold text-indigo-900">
-                  课表管理
-                </label>
                 <button
-                  onClick={handleResetSchedule}
-                  className="w-full px-4 py-2.5 rounded-lg bg-rose-100 text-rose-700 font-semibold text-sm hover:bg-rose-200 transition-colors"
+                  onClick={() => setShowScheduleManagement(!showScheduleManagement)}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-indigo-100 text-indigo-700 text-base font-medium rounded-lg hover:bg-indigo-200 transition-colors"
                 >
-                  重置课表
+                  <span>课表管理</span>
+                  {showScheduleManagement ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                 </button>
-                <p className="text-xs text-gray-600">
-                  清除所有自定义修改，恢复内置课表数据。
-                </p>
-                {resetStatus && (
-                  <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
-                    {resetStatus}
-                  </div>
-                )}
+                <AnimatePresence>
+                  {showScheduleManagement && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="bg-white/30 backdrop-blur-sm rounded-lg p-3 sm:p-4 border-2 border-indigo-300 space-y-4">
+                        <div className="space-y-3">
+                          <div className="text-sm font-semibold text-indigo-900">
+                            开学日期
+                          </div>
+                          <input
+                            type="date"
+                            value={semesterStartDate}
+                            onChange={(e) => onStartDateChange(e.target.value)}
+                            lang="zh-CN"
+                            placeholder="选择开学日期"
+                            className="w-full px-4 py-3 border-2 border-indigo-300 rounded-lg text-base font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer"
+                            style={{
+                              colorScheme: 'light'
+                            }}
+                          />
+                          {todayInfo && (
+                            <div className="text-sm text-green-600 font-medium bg-green-50 p-3 rounded-lg">
+                              今天是第{todayInfo.week}周 星期{["一", "二", "三", "四", "五"][todayInfo.dayOfWeek - 1]}
+                            </div>
+                          )}
+                          {!todayInfo && semesterStartDate && (
+                            <div className="text-sm text-gray-500 font-medium bg-gray-50 p-3 rounded-lg">
+                              今天不在上课时间
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="text-sm font-semibold text-indigo-900">
+                            重置课表
+                          </div>
+                          <button
+                            onClick={handleResetSchedule}
+                            className="w-full px-4 py-2.5 rounded-lg bg-rose-100 text-rose-700 font-semibold text-sm hover:bg-rose-200 transition-colors"
+                          >
+                            重置课表
+                          </button>
+                          <p className="text-xs text-gray-600">
+                            清除所有自定义修改，恢复内置课表数据。
+                          </p>
+                          {resetStatus && (
+                            <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                              {resetStatus}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </motion.div>
+
+          {/* 软更新确认弹窗 */}
+          <AnimatePresence>
+            {showRemoteConfirm && pendingRemoteSnapshot && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4"
+              >
+                <motion.div
+                  initial={{ scale: 0.96, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.96, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="w-full max-w-sm rounded-2xl bg-white/90 backdrop-blur p-5 shadow-xl"
+                >
+                  <div className="text-base font-semibold text-indigo-900">
+                    检测到远端课表更新
+                  </div>
+                  <div className="mt-2 text-sm text-gray-600">
+                    是否应用远端课表更新？当前课表将被替换。
+                  </div>
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      onClick={handleCancelRemoteUpdate}
+                      className="flex-1 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition-colors"
+                    >
+                      暂不更新
+                    </button>
+                    <button
+                      onClick={handleConfirmRemoteUpdate}
+                      className="flex-1 px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 transition-colors"
+                    >
+                      应用更新
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </>
       )}
     </AnimatePresence>

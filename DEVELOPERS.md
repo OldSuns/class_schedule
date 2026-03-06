@@ -42,6 +42,19 @@
 - 更改周次范围或默认开学日期：编辑 `src/constants.js`。
 - 调整通知时间与内容：编辑 `src/notificationScheduler.js`。
 - 发布版本更新：修改 `package.json` 并执行 `npm run sync-version`。
+- 软更新课表源：执行 `npm run export-schedule` 生成根目录 `schedule.json` 并提交。
+
+## 课表软更新发布说明
+
+软更新使用仓库根目录 `schedule.json` 作为远端数据源（Raw URL 拉取）。
+发布课表更新时必须先生成并提交该文件：
+
+```bash
+npm run export-schedule
+git add schedule.json
+git commit -m "chore: update schedule.json"
+git push
+```
 
 ## Android 注意事项
 

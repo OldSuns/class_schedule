@@ -39,6 +39,10 @@ export const GITHUB_RELEASES_URL =
 export const GITHUB_RELEASES_API_LATEST =
   "https://api.github.com/repos/OldSuns/class_schedule/releases/latest";
 
+// 远端课表更新（软更新）
+export const SCHEDULE_REMOTE_URL =
+  "https://raw.githubusercontent.com/OldSuns/class_schedule/refs/heads/main/schedule.json";
+
 // 通知提前量（分钟）
 export const DEFAULT_NOTIFICATION_LEAD_MINUTES = 15;
 export const NOTIFICATION_LEAD_MINUTE_OPTIONS = [10, 15, 20, 30];
@@ -54,6 +58,8 @@ export const STORAGE_KEYS = {
   USER_GROUP: "userGroup",
   DISPLAY_MODE: "displayMode",
   CUSTOM_SCHEDULE: "customSchedule",
+  REMOTE_SCHEDULE_SNAPSHOT: "remoteScheduleSnapshot",
+  REMOTE_SCHEDULE_META: "remoteScheduleMeta",
   UPDATE_LAST_CHECK_DATE: "updateLastCheckDate",
   UPDATE_LAST_TOAST_DATE: "updateLastToastDate"
 };

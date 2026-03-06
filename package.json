@@ -8,8 +8,9 @@
   },
   "scripts": {
     "sync-version": "node scripts/sync-version.mjs",
+    "export-schedule": "node scripts/export-schedule.mjs",
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run export-schedule && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

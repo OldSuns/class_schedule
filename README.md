@@ -51,6 +51,8 @@ npm run preview
 - `npm run build` 生产构建
 - `npm run preview` 本地预览构建产物
 - `npm run sync-version` 同步应用版本（用于更新检查）
+- `npm run export-schedule` 生成 `schedule.json`（课表软更新远端源）
+
 
 ## 数据与配置
 

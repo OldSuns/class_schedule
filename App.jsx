@@ -59,8 +59,18 @@ const App = () => {
   const { isModalOpen, selectedCell, handleCellClick, closeModal } = useCourseModal();
 
   // 课表数据（支持本地自定义）
-  const { scheduleData, setScheduleData, resetSchedule, isScheduleLoaded } =
-    useScheduleData();
+  const {
+    scheduleData,
+    setScheduleData,
+    resetSchedule,
+    isScheduleLoaded,
+    softUpdateSchedule,
+    confirmRemoteUpdate,
+    cancelRemoteUpdate,
+    pendingRemoteSnapshot,
+    isCheckingRemote,
+    remoteUpdatedAt
+  } = useScheduleData();
 
   // 设置菜单状态
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
@@ -384,6 +394,12 @@ const App = () => {
           reliabilityMode={reliabilityMode}
           exactAlarmMessage={exactAlarmMessage}
           onOpenExactAlarmSettings={onOpenExactAlarmSettings}
+          onSoftUpdateSchedule={softUpdateSchedule}
+          onConfirmRemoteUpdate={confirmRemoteUpdate}
+          onCancelRemoteUpdate={cancelRemoteUpdate}
+          pendingRemoteSnapshot={pendingRemoteSnapshot}
+          isSoftUpdating={isCheckingRemote}
+          remoteUpdatedAt={remoteUpdatedAt}
           onResetSchedule={resetSchedule}
         />
 
