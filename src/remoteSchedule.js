@@ -1,4 +1,4 @@
-import { SCHEDULE_REMOTE_URL } from "./constants";
+import { SCHEDULE_REMOTE_URLS } from "./constants";
 import { normalizeSchedule } from "./scheduleUtils";
 
 export const buildScheduleSignature = (schedule) =>
@@ -19,67 +19,93 @@ const normalizeRemotePayload = (payload) => {
   };
 };
 
-export const fetchRemoteSchedule = async ({ etag, lastModified } = {}) => {
-  const request = async (headers) =>
-    fetch(SCHEDULE_REMOTE_URL, {
+export const fetchRemoteSchedule = async ({ meta } = {}) => {
+  const request = async (url, headers) =>
+    fetch(url, {
       headers,
       cache: "no-store"
     });
 
   const baseHeaders = { Accept: "application/json" };
-  const conditionalHeaders = { ...baseHeaders };
-  if (etag) {
-    conditionalHeaders["If-None-Match"] = etag;
-  }
-  if (lastModified) {
-    conditionalHeaders["If-Modified-Since"] = lastModified;
-  }
+  const currentMeta = meta && typeof meta === "object" ? meta : null;
 
-  let response = null;
-  try {
-    response = await request(conditionalHeaders);
-  } catch (error) {
-    // 条件请求失败时回退到普通 GET，规避跨源切换后的缓存头兼容问题
-    if (!etag && !lastModified) {
-      return { status: "error", message: "网络连接失败或更新源不可达" };
+  const buildConditionalHeaders = (url) => {
+    if (!currentMeta || currentMeta.sourceUrl !== url) return null;
+    if (!currentMeta.etag && !currentMeta.lastModified) return null;
+    const headers = { ...baseHeaders };
+    if (currentMeta.etag) {
+      headers["If-None-Match"] = currentMeta.etag;
     }
+    if (currentMeta.lastModified) {
+      headers["If-Modified-Since"] = currentMeta.lastModified;
+    }
+    return headers;
+  };
+
+  const fetchFromUrl = async (url) => {
+    const conditionalHeaders = buildConditionalHeaders(url);
+    let response = null;
+
     try {
-      response = await request(baseHeaders);
-    } catch (fallbackError) {
-      return { status: "error", message: "网络连接失败或更新源不可达" };
+      response = await request(url, conditionalHeaders || baseHeaders);
+    } catch (error) {
+      // 条件请求失败时回退到普通 GET，规避跨源切换后的缓存头兼容问题
+      if (!conditionalHeaders) {
+        return { status: "error", message: "网络连接失败或更新源不可达" };
+      }
+      try {
+        response = await request(url, baseHeaders);
+      } catch (fallbackError) {
+        return { status: "error", message: "网络连接失败或更新源不可达" };
+      }
     }
+
+    if (response.status === 304) {
+      return { status: "not-modified" };
+    }
+
+    if (!response.ok) {
+      return {
+        status: "error",
+        message: `检查失败（HTTP ${response.status}）`
+      };
+    }
+
+    let payload;
+    try {
+      payload = await response.json();
+    } catch (error) {
+      return { status: "error", message: "课表数据解析失败" };
+    }
+
+    try {
+      const snapshot = normalizeRemotePayload(payload);
+      const signature = buildScheduleSignature(snapshot.schedule);
+      const meta = {
+        etag: response.headers.get("etag") || "",
+        lastModified: response.headers.get("last-modified") || "",
+        updatedAt: snapshot.updatedAt || "",
+        signature,
+        sourceUrl: url
+      };
+      return { status: "updated", snapshot, meta };
+    } catch (error) {
+      return { status: "error", message: "课表数据结构不正确" };
+    }
+  };
+
+  let lastError = null;
+  for (const url of SCHEDULE_REMOTE_URLS) {
+    const result = await fetchFromUrl(url);
+    if (result.status === "error") {
+      lastError = result;
+      continue;
+    }
+    return result;
   }
 
-  if (response.status === 304) {
-    return { status: "not-modified" };
-  }
-
-  if (!response.ok) {
-    return {
-      status: "error",
-      message: `检查失败（HTTP ${response.status}）`
-    };
-  }
-
-  let payload;
-  try {
-    payload = await response.json();
-  } catch (error) {
-    return { status: "error", message: "课表数据解析失败" };
-  }
-
-  try {
-    const snapshot = normalizeRemotePayload(payload);
-    const signature = buildScheduleSignature(snapshot.schedule);
-    const meta = {
-      etag: response.headers.get("etag") || "",
-      lastModified: response.headers.get("last-modified") || "",
-      updatedAt: snapshot.updatedAt || "",
-      signature,
-      sourceUrl: SCHEDULE_REMOTE_URL
-    };
-    return { status: "updated", snapshot, meta };
-  } catch (error) {
-    return { status: "error", message: "课表数据结构不正确" };
-  }
+  return {
+    status: "error",
+    message: lastError?.message || "网络连接失败或更新源不可达"
+  };
 };

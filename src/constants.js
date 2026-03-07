@@ -39,9 +39,12 @@ export const GITHUB_RELEASES_URL =
 export const GITHUB_RELEASES_API_LATEST =
   "https://gitee.com/api/v5/repos/oldsuns/class_schedule/releases/latest";
 
-// 远端课表更新（软更新）
-export const SCHEDULE_REMOTE_URL =
-  "https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json";
+// 远端课表更新（软更新）地址（按优先级依次回退）
+export const SCHEDULE_REMOTE_URLS = [
+  "https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json",
+  "https://gcore.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json",
+  "https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json"
+];
 
 // 通知提前量（分钟）
 export const DEFAULT_NOTIFICATION_LEAD_MINUTES = 15;

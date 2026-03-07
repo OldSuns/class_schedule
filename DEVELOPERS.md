@@ -67,3 +67,9 @@ git push
 
 - Web：使用浏览器 DevTools，检查 `src/constants.js` 中的本地存储 key。
 - Android：使用 `adb logcat` 查看运行日志与权限问题。
+
+## 刷新jsdelivr缓存
+ - [jsdelivr purge](https://www.jsdelivr.com/tools/purge)
+ -  Purge 工具中输入当前的 CDN URL（https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json），执行 Purge。
+ -  （推荐）或直接访问[purge](https://purge.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json) ,浏览器里打开即可触发 purge。
+ -  测试：访问 [CDN](cdn.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json) ； 并尝试访问 [Fastly](fastly.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json)

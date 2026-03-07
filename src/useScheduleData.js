@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as storage from "../storage";
-import { SCHEDULE_REMOTE_URL, STORAGE_KEYS } from "./constants";
+import { STORAGE_KEYS } from "./constants";
 import { scheduleData as defaultScheduleData } from "./scheduleData";
 import { normalizeSchedule } from "./scheduleUtils";
 import {
@@ -202,16 +202,7 @@ export const useScheduleData = () => {
     }
     setIsCheckingRemote(true);
     try {
-      const result = await fetchRemoteSchedule({
-        etag:
-          remoteMeta?.sourceUrl === SCHEDULE_REMOTE_URL
-            ? remoteMeta?.etag
-            : "",
-        lastModified:
-          remoteMeta?.sourceUrl === SCHEDULE_REMOTE_URL
-            ? remoteMeta?.lastModified
-            : ""
-      });
+      const result = await fetchRemoteSchedule({ meta: remoteMeta });
 
       let nextSnapshot = remoteSnapshot;
       let nextMeta = remoteMeta;
