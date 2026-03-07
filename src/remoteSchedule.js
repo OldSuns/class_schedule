@@ -61,7 +61,7 @@ export const fetchRemoteSchedule = async ({ meta } = {}) => {
     }
 
     if (response.status === 304) {
-      return { status: "not-modified" };
+      return { status: "not-modified", sourceUrl: url };
     }
 
     if (!response.ok) {
@@ -88,7 +88,7 @@ export const fetchRemoteSchedule = async ({ meta } = {}) => {
         signature,
         sourceUrl: url
       };
-      return { status: "updated", snapshot, meta };
+      return { status: "updated", snapshot, meta, sourceUrl: url };
     } catch (error) {
       return { status: "error", message: "课表数据结构不正确" };
     }

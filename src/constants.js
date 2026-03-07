@@ -31,7 +31,7 @@ export const DISPLAY_MODES = {
 };
 
 // 当前应用版本（用于更新检查）
-export const APP_VERSION = "1.9.8";
+export const APP_VERSION = "1.9.9";
 
 // Gitee Releases
 export const GITHUB_RELEASES_URL =
@@ -41,10 +41,11 @@ export const GITHUB_RELEASES_API_LATEST =
 
 // 远端课表更新（软更新）地址（按优先级依次回退）
 export const SCHEDULE_REMOTE_URLS = [
-  "https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json",
   "https://gcore.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json",
+  "https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json",
   "https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json"
-];
+]; 
+
 
 // 通知提前量（分钟）
 export const DEFAULT_NOTIFICATION_LEAD_MINUTES = 15;

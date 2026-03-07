@@ -50,6 +50,21 @@ const SettingsMenu = ({
   const [showUpdateSection, setShowUpdateSection] = useState(false);
   const [showScheduleManagement, setShowScheduleManagement] = useState(false);
 
+  const getSourceHost = (sourceUrl) => {
+    if (!sourceUrl) return "";
+    try {
+      return new URL(sourceUrl).host;
+    } catch (error) {
+      return "";
+    }
+  };
+
+  const withSourceLabel = (message, sourceUrl) => {
+    if (!message) return "";
+    const host = getSourceHost(sourceUrl);
+    return host ? `${message}（来源：${host}）` : message;
+  };
+
   useEffect(() => {
     if (!isOpen) {
       setResetStatus("");
@@ -100,22 +115,34 @@ const SettingsMenu = ({
     setSoftUpdateStatus("");
     const result = await onSoftUpdateSchedule();
     if (result?.status === "update-available") {
+      setSoftUpdateStatus(
+        withSourceLabel(
+          result?.message || "检测到远端课表更新",
+          result?.sourceUrl
+        )
+      );
       setShowRemoteConfirm(true);
       return;
     }
-    setSoftUpdateStatus(result?.message || "检查完成");
+    setSoftUpdateStatus(
+      withSourceLabel(result?.message || "检查完成", result?.sourceUrl)
+    );
   };
 
   const handleConfirmRemoteUpdate = () => {
     const result = onConfirmRemoteUpdate?.();
     setShowRemoteConfirm(false);
-    setSoftUpdateStatus(result?.message || "课表已更新");
+    setSoftUpdateStatus(
+      withSourceLabel(result?.message || "课表已更新", result?.sourceUrl)
+    );
   };
 
   const handleCancelRemoteUpdate = () => {
     const result = onCancelRemoteUpdate?.();
     setShowRemoteConfirm(false);
-    setSoftUpdateStatus(result?.message || "已暂不更新");
+    setSoftUpdateStatus(
+      withSourceLabel(result?.message || "已暂不更新", result?.sourceUrl)
+    );
   };
 
   return (

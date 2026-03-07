@@ -77,6 +77,7 @@ export const useScheduleData = () => {
   const [remoteMeta, setRemoteMeta] = useState(null);
   const [isCheckingRemote, setIsCheckingRemote] = useState(false);
   const [pendingRemoteSnapshot, setPendingRemoteSnapshot] = useState(null);
+  const [pendingRemoteSourceUrl, setPendingRemoteSourceUrl] = useState("");
   const hasUserChangedScheduleRef = useRef(false);
 
   useEffect(() => {
@@ -154,23 +155,27 @@ export const useScheduleData = () => {
     if (!pendingRemoteSnapshot) return null;
     applyRemoteSchedule(pendingRemoteSnapshot);
     setPendingRemoteSnapshot(null);
+    setPendingRemoteSourceUrl("");
     return {
       status: "updated",
       message: "课表已更新",
-      updatedAt: pendingRemoteSnapshot.updatedAt
+      updatedAt: pendingRemoteSnapshot.updatedAt,
+      sourceUrl: pendingRemoteSourceUrl
     };
-  }, [applyRemoteSchedule, pendingRemoteSnapshot]);
+  }, [applyRemoteSchedule, pendingRemoteSnapshot, pendingRemoteSourceUrl]);
 
   const cancelRemoteUpdate = useCallback(() => {
     if (!pendingRemoteSnapshot) return null;
     const updatedAt = pendingRemoteSnapshot.updatedAt;
     setPendingRemoteSnapshot(null);
+    setPendingRemoteSourceUrl("");
     return {
       status: "skipped",
       message: "已暂不更新",
-      updatedAt
+      updatedAt,
+      sourceUrl: pendingRemoteSourceUrl
     };
-  }, [pendingRemoteSnapshot]);
+  }, [pendingRemoteSnapshot, pendingRemoteSourceUrl]);
 
   useEffect(() => {
     if (!isScheduleLoaded) return;
@@ -192,6 +197,7 @@ export const useScheduleData = () => {
     setRemoteSnapshot(null);
     setRemoteMeta(null);
     setPendingRemoteSnapshot(null);
+    setPendingRemoteSourceUrl("");
     await storage.removeItem(STORAGE_KEYS.REMOTE_SCHEDULE_SNAPSHOT);
     await storage.removeItem(STORAGE_KEYS.REMOTE_SCHEDULE_META);
   };
@@ -203,6 +209,7 @@ export const useScheduleData = () => {
     setIsCheckingRemote(true);
     try {
       const result = await fetchRemoteSchedule({ meta: remoteMeta });
+      const checkedSourceUrl = result?.meta?.sourceUrl || result?.sourceUrl || "";
 
       let nextSnapshot = remoteSnapshot;
       let nextMeta = remoteMeta;
@@ -237,15 +244,18 @@ export const useScheduleData = () => {
         return {
           status: "latest",
           message: "已是最新课表",
-          updatedAt: nextSnapshot.updatedAt
+          updatedAt: nextSnapshot.updatedAt,
+          sourceUrl: checkedSourceUrl
         };
       }
 
+      setPendingRemoteSourceUrl(checkedSourceUrl);
       setPendingRemoteSnapshot(nextSnapshot);
       return {
         status: "update-available",
         message: "检测到远端课表更新",
-        updatedAt: nextSnapshot.updatedAt
+        updatedAt: nextSnapshot.updatedAt,
+        sourceUrl: checkedSourceUrl
       };
     } catch (error) {
       console.error("课表软更新失败:", error);
