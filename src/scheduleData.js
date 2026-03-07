@@ -184,14 +184,12 @@ export const scheduleData = [
       { period: 9, courses: [] },
       { period: 10, courses: [] },
       { period: 11, courses: [
-          { name: "形势与政策A", weeks: [14,15], group: null, note: { default: "", weeks: { 14: "陈超怡", 15: "陈超怡" } }, location: "未排地点" }
+          { name: "形势与政策A", weeks: [14,15], group: null, note: "陈超怡", location: "未排地点" }
         ]},
       { period: 12, courses: [
-          { name: "形势与政策A", weeks: [14,15], group: null, note: { default: "", weeks: { 14: "陈超怡", 15: "陈超怡" } }, location: "未排地点" }
-        ]},
-      { period: 13, courses: [
           { name: "形势与政策A", weeks: [14,15], group: null, note: "陈超怡", location: "未排地点" }
-        ] }
+        ]},
+      { period: 13, courses: [] }
     ]
   },
   // 星期四

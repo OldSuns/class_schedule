@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-03-06",
+  "updatedAt": "2026-03-07",
   "schedule": [
     {
       "day": "Monday",
@@ -1366,13 +1366,7 @@
                 15
               ],
               "group": null,
-              "note": {
-                "default": "",
-                "weeks": {
-                  "14": "陈超怡",
-                  "15": "陈超怡"
-                }
-              },
+              "note": "陈超怡",
               "location": "未排地点"
             }
           ]
@@ -1387,31 +1381,14 @@
                 15
               ],
               "group": null,
-              "note": {
-                "default": "",
-                "weeks": {
-                  "14": "陈超怡",
-                  "15": "陈超怡"
-                }
-              },
+              "note": "陈超怡",
               "location": "未排地点"
             }
           ]
         },
         {
           "period": 13,
-          "courses": [
-            {
-              "name": "形势与政策A",
-              "weeks": [
-                14,
-                15
-              ],
-              "group": null,
-              "note": "陈超怡",
-              "location": "未排地点"
-            }
-          ]
+          "courses": []
         }
       ]
     },
