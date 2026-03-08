@@ -39,6 +39,8 @@ const SettingsMenu = ({
   pendingRemoteSnapshot = null,
   isSoftUpdating = false,
   remoteUpdatedAt = "",
+  scheduleSource = "builtin",
+  hasManualScheduleChanges = false,
   onResetSchedule
 }) => {
   const [showWeekSelector, setShowWeekSelector] = useState(false);
@@ -67,6 +69,15 @@ const SettingsMenu = ({
     const host = getSourceHost(sourceUrl);
     return host ? `${message}（来源：${host}）` : message;
   };
+
+  const scheduleSourceLabelMap = {
+    builtin: "内置课表",
+    remote: "远端课表",
+    manual: "手动编辑课表"
+  };
+
+  const currentScheduleSourceLabel =
+    scheduleSourceLabelMap[scheduleSource] || "未知来源";
 
   useEffect(() => {
     if (!isOpen) {
@@ -141,7 +152,7 @@ const SettingsMenu = ({
     if (!onSoftUpdateSchedule) return;
     if (isSoftUpdating) return;
     setSoftUpdateStatus("");
-    const result = await onSoftUpdateSchedule();
+    const result = await onSoftUpdateSchedule({ trigger: "manual" });
     if (result?.status === "update-available") {
       setSoftUpdateStatus(
         withSourceLabel(
@@ -157,16 +168,16 @@ const SettingsMenu = ({
     );
   };
 
-  const handleConfirmRemoteUpdate = () => {
-    const result = onConfirmRemoteUpdate?.();
+  const handleConfirmRemoteUpdate = async () => {
+    const result = await onConfirmRemoteUpdate?.();
     setShowRemoteConfirm(false);
     setSoftUpdateStatus(
       withSourceLabel(result?.message || "课表已更新", result?.sourceUrl)
     );
   };
 
-  const handleCancelRemoteUpdate = () => {
-    const result = onCancelRemoteUpdate?.();
+  const handleCancelRemoteUpdate = async () => {
+    const result = await onCancelRemoteUpdate?.();
     setShowRemoteConfirm(false);
     setSoftUpdateStatus(
       withSourceLabel(result?.message || "已暂不更新", result?.sourceUrl)
@@ -571,6 +582,36 @@ const SettingsMenu = ({
                               今天不在上课时间
                             </div>
                           )}
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="text-sm font-semibold text-indigo-900">
+                            当前课表状态
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="rounded-lg bg-indigo-50 px-3 py-2">
+                              <div className="text-[11px] text-indigo-500">
+                                当前来源
+                              </div>
+                              <div className="mt-1 text-sm font-semibold text-indigo-900">
+                                {currentScheduleSourceLabel}
+                              </div>
+                            </div>
+                            <div className="rounded-lg bg-indigo-50 px-3 py-2">
+                              <div className="text-[11px] text-indigo-500">
+                                手动修改
+                              </div>
+                              <div className="mt-1 text-sm font-semibold text-indigo-900">
+                                {hasManualScheduleChanges ? "有" : "无"}
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-xs text-gray-600">
+                            当前课表来源为“{currentScheduleSourceLabel}”，
+                            {hasManualScheduleChanges
+                              ? "已包含你的手动编辑。"
+                              : "当前没有检测到手动编辑记录。"}
+                          </p>
                         </div>
 
                         <div className="space-y-3">

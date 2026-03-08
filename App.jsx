@@ -81,6 +81,8 @@ const App = () => {
   const {
     scheduleData,
     setScheduleData,
+    scheduleSource,
+    hasManualScheduleChanges,
     resetSchedule,
     isScheduleLoaded,
     softUpdateSchedule,
@@ -107,9 +109,14 @@ const App = () => {
     isOpen: false,
     message: ""
   });
+  const softUpdateScheduleRef = useRef(softUpdateSchedule);
   const previousWeekRef = useRef(currentWeek);
   const weekSwitchControls = useAnimationControls();
   const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    softUpdateScheduleRef.current = softUpdateSchedule;
+  }, [softUpdateSchedule]);
 
   useEffect(() => {
     if (!builtInUpdateNotice) return;
@@ -281,27 +288,46 @@ const App = () => {
     };
 
     const shouldCheck = async (reason) => {
-      if (reason === "startup") {
-        return true;
-      }
-
       const now = Date.now();
       const [
         lastCheckRaw,
         lastForegroundCheckRaw,
-        lastErrorRaw
+        lastErrorRaw,
+        skippedUpdateRaw
       ] = await Promise.all([
         getItem(STORAGE_KEYS.REMOTE_LAST_CHECK_AT),
         getItem(STORAGE_KEYS.REMOTE_LAST_FOREGROUND_CHECK_AT),
-        getItem(STORAGE_KEYS.REMOTE_LAST_ERROR_AT)
+        getItem(STORAGE_KEYS.REMOTE_LAST_ERROR_AT),
+        getItem(STORAGE_KEYS.REMOTE_SKIPPED_UPDATE)
       ]);
 
       const lastCheck = Number(lastCheckRaw);
       const lastForegroundCheck = Number(lastForegroundCheckRaw);
       const lastError = Number(lastErrorRaw);
+      let skippedAt = 0;
+      if (skippedUpdateRaw) {
+        try {
+          const parsedSkippedUpdate = JSON.parse(skippedUpdateRaw);
+          skippedAt = Number(parsedSkippedUpdate?.skippedAt) || 0;
+        } catch (error) {
+          skippedAt = 0;
+        }
+      }
+      const hasSkippedUpdate = Boolean(skippedUpdateRaw);
 
       if (!hasElapsed(lastError, REMOTE_SCHEDULE_ERROR_RETRY_INTERVAL_MS, now)) {
         return false;
+      }
+
+      if (reason === "startup") {
+        if (!hasSkippedUpdate) {
+          return true;
+        }
+        return hasElapsed(
+          skippedAt || lastCheck,
+          REMOTE_SCHEDULE_CHECK_INTERVAL_MS,
+          now
+        );
       }
 
       if (reason === "foreground") {
@@ -346,7 +372,9 @@ const App = () => {
       try {
         const ok = await shouldCheck(reason);
         if (!ok) return;
-        const result = await softUpdateSchedule();
+        const result = await softUpdateScheduleRef.current({
+          trigger: "auto"
+        });
         await persistCheckState(result, reason);
         if (!cancelled && result?.status === "update-available") {
           setScheduleUpdateToast({
@@ -402,7 +430,7 @@ const App = () => {
         document.removeEventListener("visibilitychange", handleVisibility);
       }
     };
-  }, [isScheduleLoaded, softUpdateSchedule]);
+  }, [isScheduleLoaded]);
 
   // 合并课程单元格
   const mergedCellsByDay = useMemo(() => {
@@ -620,6 +648,8 @@ const App = () => {
           pendingRemoteSnapshot={pendingRemoteSnapshot}
           isSoftUpdating={isCheckingRemote}
           remoteUpdatedAt={remoteUpdatedAt}
+          scheduleSource={scheduleSource}
+          hasManualScheduleChanges={hasManualScheduleChanges}
           onResetSchedule={resetSchedule}
         />
 

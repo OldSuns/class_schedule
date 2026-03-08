@@ -67,6 +67,7 @@ export const STORAGE_KEYS = {
   CUSTOM_SCHEDULE: "customSchedule",
   REMOTE_SCHEDULE_SNAPSHOT: "remoteScheduleSnapshot",
   REMOTE_SCHEDULE_META: "remoteScheduleMeta",
+  REMOTE_SKIPPED_UPDATE: "remoteSkippedUpdate",
   DEFAULT_SCHEDULE_VERSION: "defaultScheduleVersion",
   DEFAULT_SCHEDULE_SIGNATURE: "defaultScheduleSignature",
   REMOTE_LAST_CHECK_AT: "remoteScheduleLastCheckAt",
