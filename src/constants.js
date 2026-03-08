@@ -34,7 +34,7 @@ export const DISPLAY_MODES = {
 };
 
 // 当前应用版本（用于更新检查）
-export const APP_VERSION = "1.9.10";
+export const APP_VERSION = "1.9.11";
 
 // Gitee Releases
 export const GITHUB_RELEASES_URL =
@@ -70,6 +70,8 @@ export const STORAGE_KEYS = {
   DEFAULT_SCHEDULE_VERSION: "defaultScheduleVersion",
   DEFAULT_SCHEDULE_SIGNATURE: "defaultScheduleSignature",
   REMOTE_LAST_CHECK_AT: "remoteScheduleLastCheckAt",
+  REMOTE_LAST_FOREGROUND_CHECK_AT: "remoteScheduleLastForegroundCheckAt",
+  REMOTE_LAST_ERROR_AT: "remoteScheduleLastErrorAt",
   UPDATE_LAST_CHECK_DATE: "updateLastCheckDate",
   UPDATE_LAST_TOAST_DATE: "updateLastToastDate"
 };

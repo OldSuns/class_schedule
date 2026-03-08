@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { getPeriodLabel, getPeriodTime } from "./timeUtils";
 import { DAYS, DAY_NAMES, MAX_PERIOD } from "./constants";
 import { getCourseLocation } from "./courseUtils";
+
+const HOVER_CAPABLE_MEDIA_QUERY = "(hover: hover) and (pointer: fine)";
+
+const getCanHover = () => {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+    return false;
+  }
+
+  return window.matchMedia(HOVER_CAPABLE_MEDIA_QUERY).matches;
+};
 
 /**
  * 课程表格组件
@@ -14,6 +24,29 @@ const CourseTable = ({
   onCellClick,
   isScheduleLoaded = true
 }) => {
+  const [canHover, setCanHover] = useState(getCanHover);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia(HOVER_CAPABLE_MEDIA_QUERY);
+    const updateCanHover = () => {
+      setCanHover(mediaQuery.matches);
+    };
+
+    updateCanHover();
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", updateCanHover);
+      return () => mediaQuery.removeEventListener("change", updateCanHover);
+    }
+
+    mediaQuery.addListener(updateCanHover);
+    return () => mediaQuery.removeListener(updateCanHover);
+  }, []);
+
   return (
     <div className="bg-white rounded-lg sm:rounded-2xl shadow-xl overflow-hidden border border-indigo-100">
       <div className="overflow-x-auto">
@@ -62,26 +95,28 @@ const CourseTable = ({
                         }
                         className={`group py-2 sm:py-3 md:py-4 border border-gray-200 transition-colors ${
                           isScheduleLoaded
-                            ? "cursor-pointer bg-white hover:bg-indigo-50"
+                            ? `cursor-pointer bg-white ${
+                                canHover ? "hover:bg-indigo-50" : ""
+                              }`
                             : "cursor-not-allowed bg-gray-50"
                         }`}
                         title={isScheduleLoaded ? "点击添加课程" : "课表加载中"}
                       >
-                        <div
-                          className={`flex items-center justify-center text-xs transition-opacity ${
-                            isScheduleLoaded
-                              ? "text-indigo-400 opacity-0 group-hover:opacity-100"
-                              : "text-gray-400 opacity-100"
-                          }`}
-                        >
-                          <Plus size={12} className="mr-0.5" />
-                          <span className="hidden sm:inline">
-                            {isScheduleLoaded ? "新增课程" : "加载中"}
-                          </span>
-                          <span className="inline sm:hidden">
-                            {isScheduleLoaded ? "新增" : "..."}
-                          </span>
-                        </div>
+                        {isScheduleLoaded ? (
+                          canHover ? (
+                            <div className="flex items-center justify-center text-xs text-indigo-400 opacity-0 transition-opacity group-hover:opacity-100">
+                              <Plus size={12} className="mr-0.5" />
+                              <span className="hidden sm:inline">新增课程</span>
+                              <span className="inline sm:hidden">新增</span>
+                            </div>
+                          ) : null
+                        ) : (
+                          <div className="flex items-center justify-center text-xs text-gray-400 opacity-100">
+                            <Plus size={12} className="mr-0.5" />
+                            <span className="hidden sm:inline">加载中</span>
+                            <span className="inline sm:hidden">...</span>
+                          </div>
+                        )}
                       </td>
                     );
                   }

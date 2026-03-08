@@ -9,6 +9,18 @@
 }
 
 html,
-body {
+body,
+#root {
   height: 100%;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+  background: #eff6ff;
+}
+
+body {
+  margin: 0;
 }

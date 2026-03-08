@@ -1,4 +1,5 @@
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useRef, useState } from "react";
+import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from "@capacitor/app";
@@ -16,7 +17,9 @@ import { useWeekSelector } from "./src/useWeekSelector";
 import { useCourseModal } from "./src/useCourseModal";
 import { useNotifications } from "./src/useNotifications";
 import { useDisplayMode } from "./src/useDisplayMode";
+import { useMobileDetect } from "./src/useMobileDetect";
 import { useScheduleData } from "./src/useScheduleData";
+import { useWeekSwipe } from "./src/useWeekSwipe";
 
 // 数据和工具
 import { mergeCellsByDay } from "./src/courseUtils";
@@ -33,6 +36,21 @@ import { getItem, setItem } from "./storage";
 
 const UPDATE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const REMOTE_SCHEDULE_CHECK_INTERVAL_MS = 8 * 60 * 60 * 1000;
+const REMOTE_SCHEDULE_FOREGROUND_CHECK_INTERVAL_MS = 10 * 60 * 1000;
+const REMOTE_SCHEDULE_ERROR_RETRY_INTERVAL_MS = 3 * 60 * 1000;
+const WEEK_SWITCH_OFFSET_PX = 12;
+const WEEK_SWITCH_TRANSITION = {
+  duration: 0.16,
+  ease: [0.22, 1, 0.36, 1]
+};
+
+const isFiniteTimestamp = (value) => Number.isFinite(value) && value > 0;
+
+const hasElapsed = (lastAt, intervalMs, now = Date.now()) =>
+  !isFiniteTimestamp(lastAt) || now - lastAt >= intervalMs;
+
+const isRemoteCheckSuccessful = (status) =>
+  status && status !== "error" && status !== "busy";
 
 const getTodayKey = (date = new Date()) => {
   const year = date.getFullYear();
@@ -79,6 +97,7 @@ const App = () => {
 
   // 显示模式设置
   const { displayMode, onDisplayModeChange } = useDisplayMode();
+  const isMobile = useMobileDetect();
 
   // 当前时间（用于进度条刷新）
   const [now, setNow] = useState(() => new Date());
@@ -88,6 +107,9 @@ const App = () => {
     isOpen: false,
     message: ""
   });
+  const previousWeekRef = useRef(currentWeek);
+  const weekSwitchControls = useAnimationControls();
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (!builtInUpdateNotice) return;
@@ -258,37 +280,74 @@ const App = () => {
       return document.visibilityState === "visible";
     };
 
-    const shouldCheck = async () => {
-      const lastCheckRaw = await getItem(STORAGE_KEYS.REMOTE_LAST_CHECK_AT);
+    const shouldCheck = async (reason) => {
+      const now = Date.now();
+      const [
+        lastCheckRaw,
+        lastForegroundCheckRaw,
+        lastErrorRaw
+      ] = await Promise.all([
+        getItem(STORAGE_KEYS.REMOTE_LAST_CHECK_AT),
+        getItem(STORAGE_KEYS.REMOTE_LAST_FOREGROUND_CHECK_AT),
+        getItem(STORAGE_KEYS.REMOTE_LAST_ERROR_AT)
+      ]);
+
       const lastCheck = Number(lastCheckRaw);
-      if (Number.isFinite(lastCheck)) {
-        const elapsed = Date.now() - lastCheck;
-        if (elapsed < REMOTE_SCHEDULE_CHECK_INTERVAL_MS) {
-          return false;
-        }
+      const lastForegroundCheck = Number(lastForegroundCheckRaw);
+      const lastError = Number(lastErrorRaw);
+
+      if (!hasElapsed(lastError, REMOTE_SCHEDULE_ERROR_RETRY_INTERVAL_MS, now)) {
+        return false;
       }
-      return true;
+
+      if (reason === "foreground") {
+        return hasElapsed(
+          lastForegroundCheck,
+          REMOTE_SCHEDULE_FOREGROUND_CHECK_INTERVAL_MS,
+          now
+        );
+      }
+
+      return hasElapsed(lastCheck, REMOTE_SCHEDULE_CHECK_INTERVAL_MS, now);
     };
 
-    const checkRemoteSchedule = async () => {
+    const persistCheckState = async (result, reason) => {
+      const status = result?.status || "";
+      const now = String(Date.now());
+
+      if (isRemoteCheckSuccessful(status)) {
+        const writes = [
+          setItem(STORAGE_KEYS.REMOTE_LAST_CHECK_AT, now),
+          setItem(STORAGE_KEYS.REMOTE_LAST_ERROR_AT, "")
+        ];
+        if (reason === "foreground") {
+          writes.push(
+            setItem(STORAGE_KEYS.REMOTE_LAST_FOREGROUND_CHECK_AT, now)
+          );
+        }
+        await Promise.all(writes);
+        return;
+      }
+
+      if (status === "error") {
+        await setItem(STORAGE_KEYS.REMOTE_LAST_ERROR_AT, now);
+      }
+    };
+
+    const checkRemoteSchedule = async (reason = "interval") => {
       if (cancelled || inFlight) return;
       if (!isVisible()) return;
 
       inFlight = true;
       try {
-        const ok = await shouldCheck();
+        const ok = await shouldCheck(reason);
         if (!ok) return;
         const result = await softUpdateSchedule();
-        if (result?.status !== "busy") {
-          await setItem(
-            STORAGE_KEYS.REMOTE_LAST_CHECK_AT,
-            String(Date.now())
-          );
-        }
+        await persistCheckState(result, reason);
         if (!cancelled && result?.status === "update-available") {
           setScheduleUpdateToast({
             isOpen: true,
-            message: "检测到远端课表更新"
+            message: "检测到远端课表更新，可在设置中应用"
           });
         }
       } finally {
@@ -296,9 +355,9 @@ const App = () => {
       }
     };
 
-    checkRemoteSchedule();
+    checkRemoteSchedule("initial");
     const timer = setInterval(
-      checkRemoteSchedule,
+      () => checkRemoteSchedule("interval"),
       REMOTE_SCHEDULE_CHECK_INTERVAL_MS
     );
 
@@ -310,7 +369,7 @@ const App = () => {
           ({ isActive }) => {
             appIsActive = isActive;
             if (isActive) {
-              checkRemoteSchedule();
+              checkRemoteSchedule("foreground");
             }
           }
         );
@@ -319,12 +378,15 @@ const App = () => {
 
     setupListener();
 
-    const handleVisibility = () => {
-      if (document.visibilityState === "visible") {
-        checkRemoteSchedule();
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
+    let handleVisibility = null;
+    if (!Capacitor.isNativePlatform()) {
+      handleVisibility = () => {
+        if (document.visibilityState === "visible") {
+          checkRemoteSchedule("foreground");
+        }
+      };
+      document.addEventListener("visibilitychange", handleVisibility);
+    }
 
     return () => {
       cancelled = true;
@@ -332,7 +394,9 @@ const App = () => {
       if (listenerHandle) {
         listenerHandle.remove();
       }
-      document.removeEventListener("visibilitychange", handleVisibility);
+      if (handleVisibility) {
+        document.removeEventListener("visibilitychange", handleVisibility);
+      }
     };
   }, [isScheduleLoaded, softUpdateSchedule]);
 
@@ -446,11 +510,6 @@ const App = () => {
     });
   };
 
-  const handleScheduleCellClick = (day, periodStart, periodEnd) => {
-    if (!isScheduleLoaded) return;
-    handleCellClick(day, periodStart, periodEnd);
-  };
-
   // 处理开学日期变化
   const handleDateChange = async (date) => {
     const info = await handleStartDateChange(date);
@@ -469,6 +528,49 @@ const App = () => {
       prev.isOpen ? { ...prev, isOpen: false } : prev
     );
   };
+
+  const weekSwipeEnabled = isMobile && !isSettingsMenuOpen && !isModalOpen;
+  const { handlers: weekSwipeHandlers, isSwipeLocked } = useWeekSwipe({
+    enabled: weekSwipeEnabled,
+    onSwipeLeft: handleNextWeek,
+    onSwipeRight: handlePreviousWeek
+  });
+
+  const handleScheduleCellClick = (day, periodStart, periodEnd) => {
+    if (!isScheduleLoaded || isSwipeLocked()) return;
+    handleCellClick(day, periodStart, periodEnd);
+  };
+
+  useEffect(() => {
+    const previousWeek = previousWeekRef.current;
+    if (previousWeek === currentWeek) {
+      weekSwitchControls.set({ opacity: 1, x: 0 });
+      return;
+    }
+
+    previousWeekRef.current = currentWeek;
+
+    if (prefersReducedMotion) {
+      weekSwitchControls.set({ opacity: 1, x: 0 });
+      return;
+    }
+
+    const direction = currentWeek > previousWeek ? 1 : -1;
+    weekSwitchControls.set({
+      opacity: 0.96,
+      x: direction > 0 ? WEEK_SWITCH_OFFSET_PX : -WEEK_SWITCH_OFFSET_PX
+    });
+
+    const animationFrame = window.requestAnimationFrame(() => {
+      weekSwitchControls.start({
+        opacity: 1,
+        x: 0,
+        transition: WEEK_SWITCH_TRANSITION
+      });
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [currentWeek, prefersReducedMotion, weekSwitchControls]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4 pt-[var(--safe-top)] pb-[var(--safe-bottom)]">
@@ -518,13 +620,25 @@ const App = () => {
         />
 
         {/* 课表 */}
-        <CourseTable
-          mergedCellsByDay={mergedCellsByDay}
-          todayInfo={todayInfo}
-          currentWeek={currentWeek}
-          onCellClick={handleScheduleCellClick}
-          isScheduleLoaded={isScheduleLoaded}
-        />
+        <div
+          {...weekSwipeHandlers}
+          className="overflow-x-hidden"
+          style={weekSwipeEnabled ? { touchAction: "pan-y" } : undefined}
+        >
+          <motion.div
+            initial={false}
+            animate={weekSwitchControls}
+            style={{ willChange: "transform, opacity" }}
+          >
+            <CourseTable
+              mergedCellsByDay={mergedCellsByDay}
+              todayInfo={todayInfo}
+              currentWeek={currentWeek}
+              onCellClick={handleScheduleCellClick}
+              isScheduleLoaded={isScheduleLoaded}
+            />
+          </motion.div>
+        </div>
 
         {/* 课程详情模态框 */}
         <CourseModal

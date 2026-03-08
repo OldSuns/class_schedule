@@ -9,8 +9,9 @@ import {
 } from "./remoteSchedule";
 
 const STORAGE_VERSION = 1;
+const createDefaultSchedule = () => normalizeSchedule(defaultScheduleData);
 const DEFAULT_SCHEDULE_SIGNATURE = buildScheduleSignature(
-  normalizeSchedule(defaultScheduleData)
+  createDefaultSchedule()
 );
 
 const parseRemoteSnapshot = (raw) => {
@@ -71,9 +72,7 @@ const persistRemoteMeta = async (meta) => {
 };
 
 export const useScheduleData = () => {
-  const [scheduleData, setScheduleData] = useState(() =>
-    normalizeSchedule(defaultScheduleData)
-  );
+  const [scheduleData, setScheduleData] = useState(() => createDefaultSchedule());
   const [isScheduleLoaded, setIsScheduleLoaded] = useState(false);
   const [hasCustomSchedule, setHasCustomSchedule] = useState(false);
   const [remoteSnapshot, setRemoteSnapshot] = useState(null);
@@ -83,6 +82,29 @@ export const useScheduleData = () => {
   const [pendingRemoteSourceUrl, setPendingRemoteSourceUrl] = useState("");
   const [builtInUpdateNotice, setBuiltInUpdateNotice] = useState("");
   const hasUserChangedScheduleRef = useRef(false);
+
+  const clearPendingRemoteUpdate = useCallback(() => {
+    setPendingRemoteSnapshot(null);
+    setPendingRemoteSourceUrl("");
+  }, []);
+
+  const clearRemoteScheduleStorage = useCallback(async () => {
+    await Promise.all([
+      storage.removeItem(STORAGE_KEYS.REMOTE_SCHEDULE_SNAPSHOT),
+      storage.removeItem(STORAGE_KEYS.REMOTE_SCHEDULE_META)
+    ]);
+  }, []);
+
+  const clearRemoteScheduleState = useCallback(() => {
+    setRemoteSnapshot(null);
+    setRemoteMeta(null);
+    clearPendingRemoteUpdate();
+  }, [clearPendingRemoteUpdate]);
+
+  const applyBuiltInSchedule = useCallback(() => {
+    setHasCustomSchedule(false);
+    setScheduleData(createDefaultSchedule());
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -158,6 +180,22 @@ export const useScheduleData = () => {
         return;
       }
 
+      const shouldAutoUseBuiltInSchedule =
+        defaultChanged &&
+        !hasSavedCustom &&
+        parsedRemoteSnapshot &&
+        parsedRemoteSnapshot.signature !== DEFAULT_SCHEDULE_SIGNATURE;
+
+      if (shouldAutoUseBuiltInSchedule) {
+        await clearRemoteScheduleStorage();
+        if (cancelled) return;
+        clearRemoteScheduleState();
+        applyBuiltInSchedule();
+        setBuiltInUpdateNotice("已自动更新为新版内置课表");
+        setIsScheduleLoaded(true);
+        return;
+      }
+
       if (hasSavedCustom) {
         setScheduleData(parsedCustomSchedule);
         setHasCustomSchedule(true);
@@ -181,6 +219,7 @@ export const useScheduleData = () => {
 
   const updateScheduleData = useCallback((updater) => {
     hasUserChangedScheduleRef.current = true;
+    setBuiltInUpdateNotice("");
     setHasCustomSchedule(true);
     setScheduleData((prev) =>
       typeof updater === "function" ? updater(prev) : updater
@@ -190,6 +229,7 @@ export const useScheduleData = () => {
   const applyRemoteSchedule = useCallback((snapshot) => {
     if (!snapshot?.schedule) return;
     hasUserChangedScheduleRef.current = true;
+    setBuiltInUpdateNotice("");
     setHasCustomSchedule(false);
     setScheduleData(snapshot.schedule);
   }, []);
@@ -235,14 +275,17 @@ export const useScheduleData = () => {
 
   const resetSchedule = async () => {
     hasUserChangedScheduleRef.current = true;
-    setHasCustomSchedule(false);
-    setScheduleData(normalizeSchedule(defaultScheduleData));
-    setRemoteSnapshot(null);
-    setRemoteMeta(null);
-    setPendingRemoteSnapshot(null);
-    setPendingRemoteSourceUrl("");
-    await storage.removeItem(STORAGE_KEYS.REMOTE_SCHEDULE_SNAPSHOT);
-    await storage.removeItem(STORAGE_KEYS.REMOTE_SCHEDULE_META);
+    setBuiltInUpdateNotice("");
+    applyBuiltInSchedule();
+    clearRemoteScheduleState();
+    await Promise.all([
+      storage.removeItem(STORAGE_KEYS.CUSTOM_SCHEDULE),
+      clearRemoteScheduleStorage()
+    ]);
+    return {
+      status: "reset",
+      message: "课表已恢复为内置数据"
+    };
   };
 
   const softUpdateSchedule = useCallback(async () => {

@@ -79,6 +79,13 @@ const SettingsMenu = ({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen || !pendingRemoteSnapshot) return;
+    setShowUpdateSection(true);
+    setShowRemoteConfirm(true);
+    setSoftUpdateStatus((prev) => prev || "检测到远端课表更新，请确认是否应用");
+  }, [isOpen, pendingRemoteSnapshot]);
+
   const handleCheckUpdate = async () => {
     setIsCheckingUpdate(true);
     setUpdateStatus("");
@@ -109,8 +116,8 @@ const SettingsMenu = ({
     const confirmed = window.confirm("确认重置课表为默认数据？此操作不可撤销。");
     if (confirmed) {
       try {
-        await onResetSchedule();
-        setResetStatus("课表已恢复为默认数据");
+        const result = await onResetSchedule();
+        setResetStatus(result?.message || "课表已恢复为默认数据");
       } catch (error) {
         console.error("重置课表失败:", error);
         setResetStatus("重置失败，请稍后重试");

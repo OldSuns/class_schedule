@@ -10,7 +10,7 @@ export const useWeekSelector = (initialWeek = 1) => {
 
   // 处理周数变化
   const handleWeekChange = useCallback((week) => {
-    const weekNum = typeof week === 'number' ? week : parseInt(week);
+    const weekNum = typeof week === "number" ? week : parseInt(week, 10);
     if (weekNum >= MIN_WEEK && weekNum <= MAX_WEEK) {
       setCurrentWeek(weekNum);
     }
@@ -24,17 +24,17 @@ export const useWeekSelector = (initialWeek = 1) => {
 
   // 上一周
   const handlePreviousWeek = useCallback(() => {
-    if (currentWeek > MIN_WEEK) {
-      setCurrentWeek(currentWeek - 1);
-    }
-  }, [currentWeek]);
+    setCurrentWeek((prevWeek) =>
+      prevWeek > MIN_WEEK ? prevWeek - 1 : prevWeek
+    );
+  }, []);
 
   // 下一周
   const handleNextWeek = useCallback(() => {
-    if (currentWeek < MAX_WEEK) {
-      setCurrentWeek(currentWeek + 1);
-    }
-  }, [currentWeek]);
+    setCurrentWeek((prevWeek) =>
+      prevWeek < MAX_WEEK ? prevWeek + 1 : prevWeek
+    );
+  }, []);
 
   // 切换周数选择器显示
   const toggleWeekSelector = useCallback(() => {
