@@ -162,15 +162,15 @@ export const scheduleData = [
     day: "Wednesday",
     periods: [
       { period: 1, courses: [
-          { name: "儿科学A", weeks: [1,2,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
+          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
           { name: "儿科学A", weeks: [16], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
         ]},
       { period: 2, courses: [
-          { name: "儿科学A", weeks: [1,2,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
+          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
           { name: "儿科学A", weeks: [16], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
         ]},
       { period: 3, courses: [
-          { name: "儿科学A", weeks: [1,2,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
+          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
         ]},
       { period: 4, courses: [] },
       { period: 5, courses: [] },

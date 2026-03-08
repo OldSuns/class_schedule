@@ -32,6 +32,7 @@ import { APP_VERSION, STORAGE_KEYS } from "./src/constants";
 import { getItem, setItem } from "./storage";
 
 const UPDATE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
+const REMOTE_SCHEDULE_CHECK_INTERVAL_MS = 8 * 60 * 60 * 1000;
 
 const getTodayKey = (date = new Date()) => {
   const year = date.getFullYear();
@@ -69,7 +70,8 @@ const App = () => {
     cancelRemoteUpdate,
     pendingRemoteSnapshot,
     isCheckingRemote,
-    remoteUpdatedAt
+    remoteUpdatedAt,
+    builtInUpdateNotice
   } = useScheduleData();
 
   // 设置菜单状态
@@ -82,6 +84,19 @@ const App = () => {
   const [now, setNow] = useState(() => new Date());
 
   const [updateToast, setUpdateToast] = useState({ isOpen: false, message: "" });
+  const [scheduleUpdateToast, setScheduleUpdateToast] = useState({
+    isOpen: false,
+    message: ""
+  });
+
+  useEffect(() => {
+    if (!builtInUpdateNotice) return;
+    setScheduleUpdateToast((prev) =>
+      prev.isOpen
+        ? prev
+        : { isOpen: true, message: builtInUpdateNotice }
+    );
+  }, [builtInUpdateNotice]);
 
   // 通知设置
   const {
@@ -228,6 +243,99 @@ const App = () => {
     };
   }, []);
 
+  // 自动检测远端课表更新（仅前台可见时）
+  useEffect(() => {
+    if (!isScheduleLoaded) return;
+
+    let cancelled = false;
+    let inFlight = false;
+    let appIsActive = true;
+
+    const isVisible = () => {
+      if (Capacitor.isNativePlatform()) {
+        return appIsActive;
+      }
+      return document.visibilityState === "visible";
+    };
+
+    const shouldCheck = async () => {
+      const lastCheckRaw = await getItem(STORAGE_KEYS.REMOTE_LAST_CHECK_AT);
+      const lastCheck = Number(lastCheckRaw);
+      if (Number.isFinite(lastCheck)) {
+        const elapsed = Date.now() - lastCheck;
+        if (elapsed < REMOTE_SCHEDULE_CHECK_INTERVAL_MS) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    const checkRemoteSchedule = async () => {
+      if (cancelled || inFlight) return;
+      if (!isVisible()) return;
+
+      inFlight = true;
+      try {
+        const ok = await shouldCheck();
+        if (!ok) return;
+        const result = await softUpdateSchedule();
+        if (result?.status !== "busy") {
+          await setItem(
+            STORAGE_KEYS.REMOTE_LAST_CHECK_AT,
+            String(Date.now())
+          );
+        }
+        if (!cancelled && result?.status === "update-available") {
+          setScheduleUpdateToast({
+            isOpen: true,
+            message: "检测到远端课表更新"
+          });
+        }
+      } finally {
+        inFlight = false;
+      }
+    };
+
+    checkRemoteSchedule();
+    const timer = setInterval(
+      checkRemoteSchedule,
+      REMOTE_SCHEDULE_CHECK_INTERVAL_MS
+    );
+
+    let listenerHandle = null;
+    const setupListener = async () => {
+      if (Capacitor.isNativePlatform()) {
+        listenerHandle = await CapacitorApp.addListener(
+          "appStateChange",
+          ({ isActive }) => {
+            appIsActive = isActive;
+            if (isActive) {
+              checkRemoteSchedule();
+            }
+          }
+        );
+      }
+    };
+
+    setupListener();
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        checkRemoteSchedule();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+      if (listenerHandle) {
+        listenerHandle.remove();
+      }
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, [isScheduleLoaded, softUpdateSchedule]);
+
   // 合并课程单元格
   const mergedCellsByDay = useMemo(() => {
     // 将同日连续课程合并，便于表格渲染
@@ -356,6 +464,12 @@ const App = () => {
     setUpdateToast((prev) => (prev.isOpen ? { ...prev, isOpen: false } : prev));
   };
 
+  const closeScheduleUpdateToast = () => {
+    setScheduleUpdateToast((prev) =>
+      prev.isOpen ? { ...prev, isOpen: false } : prev
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-4 sm:py-8 px-2 sm:px-4 pt-[var(--safe-top)] pb-[var(--safe-bottom)]">
       <div className="max-w-7xl mx-auto">
@@ -430,6 +544,11 @@ const App = () => {
           isOpen={updateToast.isOpen}
           message={updateToast.message}
           onClose={closeUpdateToast}
+        />
+        <Toast
+          isOpen={scheduleUpdateToast.isOpen}
+          message={scheduleUpdateToast.message}
+          onClose={closeScheduleUpdateToast}
         />
       </div>
     </div>

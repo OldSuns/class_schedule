@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Capacitor } from "@capacitor/core";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
 import { APP_VERSION, DISPLAY_MODES, GITHUB_RELEASES_URL, MIN_WEEK, MAX_WEEK } from "./constants";
@@ -42,6 +43,7 @@ const SettingsMenu = ({
   const [showWeekSelector, setShowWeekSelector] = useState(false);
   const [updateStatus, setUpdateStatus] = useState("");
   const [updateUrl, setUpdateUrl] = useState("");
+  const [apkUrl, setApkUrl] = useState("");
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
   const [resetStatus, setResetStatus] = useState("");
   const [softUpdateStatus, setSoftUpdateStatus] = useState("");
@@ -73,6 +75,7 @@ const SettingsMenu = ({
       setShowAdvancedReminder(false);
       setShowUpdateSection(false);
       setShowScheduleManagement(false);
+      setApkUrl("");
     }
   }, [isOpen]);
 
@@ -80,16 +83,22 @@ const SettingsMenu = ({
     setIsCheckingUpdate(true);
     setUpdateStatus("");
     setUpdateUrl("");
+    setApkUrl("");
     const result = await checkForUpdates(APP_VERSION);
     setUpdateStatus(result.message || "检查完成");
     if (result.status === "update" && result.url) {
       setUpdateUrl(result.url);
+      if (result.apkUrl) {
+        setApkUrl(result.apkUrl);
+      }
     }
     setIsCheckingUpdate(false);
   };
 
   const handleOpenReleasePage = () => {
-    const target = updateUrl || GITHUB_RELEASES_URL;
+    const isAndroid =
+      Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android";
+    const target = (isAndroid && apkUrl) ? apkUrl : (updateUrl || GITHUB_RELEASES_URL);
     if (typeof window !== "undefined") {
       window.open(target, "_blank", "noopener,noreferrer");
     }

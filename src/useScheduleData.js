@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as storage from "../storage";
-import { STORAGE_KEYS } from "./constants";
+import { DEFAULT_SCHEDULE_VERSION, STORAGE_KEYS } from "./constants";
 import { scheduleData as defaultScheduleData } from "./scheduleData";
 import { normalizeSchedule } from "./scheduleUtils";
 import {
@@ -9,6 +9,9 @@ import {
 } from "./remoteSchedule";
 
 const STORAGE_VERSION = 1;
+const DEFAULT_SCHEDULE_SIGNATURE = buildScheduleSignature(
+  normalizeSchedule(defaultScheduleData)
+);
 
 const parseRemoteSnapshot = (raw) => {
   if (!raw) return null;
@@ -78,16 +81,25 @@ export const useScheduleData = () => {
   const [isCheckingRemote, setIsCheckingRemote] = useState(false);
   const [pendingRemoteSnapshot, setPendingRemoteSnapshot] = useState(null);
   const [pendingRemoteSourceUrl, setPendingRemoteSourceUrl] = useState("");
+  const [builtInUpdateNotice, setBuiltInUpdateNotice] = useState("");
   const hasUserChangedScheduleRef = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
 
     const loadSchedule = async () => {
-      const [saved, remoteRaw, remoteMetaRaw] = await Promise.all([
+      const [
+        saved,
+        remoteRaw,
+        remoteMetaRaw,
+        storedDefaultVersionRaw,
+        storedDefaultSignatureRaw
+      ] = await Promise.all([
         storage.getItem(STORAGE_KEYS.CUSTOM_SCHEDULE),
         storage.getItem(STORAGE_KEYS.REMOTE_SCHEDULE_SNAPSHOT),
-        storage.getItem(STORAGE_KEYS.REMOTE_SCHEDULE_META)
+        storage.getItem(STORAGE_KEYS.REMOTE_SCHEDULE_META),
+        storage.getItem(STORAGE_KEYS.DEFAULT_SCHEDULE_VERSION),
+        storage.getItem(STORAGE_KEYS.DEFAULT_SCHEDULE_SIGNATURE)
       ]);
 
       if (cancelled) return;
@@ -97,27 +109,58 @@ export const useScheduleData = () => {
       setRemoteSnapshot(parsedRemoteSnapshot);
       setRemoteMeta(parsedRemoteMeta);
 
-      if (hasUserChangedScheduleRef.current) {
-        setIsScheduleLoaded(true);
-        return;
+      const storedDefaultVersion = storedDefaultVersionRaw ?? "";
+      const storedDefaultSignature = storedDefaultSignatureRaw ?? "";
+      const hasStoredDefaultInfo =
+        storedDefaultVersionRaw != null || storedDefaultSignatureRaw != null;
+      const defaultChanged =
+        hasStoredDefaultInfo &&
+        (storedDefaultVersion !== String(DEFAULT_SCHEDULE_VERSION) ||
+          storedDefaultSignature !== DEFAULT_SCHEDULE_SIGNATURE);
+
+      if (!hasStoredDefaultInfo || defaultChanged) {
+        await Promise.all([
+          storage.setItem(
+            STORAGE_KEYS.DEFAULT_SCHEDULE_VERSION,
+            String(DEFAULT_SCHEDULE_VERSION)
+          ),
+          storage.setItem(
+            STORAGE_KEYS.DEFAULT_SCHEDULE_SIGNATURE,
+            DEFAULT_SCHEDULE_SIGNATURE
+          )
+        ]);
       }
+
+      let parsedCustomSchedule = null;
+      let hasSavedCustom = false;
 
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
           if (parsed?.version === STORAGE_VERSION && Array.isArray(parsed.schedule)) {
-            setScheduleData(normalizeSchedule(parsed.schedule));
-            setHasCustomSchedule(true);
+            parsedCustomSchedule = normalizeSchedule(parsed.schedule);
+            hasSavedCustom = true;
           } else if (Array.isArray(parsed)) {
-            setScheduleData(normalizeSchedule(parsed));
-            setHasCustomSchedule(true);
-          } else {
-            setHasCustomSchedule(false);
+            parsedCustomSchedule = normalizeSchedule(parsed);
+            hasSavedCustom = true;
           }
         } catch (error) {
           console.warn("自定义课表解析失败，已回退默认数据", error);
-          setHasCustomSchedule(false);
         }
+      }
+
+      if (defaultChanged && hasSavedCustom) {
+        setBuiltInUpdateNotice("内置课表已更新，可在设置中重置");
+      }
+
+      if (hasUserChangedScheduleRef.current) {
+        setIsScheduleLoaded(true);
+        return;
+      }
+
+      if (hasSavedCustom) {
+        setScheduleData(parsedCustomSchedule);
+        setHasCustomSchedule(true);
       } else if (parsedRemoteSnapshot) {
         setScheduleData(parsedRemoteSnapshot.schedule);
         setHasCustomSchedule(false);
@@ -280,6 +323,7 @@ export const useScheduleData = () => {
     cancelRemoteUpdate,
     pendingRemoteSnapshot,
     isCheckingRemote,
-    remoteUpdatedAt: remoteSnapshot?.updatedAt || remoteMeta?.updatedAt || ""
+    remoteUpdatedAt: remoteSnapshot?.updatedAt || remoteMeta?.updatedAt || "",
+    builtInUpdateNotice
   };
 };

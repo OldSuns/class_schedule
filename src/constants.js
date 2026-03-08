@@ -24,6 +24,9 @@ export const MAX_PERIOD = 13;
 // 默认开学日期
 export const DEFAULT_SEMESTER_START_DATE = "2026-03-02";
 
+// 内置课表版本（更新内置课表时递增）
+export const DEFAULT_SCHEDULE_VERSION = 1;
+
 // 课程显示模式
 export const DISPLAY_MODES = {
   ALL: "all",
@@ -31,7 +34,7 @@ export const DISPLAY_MODES = {
 };
 
 // 当前应用版本（用于更新检查）
-export const APP_VERSION = "1.9.9";
+export const APP_VERSION = "1.9.10";
 
 // Gitee Releases
 export const GITHUB_RELEASES_URL =
@@ -64,6 +67,9 @@ export const STORAGE_KEYS = {
   CUSTOM_SCHEDULE: "customSchedule",
   REMOTE_SCHEDULE_SNAPSHOT: "remoteScheduleSnapshot",
   REMOTE_SCHEDULE_META: "remoteScheduleMeta",
+  DEFAULT_SCHEDULE_VERSION: "defaultScheduleVersion",
+  DEFAULT_SCHEDULE_SIGNATURE: "defaultScheduleSignature",
+  REMOTE_LAST_CHECK_AT: "remoteScheduleLastCheckAt",
   UPDATE_LAST_CHECK_DATE: "updateLastCheckDate",
   UPDATE_LAST_TOAST_DATE: "updateLastToastDate"
 };
