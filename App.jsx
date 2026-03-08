@@ -692,6 +692,7 @@ const App = () => {
           >
             <CourseTable
               mergedCellsByDay={mergedCellsByDay}
+              semesterStartDate={semesterStartDate}
               todayInfo={todayInfo}
               currentWeek={currentWeek}
               onCellClick={handleScheduleCellClick}

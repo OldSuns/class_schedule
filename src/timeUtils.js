@@ -2,7 +2,19 @@
  * 时间相关工具函数
  */
 
-import { MAX_WEEK } from "./constants";
+import { DAYS, MAX_WEEK } from "./constants";
+
+const createDateAtMidnight = (year, month, day) => {
+  const date = new Date(year, month, day);
+  date.setHours(0, 0, 0, 0);
+  return date;
+};
+
+const parseLocalDate = (value) => {
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return null;
+  return createDateAtMidnight(year, month - 1, day);
+};
 
 // 获取节次时间
 export const getPeriodTime = (period) => {
@@ -85,9 +97,8 @@ export const getPeriodRangeLabel = (periodStart, periodEnd) => {
 export const calculateDateInfo = (startDate, targetDate) => {
   if (!startDate) return null;
 
-  const [year, month, day] = String(startDate).split("-").map(Number);
-  if (!year || !month || !day) return null;
-  const start = new Date(year, month - 1, day);
+  const start = parseLocalDate(startDate);
+  if (!start) return null;
   const target = new Date(targetDate);
 
   // 设置时间为0点，只比较日期
@@ -109,6 +120,36 @@ export const calculateDateInfo = (startDate, targetDate) => {
   const dayName = dayNames[dayOfWeek - 1];
 
   return { week, day: dayName, dayOfWeek };
+};
+
+export const getScheduleDate = (startDate, week, day) => {
+  const semesterStart = parseLocalDate(startDate);
+  const weekNum = Number(week);
+  const dayIndex = DAYS.indexOf(day);
+
+  if (
+    !semesterStart ||
+    !Number.isInteger(weekNum) ||
+    weekNum < 1 ||
+    weekNum > MAX_WEEK ||
+    dayIndex === -1
+  ) {
+    return null;
+  }
+
+  return createDateAtMidnight(
+    semesterStart.getFullYear(),
+    semesterStart.getMonth(),
+    semesterStart.getDate() + (weekNum - 1) * 7 + dayIndex
+  );
+};
+
+export const formatMonthDay = (date) => {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return `${date.getMonth() + 1}/${date.getDate()}`;
 };
 
 // 计算今天是第几周的星期几

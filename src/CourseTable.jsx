@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Plus } from "lucide-react";
-import { getPeriodLabel, getPeriodTime } from "./timeUtils";
+import {
+  formatMonthDay,
+  getPeriodLabel,
+  getPeriodTime,
+  getScheduleDate
+} from "./timeUtils";
 import { DAYS, DAY_NAMES, MAX_PERIOD } from "./constants";
 import { getCourseLocation } from "./courseUtils";
 
@@ -19,12 +24,23 @@ const getCanHover = () => {
  */
 const CourseTable = ({
   mergedCellsByDay,
+  semesterStartDate,
   todayInfo,
   currentWeek,
   onCellClick,
   isScheduleLoaded = true
 }) => {
   const [canHover, setCanHover] = useState(getCanHover);
+  const headerDateLabels = useMemo(
+    () =>
+      Object.fromEntries(
+        DAYS.map((day) => [
+          day,
+          formatMonthDay(getScheduleDate(semesterStartDate, currentWeek, day))
+        ])
+      ),
+    [currentWeek, semesterStartDate]
+  );
 
   useEffect(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
@@ -58,8 +74,15 @@ const CourseTable = ({
               </th>
               {DAYS.map(day => (
                 <th key={day} className="px-1 sm:px-2 md:px-3 py-1.5 sm:py-2 md:py-3 text-center text-xs sm:text-sm font-medium text-white uppercase tracking-tight sm:tracking-wider w-[17.5%] sm:w-auto">
-                  <span className="hidden sm:inline">{DAY_NAMES[day].zh}</span>
-                  <span className="inline sm:hidden">{DAY_NAMES[day].short}</span>
+                  <div className="flex flex-col items-center leading-tight">
+                    <span className="hidden sm:inline">{DAY_NAMES[day].zh}</span>
+                    <span className="inline sm:hidden">{DAY_NAMES[day].short}</span>
+                    {headerDateLabels[day] ? (
+                      <span className="mt-0.5 text-[10px] sm:text-xs font-normal text-indigo-100 normal-case tracking-normal">
+                        {headerDateLabels[day]}
+                      </span>
+                    ) : null}
+                  </div>
                 </th>
               ))}
             </tr>
