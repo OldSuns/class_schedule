@@ -2,6 +2,9 @@ import {
   GITHUB_RELEASES_API_LATEST,
   GITHUB_RELEASES_URL
 } from "./constants";
+import { fetchWithTimeout, isTimeoutError } from "./fetchWithTimeout";
+
+const UPDATE_REQUEST_TIMEOUT_MS = 10000;
 
 // 统一版本格式：去掉前缀 v 与构建/预发布标记
 const normalizeVersion = (input) => {
@@ -88,11 +91,11 @@ const pickApkUrl = (data, latestVersion) => {
 
 export const checkForUpdates = async (currentVersion) => {
   try {
-    const response = await fetch(GITHUB_RELEASES_API_LATEST, {
+    const response = await fetchWithTimeout(GITHUB_RELEASES_API_LATEST, {
       headers: {
         Accept: "application/json"
       }
-    });
+    }, UPDATE_REQUEST_TIMEOUT_MS);
 
     if (!response.ok) {
       return {
@@ -101,7 +104,16 @@ export const checkForUpdates = async (currentVersion) => {
       };
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (error) {
+      return {
+        status: "error",
+        message: "版本信息解析失败"
+      };
+    }
+
     const latestTag = data.tag_name || data.name || "";
     const latestVersion = normalizeVersion(latestTag);
     const compare = compareVersions(currentVersion, latestVersion);
@@ -130,6 +142,12 @@ export const checkForUpdates = async (currentVersion) => {
       message: `当前已是最新版本 v${latestVersion}`
     };
   } catch (error) {
+    if (isTimeoutError(error)) {
+      return {
+        status: "error",
+        message: "检查超时，请稍后重试"
+      };
+    }
     return {
       status: "error",
       message: "检查失败，请稍后重试"

@@ -1,5 +1,8 @@
 import { SCHEDULE_REMOTE_URLS } from "./constants";
+import { fetchWithTimeout, isTimeoutError } from "./fetchWithTimeout";
 import { normalizeSchedule } from "./scheduleUtils";
+
+const REMOTE_SCHEDULE_REQUEST_TIMEOUT_MS = 10000;
 
 export const buildScheduleSignature = (schedule) =>
   JSON.stringify(Array.isArray(schedule) ? schedule : []);
@@ -21,10 +24,15 @@ const normalizeRemotePayload = (payload) => {
 
 export const fetchRemoteSchedule = async ({ meta } = {}) => {
   const request = async (url, headers) =>
-    fetch(url, {
+    fetchWithTimeout(url, {
       headers,
       cache: "no-store"
-    });
+    }, REMOTE_SCHEDULE_REQUEST_TIMEOUT_MS);
+
+  const getNetworkErrorMessage = (error) =>
+    isTimeoutError(error)
+      ? "检查超时，请稍后重试"
+      : "网络连接失败或更新源不可达";
 
   const baseHeaders = { Accept: "application/json" };
   const currentMeta = meta && typeof meta === "object" ? meta : null;
@@ -51,12 +59,15 @@ export const fetchRemoteSchedule = async ({ meta } = {}) => {
     } catch (error) {
       // 条件请求失败时回退到普通 GET，规避跨源切换后的缓存头兼容问题
       if (!conditionalHeaders) {
-        return { status: "error", message: "网络连接失败或更新源不可达" };
+        return { status: "error", message: getNetworkErrorMessage(error) };
       }
       try {
         response = await request(url, baseHeaders);
       } catch (fallbackError) {
-        return { status: "error", message: "网络连接失败或更新源不可达" };
+        return {
+          status: "error",
+          message: getNetworkErrorMessage(fallbackError)
+        };
       }
     }
 

@@ -35,6 +35,7 @@ import { APP_VERSION, STORAGE_KEYS } from "./src/constants";
 import { getItem, setItem } from "./storage";
 
 const UPDATE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
+const UPDATE_ERROR_RETRY_INTERVAL_MS = 3 * 60 * 1000;
 const REMOTE_SCHEDULE_CHECK_INTERVAL_MS = 8 * 60 * 60 * 1000;
 const REMOTE_SCHEDULE_FOREGROUND_CHECK_INTERVAL_MS = 10 * 60 * 1000;
 const REMOTE_SCHEDULE_ERROR_RETRY_INTERVAL_MS = 3 * 60 * 1000;
@@ -110,6 +111,7 @@ const App = () => {
     message: ""
   });
   const softUpdateScheduleRef = useRef(softUpdateSchedule);
+  const pendingRemoteSnapshotRef = useRef(pendingRemoteSnapshot);
   const previousWeekRef = useRef(currentWeek);
   const weekSwitchControls = useAnimationControls();
   const prefersReducedMotion = useReducedMotion();
@@ -117,6 +119,10 @@ const App = () => {
   useEffect(() => {
     softUpdateScheduleRef.current = softUpdateSchedule;
   }, [softUpdateSchedule]);
+
+  useEffect(() => {
+    pendingRemoteSnapshotRef.current = pendingRemoteSnapshot;
+  }, [pendingRemoteSnapshot]);
 
   useEffect(() => {
     if (!builtInUpdateNotice) return;
@@ -238,29 +244,48 @@ const App = () => {
     const checkUpdates = async () => {
       if (inFlight) return;
       inFlight = true;
-      const today = getTodayKey();
-      const lastCheck = await getItem(STORAGE_KEYS.UPDATE_LAST_CHECK_DATE);
-      if (lastCheck === today) {
-        inFlight = false;
-        return;
-      }
+      try {
+        const today = getTodayKey();
+        const now = Date.now();
+        const [lastCheck, lastErrorRaw] = await Promise.all([
+          getItem(STORAGE_KEYS.UPDATE_LAST_CHECK_DATE),
+          getItem(STORAGE_KEYS.UPDATE_LAST_ERROR_AT)
+        ]);
+        const lastError = Number(lastErrorRaw);
 
-      const result = await checkForUpdates(APP_VERSION);
-      await setItem(STORAGE_KEYS.UPDATE_LAST_CHECK_DATE, today);
-
-      if (!cancelled && result?.status === "update") {
-        const lastToast = await getItem(STORAGE_KEYS.UPDATE_LAST_TOAST_DATE);
-        if (lastToast !== today) {
-          const versionLabel = result.latestVersion ? ` v${result.latestVersion}` : "";
-          setUpdateToast({
-            isOpen: true,
-            message: `发现新版本${versionLabel}`
-          });
-          await setItem(STORAGE_KEYS.UPDATE_LAST_TOAST_DATE, today);
+        if (lastCheck === today) {
+          return;
         }
-      }
 
-      inFlight = false;
+        if (!hasElapsed(lastError, UPDATE_ERROR_RETRY_INTERVAL_MS, now)) {
+          return;
+        }
+
+        const result = await checkForUpdates(APP_VERSION);
+
+        if (result?.status === "update" || result?.status === "latest") {
+          await Promise.all([
+            setItem(STORAGE_KEYS.UPDATE_LAST_CHECK_DATE, today),
+            setItem(STORAGE_KEYS.UPDATE_LAST_ERROR_AT, "")
+          ]);
+        } else if (result?.status === "error") {
+          await setItem(STORAGE_KEYS.UPDATE_LAST_ERROR_AT, String(now));
+        }
+
+        if (!cancelled && result?.status === "update") {
+          const lastToast = await getItem(STORAGE_KEYS.UPDATE_LAST_TOAST_DATE);
+          if (lastToast !== today) {
+            const versionLabel = result.latestVersion ? ` v${result.latestVersion}` : "";
+            setUpdateToast({
+              isOpen: true,
+              message: `发现新版本${versionLabel}`
+            });
+            await setItem(STORAGE_KEYS.UPDATE_LAST_TOAST_DATE, today);
+          }
+        }
+      } finally {
+        inFlight = false;
+      }
     };
 
     checkUpdates();
@@ -367,6 +392,7 @@ const App = () => {
     const checkRemoteSchedule = async (reason = "interval") => {
       if (cancelled || inFlight) return;
       if (!isVisible()) return;
+      if (pendingRemoteSnapshotRef.current) return;
 
       inFlight = true;
       try {

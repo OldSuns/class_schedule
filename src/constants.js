@@ -74,5 +74,6 @@ export const STORAGE_KEYS = {
   REMOTE_LAST_FOREGROUND_CHECK_AT: "remoteScheduleLastForegroundCheckAt",
   REMOTE_LAST_ERROR_AT: "remoteScheduleLastErrorAt",
   UPDATE_LAST_CHECK_DATE: "updateLastCheckDate",
+  UPDATE_LAST_ERROR_AT: "updateLastErrorAt",
   UPDATE_LAST_TOAST_DATE: "updateLastToastDate"
 };

@@ -109,6 +109,7 @@ export const useScheduleData = () => {
   const [pendingRemoteSourceUrl, setPendingRemoteSourceUrl] = useState("");
   const [builtInUpdateNotice, setBuiltInUpdateNotice] = useState("");
   const hasUserChangedScheduleRef = useRef(false);
+  const remoteCheckLockRef = useRef(false);
 
   const clearPendingRemoteUpdate = useCallback(() => {
     setPendingRemoteSnapshot(null);
@@ -368,9 +369,20 @@ export const useScheduleData = () => {
   };
 
   const softUpdateSchedule = useCallback(async ({ trigger = "auto" } = {}) => {
-    if (isCheckingRemote) {
+    if (pendingRemoteSnapshot) {
+      return {
+        status: "update-available",
+        message: "检测到远端课表更新",
+        updatedAt: pendingRemoteSnapshot.updatedAt,
+        sourceUrl: pendingRemoteSourceUrl
+      };
+    }
+
+    if (remoteCheckLockRef.current || isCheckingRemote) {
       return { status: "busy", message: "正在检查更新，请稍后" };
     }
+
+    remoteCheckLockRef.current = true;
     setIsCheckingRemote(true);
     try {
       const result = await fetchRemoteSchedule({ meta: remoteMeta });
@@ -448,12 +460,15 @@ export const useScheduleData = () => {
       console.error("课表软更新失败:", error);
       return { status: "error", message: "课表更新失败，请稍后重试" };
     } finally {
+      remoteCheckLockRef.current = false;
       setIsCheckingRemote(false);
     }
   }, [
     clearPendingRemoteUpdate,
     clearSkippedRemoteUpdate,
     isCheckingRemote,
+    pendingRemoteSnapshot,
+    pendingRemoteSourceUrl,
     remoteMeta,
     remoteSnapshot,
     scheduleData,
