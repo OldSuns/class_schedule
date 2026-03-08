@@ -281,6 +281,10 @@ const App = () => {
     };
 
     const shouldCheck = async (reason) => {
+      if (reason === "startup") {
+        return true;
+      }
+
       const now = Date.now();
       const [
         lastCheckRaw,
@@ -355,7 +359,7 @@ const App = () => {
       }
     };
 
-    checkRemoteSchedule("initial");
+    checkRemoteSchedule("startup");
     const timer = setInterval(
       () => checkRemoteSchedule("interval"),
       REMOTE_SCHEDULE_CHECK_INTERVAL_MS

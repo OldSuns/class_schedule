@@ -9,6 +9,11 @@ import {
 } from "./remoteSchedule";
 
 const STORAGE_VERSION = 1;
+const SCHEDULE_SOURCES = {
+  BUILTIN: "builtin",
+  REMOTE: "remote",
+  MANUAL: "manual"
+};
 const createDefaultSchedule = () => normalizeSchedule(defaultScheduleData);
 const DEFAULT_SCHEDULE_SIGNATURE = buildScheduleSignature(
   createDefaultSchedule()
@@ -74,7 +79,8 @@ const persistRemoteMeta = async (meta) => {
 export const useScheduleData = () => {
   const [scheduleData, setScheduleData] = useState(() => createDefaultSchedule());
   const [isScheduleLoaded, setIsScheduleLoaded] = useState(false);
-  const [hasCustomSchedule, setHasCustomSchedule] = useState(false);
+  const [scheduleSource, setScheduleSource] = useState(SCHEDULE_SOURCES.BUILTIN);
+  const [hasManualScheduleChanges, setHasManualScheduleChanges] = useState(false);
   const [remoteSnapshot, setRemoteSnapshot] = useState(null);
   const [remoteMeta, setRemoteMeta] = useState(null);
   const [isCheckingRemote, setIsCheckingRemote] = useState(false);
@@ -102,8 +108,15 @@ export const useScheduleData = () => {
   }, [clearPendingRemoteUpdate]);
 
   const applyBuiltInSchedule = useCallback(() => {
-    setHasCustomSchedule(false);
+    setScheduleSource(SCHEDULE_SOURCES.BUILTIN);
+    setHasManualScheduleChanges(false);
     setScheduleData(createDefaultSchedule());
+  }, []);
+
+  const applyScheduleState = useCallback((nextSchedule, nextSource) => {
+    setScheduleSource(nextSource);
+    setHasManualScheduleChanges(nextSource === SCHEDULE_SOURCES.MANUAL);
+    setScheduleData(nextSchedule);
   }, []);
 
   useEffect(() => {
@@ -197,13 +210,11 @@ export const useScheduleData = () => {
       }
 
       if (hasSavedCustom) {
-        setScheduleData(parsedCustomSchedule);
-        setHasCustomSchedule(true);
+        applyScheduleState(parsedCustomSchedule, SCHEDULE_SOURCES.MANUAL);
       } else if (parsedRemoteSnapshot) {
-        setScheduleData(parsedRemoteSnapshot.schedule);
-        setHasCustomSchedule(false);
+        applyScheduleState(parsedRemoteSnapshot.schedule, SCHEDULE_SOURCES.REMOTE);
       } else {
-        setHasCustomSchedule(false);
+        applyBuiltInSchedule();
       }
       if (!cancelled) {
         setIsScheduleLoaded(true);
@@ -215,12 +226,13 @@ export const useScheduleData = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [applyBuiltInSchedule, applyScheduleState, clearRemoteScheduleState, clearRemoteScheduleStorage]);
 
   const updateScheduleData = useCallback((updater) => {
     hasUserChangedScheduleRef.current = true;
     setBuiltInUpdateNotice("");
-    setHasCustomSchedule(true);
+    setScheduleSource(SCHEDULE_SOURCES.MANUAL);
+    setHasManualScheduleChanges(true);
     setScheduleData((prev) =>
       typeof updater === "function" ? updater(prev) : updater
     );
@@ -230,9 +242,8 @@ export const useScheduleData = () => {
     if (!snapshot?.schedule) return;
     hasUserChangedScheduleRef.current = true;
     setBuiltInUpdateNotice("");
-    setHasCustomSchedule(false);
-    setScheduleData(snapshot.schedule);
-  }, []);
+    applyScheduleState(snapshot.schedule, SCHEDULE_SOURCES.REMOTE);
+  }, [applyScheduleState]);
 
   const confirmRemoteUpdate = useCallback(() => {
     if (!pendingRemoteSnapshot) return null;
@@ -262,7 +273,7 @@ export const useScheduleData = () => {
 
   useEffect(() => {
     if (!isScheduleLoaded) return;
-    if (!hasCustomSchedule) {
+    if (!hasManualScheduleChanges) {
       storage.removeItem(STORAGE_KEYS.CUSTOM_SCHEDULE);
       return;
     }
@@ -271,7 +282,7 @@ export const useScheduleData = () => {
       schedule: scheduleData
     });
     storage.setItem(STORAGE_KEYS.CUSTOM_SCHEDULE, payload);
-  }, [scheduleData, hasCustomSchedule, isScheduleLoaded]);
+  }, [scheduleData, hasManualScheduleChanges, isScheduleLoaded]);
 
   const resetSchedule = async () => {
     hasUserChangedScheduleRef.current = true;
@@ -359,6 +370,8 @@ export const useScheduleData = () => {
   return {
     scheduleData,
     setScheduleData: updateScheduleData,
+    scheduleSource,
+    hasManualScheduleChanges,
     isScheduleLoaded,
     resetSchedule,
     softUpdateSchedule,

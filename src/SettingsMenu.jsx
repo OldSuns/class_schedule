@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Browser } from "@capacitor/browser";
 import { Capacitor } from "@capacitor/core";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
@@ -102,10 +103,21 @@ const SettingsMenu = ({
     setIsCheckingUpdate(false);
   };
 
-  const handleOpenReleasePage = () => {
+  const handleOpenReleasePage = async () => {
     const isAndroid =
       Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android";
     const target = (isAndroid && apkUrl) ? apkUrl : (updateUrl || GITHUB_RELEASES_URL);
+    if (!target) return;
+
+    try {
+      if (Capacitor.isNativePlatform()) {
+        await Browser.open({ url: target });
+        return;
+      }
+    } catch (error) {
+      console.error("打开下载页失败:", error);
+    }
+
     if (typeof window !== "undefined") {
       window.open(target, "_blank", "noopener,noreferrer");
     }
