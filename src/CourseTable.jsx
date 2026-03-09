@@ -94,111 +94,125 @@ const CourseTable = ({
               const periodTime = getPeriodTime(period);
 
               return (
-                <tr key={period}>
-                <td className="px-1 sm:px-2 md:px-3 py-2 sm:py-3 md:py-4 text-xs sm:text-sm md:text-base font-medium text-gray-900 bg-indigo-50 border border-gray-200 sticky left-0 z-10 w-[1%] max-w-[6.5rem]">
-                  <div className="flex flex-col items-center w-full max-w-[6.5rem]">
-                    <div className={`font-bold ${isEveningPeriod ? "text-[11px] sm:text-xs md:text-sm" : ""}`}>
-                      {periodLabel}
-                    </div>
-                    <div className="text-[10px] sm:text-xs text-gray-600 mt-0.5 leading-tight truncate w-full text-center">
-                      {periodTime}
-                    </div>
-                  </div>
-                </td>
-                {DAYS.map(day => {
-                  const cell = mergedCellsByDay?.[day]?.[period];
-                  if (cell?.skip) return null;
-
-                  if (!cell || cell.empty) {
-                    return (
-                      <td
-                        key={`${day}-${period}`}
-                        onClick={() =>
-                          isScheduleLoaded && onCellClick(day, period, period)
-                        }
-                        className={`group py-2 sm:py-3 md:py-4 border border-gray-200 transition-colors ${
-                          isScheduleLoaded
-                            ? `cursor-pointer bg-white ${
-                                canHover ? "hover:bg-indigo-50" : ""
-                              }`
-                            : "cursor-not-allowed bg-gray-50"
-                        }`}
-                        title={isScheduleLoaded ? "点击添加课程" : "课表加载中"}
-                      >
-                        {isScheduleLoaded ? (
-                          canHover ? (
-                            <div className="flex items-center justify-center text-xs text-indigo-400 opacity-0 transition-opacity group-hover:opacity-100">
-                              <Plus size={12} className="mr-0.5" />
-                              <span className="hidden sm:inline">新增课程</span>
-                              <span className="inline sm:hidden">新增</span>
-                            </div>
-                          ) : null
-                        ) : (
-                          <div className="flex items-center justify-center text-xs text-gray-400 opacity-100">
-                            <Plus size={12} className="mr-0.5" />
-                            <span className="hidden sm:inline">加载中</span>
-                            <span className="inline sm:hidden">...</span>
-                          </div>
-                        )}
-                      </td>
-                    );
-                  }
-
-                  // 检查是否是今天的课程且本周有课
-                  const isToday = todayInfo && todayInfo.day === day && todayInfo.week === currentWeek;
-                  const isTodayAndHasClass = isToday && cell.hasCurrentWeekCourse;
-
-                  return (
-                    <td
-                      key={`${day}-${period}`}
-                      onClick={() =>
-                        isScheduleLoaded &&
-                        onCellClick(day, cell.periodStart, cell.periodEnd)
-                      }
-                      className={`py-2 sm:py-3 md:py-4 px-1 sm:px-1.5 md:px-2 align-middle border transition-colors duration-200 ${
-                        isScheduleLoaded ? "cursor-pointer" : "cursor-not-allowed"
-                      } ${
-                        isTodayAndHasClass
-                          ? "bg-green-100 hover:bg-green-200 border-green-400 border-2"
-                          : cell.hasCurrentWeekCourse
-                          ? "bg-blue-50 hover:bg-blue-100 border-gray-200"
-                          : "bg-gray-50 hover:bg-gray-100 border-gray-200"
-                      }`}
-                      rowSpan={cell.rowSpan}
-                    >
-                      <div className="w-full flex flex-col justify-center items-center gap-1">
-                        {cell.displayCourses.length > 0 ? (
-                          <>
-                            {cell.displayCourses.map((course, idx) => (
-                              <div
-                                key={`${course.name}-${course.group ?? ""}-${idx}`}
-                                className={`text-center font-medium text-[11px] sm:text-xs md:text-sm leading-snug ${
-                                  course.isCurrentWeek ? "text-blue-700" : "text-gray-600"
-                                }`}
-                              >
-                                <div className="break-words">{course.name}</div>
-                                {course.group && <div className="text-[10px] sm:text-xs md:text-sm mt-0.5">({course.group})</div>}
-                                {course.location && (
-                                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-0.5 break-words">
-                                    📍 {getCourseLocation(course.location, currentWeek)}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                            {cell.otherCoursesCount > 0 && (
-                              <div className="mt-0.5 flex items-center justify-center text-[10px] sm:text-xs md:text-sm text-indigo-600 font-medium">
-                                <Plus size={10} className="mr-0.5" />
-                                <span className="hidden sm:inline">{cell.otherCoursesCount} 门其他</span>
-                                <span className="inline sm:hidden">+{cell.otherCoursesCount}</span>
-                              </div>
-                            )}
-                          </>
-                        ) : null}
+                <React.Fragment key={period}>
+                  <tr>
+                    <td className="px-1 sm:px-2 md:px-3 py-2 sm:py-3 md:py-4 text-xs sm:text-sm md:text-base font-medium text-gray-900 bg-indigo-50 border border-gray-200 sticky left-0 z-10 w-[1%] max-w-[6.5rem]">
+                      <div className="flex flex-col items-center w-full max-w-[6.5rem]">
+                        <div className={`font-bold ${isEveningPeriod ? "text-[11px] sm:text-xs md:text-sm" : ""}`}>
+                          {periodLabel}
+                        </div>
+                        <div className="text-[10px] sm:text-xs text-gray-600 mt-0.5 leading-tight truncate w-full text-center">
+                          {periodTime}
+                        </div>
                       </div>
                     </td>
-                  );
-                })}
-                </tr>
+                    {DAYS.map(day => {
+                      const cell = mergedCellsByDay?.[day]?.[period];
+                      if (cell?.skip) return null;
+
+                      if (!cell || cell.empty) {
+                        return (
+                          <td
+                            key={`${day}-${period}`}
+                            onClick={() =>
+                              isScheduleLoaded && onCellClick(day, period, period)
+                            }
+                            className={`group py-2 sm:py-3 md:py-4 border border-gray-200 transition-colors ${
+                              isScheduleLoaded
+                                ? `cursor-pointer bg-white ${
+                                    canHover ? "hover:bg-indigo-50" : ""
+                                  }`
+                                : "cursor-not-allowed bg-gray-50"
+                            }`}
+                            title={isScheduleLoaded ? "点击添加课程" : "课表加载中"}
+                          >
+                            {isScheduleLoaded ? (
+                              canHover ? (
+                                <div className="flex items-center justify-center text-xs text-indigo-400 opacity-0 transition-opacity group-hover:opacity-100">
+                                  <Plus size={12} className="mr-0.5" />
+                                  <span className="hidden sm:inline">新增课程</span>
+                                  <span className="inline sm:hidden">新增</span>
+                                </div>
+                              ) : null
+                            ) : (
+                              <div className="flex items-center justify-center text-xs text-gray-400 opacity-100">
+                                <Plus size={12} className="mr-0.5" />
+                                <span className="hidden sm:inline">加载中</span>
+                                <span className="inline sm:hidden">...</span>
+                              </div>
+                            )}
+                          </td>
+                        );
+                      }
+
+                      // 检查是否是今天的课程且本周有课
+                      const isToday = todayInfo && todayInfo.day === day && todayInfo.week === currentWeek;
+                      const isTodayAndHasClass = isToday && cell.hasCurrentWeekCourse;
+
+                      return (
+                        <td
+                          key={`${day}-${period}`}
+                          onClick={() =>
+                            isScheduleLoaded &&
+                            onCellClick(day, cell.periodStart, cell.periodEnd)
+                          }
+                          className={`py-2 sm:py-3 md:py-4 px-1 sm:px-1.5 md:px-2 align-middle border transition-colors duration-200 ${
+                            isScheduleLoaded ? "cursor-pointer" : "cursor-not-allowed"
+                          } ${
+                            isTodayAndHasClass
+                              ? "bg-green-100 hover:bg-green-200 border-green-400 border-2"
+                              : cell.hasCurrentWeekCourse
+                              ? "bg-blue-50 hover:bg-blue-100 border-gray-200"
+                              : "bg-gray-50 hover:bg-gray-100 border-gray-200"
+                          }`}
+                          rowSpan={cell.rowSpan}
+                        >
+                          <div className="w-full flex flex-col justify-center items-center gap-1">
+                            {cell.displayCourses.length > 0 ? (
+                              <>
+                                {cell.displayCourses.map((course, idx) => (
+                                  <div
+                                    key={`${course.name}-${course.group ?? ""}-${idx}`}
+                                    className={`text-center font-medium text-[11px] sm:text-xs md:text-sm leading-snug ${
+                                      course.isCurrentWeek ? "text-blue-700" : "text-gray-600"
+                                    }`}
+                                  >
+                                    <div className="break-words">{course.name}</div>
+                                    {course.group && <div className="text-[10px] sm:text-xs md:text-sm mt-0.5">({course.group})</div>}
+                                    {course.location && (
+                                      <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-0.5 break-words">
+                                        📍 {getCourseLocation(course.location, currentWeek)}
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                                {cell.otherCoursesCount > 0 && (
+                                  <div className="mt-0.5 flex items-center justify-center text-[10px] sm:text-xs md:text-sm text-indigo-600 font-medium">
+                                    <Plus size={10} className="mr-0.5" />
+                                    <span className="hidden sm:inline">{cell.otherCoursesCount} 门其他</span>
+                                    <span className="inline sm:hidden">+{cell.otherCoursesCount}</span>
+                                  </div>
+                                )}
+                              </>
+                            ) : null}
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  {period === 5 || period === 10 ? (
+                    <tr aria-hidden="true">
+                      <td
+                        colSpan={DAYS.length + 1}
+                        className="p-0 bg-indigo-50/40 border-t border-b border-indigo-100"
+                      >
+                        <div className="h-4 flex items-center justify-center text-[10px] sm:text-xs text-indigo-400 tracking-wide leading-none select-none">
+                          {period === 5 ? "午休" : "晚休"}
+                        </div>
+                      </td>
+                    </tr>
+                  ) : null}
+                </React.Fragment>
               );
             })}
           </tbody>
