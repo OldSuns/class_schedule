@@ -11,6 +11,7 @@ import { GROUP_TYPES, SELECTABLE_GROUP_TYPES } from "./groupUtils";
 import {
   cancelAllScheduledNotifications,
   checkExactAlarmPermission,
+  checkPostNotificationsPermission,
   clearNotificationPlanSnapshot,
   loadNotificationPlanSnapshot,
   openExactAlarmPermissionSettings,
@@ -79,6 +80,14 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
       }
       if (savedLeadMinutes != null) {
         setLeadMinutes(sanitizeLeadMinutes(savedLeadMinutes));
+      }
+
+      // 检查 POST_NOTIFICATIONS 权限
+      if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android") {
+        const permCheck = await checkPostNotificationsPermission();
+        if (!permCheck.granted) {
+          setStatusMessage("需要通知权限才能接收课程提醒");
+        }
       }
 
       setIsLoaded(true);

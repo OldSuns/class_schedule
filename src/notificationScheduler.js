@@ -20,6 +20,36 @@ export const NOTIFICATION_CHANNEL_ID = "course-reminders";
 export const NOTIFICATION_WINDOW_DAYS = 30;
 const NOTIFICATION_PLAN_VERSION = 1;
 
+export const checkPostNotificationsPermission = async () => {
+  if (!Capacitor.isNativePlatform()) return { granted: true };
+
+  if (Capacitor.getPlatform() === "android") {
+    try {
+      const result = await LocalNotifications.checkPermissions();
+      return { granted: result.display === "granted" };
+    } catch (error) {
+      return { granted: false, error };
+    }
+  }
+
+  return { granted: true };
+};
+
+export const requestPostNotificationsPermission = async () => {
+  if (!Capacitor.isNativePlatform()) return { granted: true };
+
+  if (Capacitor.getPlatform() === "android") {
+    try {
+      const result = await LocalNotifications.requestPermissions();
+      return { granted: result.display === "granted" };
+    } catch (error) {
+      return { granted: false, error };
+    }
+  }
+
+  return { granted: true };
+};
+
 const toYyyyMmDd = (date) => {
   const yyyy = String(date.getFullYear());
   const mm = String(date.getMonth() + 1).padStart(2, "0");
@@ -535,6 +565,20 @@ export const scheduleCourseNotifications = async ({
     return { scheduled: 0, canceled: 0, planned: 0, reason: "no-start-date" };
   }
 
+  // 检查并请求 POST_NOTIFICATIONS 权限
+  const permCheck = await checkPostNotificationsPermission();
+  if (!permCheck.granted) {
+    const permRequest = await requestPostNotificationsPermission();
+    if (!permRequest.granted) {
+      return {
+        scheduled: 0,
+        canceled: 0,
+        planned: 0,
+        reason: "notification-permission-denied"
+      };
+    }
+  }
+
   const planSnapshot = buildNotificationPlan({
     semesterStartDate,
     userGroup,
@@ -567,6 +611,15 @@ export const sendTestNotification = async ({
 
   if (!semesterStartDate) {
     return { sent: false, reason: "no-start-date" };
+  }
+
+  // 检查并请求 POST_NOTIFICATIONS 权限
+  const permCheck = await checkPostNotificationsPermission();
+  if (!permCheck.granted) {
+    const permRequest = await requestPostNotificationsPermission();
+    if (!permRequest.granted) {
+      return { sent: false, reason: "notification-permission-denied" };
+    }
   }
 
   const permission = await LocalNotifications.requestPermissions();
