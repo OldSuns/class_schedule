@@ -162,20 +162,18 @@ export const scheduleData = [
     day: "Wednesday",
     periods: [
       { period: 1, courses: [
-          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
-          { name: "儿科学A", weeks: [16], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
+          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
         ]},
       { period: 2, courses: [
-          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
-          { name: "儿科学A", weeks: [16], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
+          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
         ]},
       { period: 3, courses: [
-          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
+          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" }
         ]},
       { period: 4, courses: [] },
       { period: 5, courses: [] },
       { period: 6, courses: [
-          { name: "形势与政策A", weeks: [4,14], group: null, note: { default: "", weeks: { 4: "讲座", 14: "网课" } }, location: "未排地点" }
+          { name: "形势与政策A", weeks: [4,14,15], group: null, note: { default: "", weeks: { 4: "讲座", 14: "网课" } }, location: "未排地点" }
         ]},
       { period: 7, courses: [
           { name: "形势与政策A", weeks: [4], group: null, note: "讲座", location: "未排地点" }
@@ -197,11 +195,12 @@ export const scheduleData = [
     day: "Thursday",
     periods: [
       { period: 1, courses: [
+          { name: "儿科学A", weeks: [5], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
           { name: "儿科学见习", weeks: [15], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "儿科学见习", weeks: [14,16], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [9,13], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,12], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "神经病学见习", weeks: [8], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
+          { name: "神经病学见习", weeks: [8], group: "6班A组", note: { default: "", weeks: {} }, location: "湖州市中心医院-神经内科" },
           { name: "神经病学见习", weeks: [9], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [7,9,11,13], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [15], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
@@ -211,11 +210,12 @@ export const scheduleData = [
           { name: "神经病学见习", weeks: [7], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
         ]},
       { period: 2, courses: [
+          { name: "儿科学A", weeks: [5], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
           { name: "儿科学见习", weeks: [15], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "儿科学见习", weeks: [14,16], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [9,13], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,12], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "神经病学见习", weeks: [8], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
+          { name: "神经病学见习", weeks: [8], group: "6班A组", note: { default: "", weeks: {} }, location: "湖州市中心医院-神经内科" },
           { name: "神经病学见习", weeks: [9], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [7,9,11,13], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [15], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
@@ -225,11 +225,12 @@ export const scheduleData = [
           { name: "神经病学见习", weeks: [7], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
         ]},
       { period: 3, courses: [
+          { name: "儿科学A", weeks: [5], group: null, note: { default: "", weeks: {} }, location: "11号楼（人才楼）1楼大教室" },
           { name: "儿科学见习", weeks: [15], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "儿科学见习", weeks: [14,16], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [9,13], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,12], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "神经病学见习", weeks: [8], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
+          { name: "神经病学见习", weeks: [8], group: "6班A组", note: { default: "", weeks: {} }, location: "湖州市中心医院-神经内科" },
           { name: "神经病学见习", weeks: [9], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [7,9,11,13], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [6,8,12,14], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" },

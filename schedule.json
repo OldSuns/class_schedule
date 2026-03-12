@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-03-08",
+  "updatedAt": "2026-03-12",
   "schedule": [
     {
       "day": "Monday",
@@ -1217,18 +1217,6 @@
                 "weeks": {}
               },
               "location": "11号楼（人才楼）1楼大教室"
-            },
-            {
-              "name": "儿科学A",
-              "weeks": [
-                16
-              ],
-              "group": null,
-              "note": {
-                "default": "",
-                "weeks": {}
-              },
-              "location": "11号楼（人才楼）1楼大教室"
             }
           ]
         },
@@ -1256,18 +1244,6 @@
                 "weeks": {}
               },
               "location": "11号楼（人才楼）1楼大教室"
-            },
-            {
-              "name": "儿科学A",
-              "weeks": [
-                16
-              ],
-              "group": null,
-              "note": {
-                "default": "",
-                "weeks": {}
-              },
-              "location": "11号楼（人才楼）1楼大教室"
             }
           ]
         },
@@ -1284,7 +1260,6 @@
                 9,
                 10,
                 11,
-                12,
                 13,
                 14,
                 15
@@ -1313,7 +1288,8 @@
               "name": "形势与政策A",
               "weeks": [
                 4,
-                14
+                14,
+                15
               ],
               "group": null,
               "note": {
@@ -1396,6 +1372,18 @@
           "period": 1,
           "courses": [
             {
+              "name": "儿科学A",
+              "weeks": [
+                5
+              ],
+              "group": null,
+              "note": {
+                "default": "",
+                "weeks": {}
+              },
+              "location": "11号楼（人才楼）1楼大教室"
+            },
+            {
               "name": "儿科学见习",
               "weeks": [
                 15
@@ -1456,7 +1444,7 @@
                 "default": "",
                 "weeks": {}
               },
-              "location": "未排地点"
+              "location": "湖州市中心医院-神经内科"
             },
             {
               "name": "神经病学见习",
@@ -1554,6 +1542,18 @@
           "period": 2,
           "courses": [
             {
+              "name": "儿科学A",
+              "weeks": [
+                5
+              ],
+              "group": null,
+              "note": {
+                "default": "",
+                "weeks": {}
+              },
+              "location": "11号楼（人才楼）1楼大教室"
+            },
+            {
               "name": "儿科学见习",
               "weeks": [
                 15
@@ -1614,7 +1614,7 @@
                 "default": "",
                 "weeks": {}
               },
-              "location": "未排地点"
+              "location": "湖州市中心医院-神经内科"
             },
             {
               "name": "神经病学见习",
@@ -1712,6 +1712,18 @@
           "period": 3,
           "courses": [
             {
+              "name": "儿科学A",
+              "weeks": [
+                5
+              ],
+              "group": null,
+              "note": {
+                "default": "",
+                "weeks": {}
+              },
+              "location": "11号楼（人才楼）1楼大教室"
+            },
+            {
               "name": "儿科学见习",
               "weeks": [
                 15
@@ -1772,7 +1784,7 @@
                 "default": "",
                 "weeks": {}
               },
-              "location": "未排地点"
+              "location": "湖州市中心医院-神经内科"
             },
             {
               "name": "神经病学见习",
