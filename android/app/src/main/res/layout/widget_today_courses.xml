@@ -20,24 +20,12 @@
         android:textSize="14sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/widget_subtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/widget_title"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="2dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="@string/widget_today_courses_subtitle"
-        android:textColor="#6B7280"
-        android:textSize="12sp" />
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/widget_subtitle"
+        android:layout_below="@id/widget_title"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dp"
         android:clipChildren="true">
 
         <ListView
