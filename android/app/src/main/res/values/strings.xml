@@ -4,4 +4,19 @@
     <string name="title_activity_main">WL课程表</string>
     <string name="package_name">com.oldsun.classschedule</string>
     <string name="custom_url_scheme">com.oldsun.classschedule</string>
+
+    <string name="widget_today_courses_name">今日剩余课程</string>
+    <string name="widget_today_courses_title">今日剩余课程</string>
+    <string name="widget_today_courses_subtitle">按节次顺序显示</string>
+    <string name="widget_today_courses_desc">显示今日接下来需要上的课程</string>
+    <string name="widget_today_courses_empty_default">今日已无课程</string>
+    <string name="widget_today_courses_empty_need_open_app">请先打开应用同步小组件数据</string>
+    <string name="widget_today_courses_empty_need_start_date">请在应用中设置开学日期</string>
+    <string name="widget_today_courses_empty_before_start">未到开学日期</string>
+    <string name="widget_today_courses_empty_weekend">今天无课</string>
+    <string name="widget_today_courses_empty_out_of_range">已超出学期范围</string>
+    <string name="widget_today_courses_empty_invalid_data">小组件数据异常，请打开应用重试</string>
+    <string name="widget_today_courses_status_ongoing">进行中</string>
+    <string name="widget_today_courses_countdown_until_start">还有 %1$d 分钟</string>
+    <string name="widget_today_courses_countdown_until_end">剩余 %1$d 分钟</string>
 </resources>

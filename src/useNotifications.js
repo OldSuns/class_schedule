@@ -8,6 +8,7 @@ import {
   STORAGE_KEYS
 } from "./constants";
 import { GROUP_TYPES, SELECTABLE_GROUP_TYPES } from "./groupUtils";
+import { refreshWidget } from "./widgetBridge";
 import {
   cancelAllScheduledNotifications,
   checkExactAlarmPermission,
@@ -115,7 +116,9 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
 
   useEffect(() => {
     if (!isLoaded) return;
-    storage.setItem(STORAGE_KEYS.USER_GROUP, userGroup);
+    void storage
+      .setItem(STORAGE_KEYS.USER_GROUP, userGroup)
+      .then(() => refreshWidget());
   }, [userGroup, isLoaded]);
 
   useEffect(() => {

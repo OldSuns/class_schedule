@@ -7,8 +7,14 @@ import {
   buildScheduleSignature,
   fetchRemoteSchedule
 } from "./remoteSchedule";
+import { refreshWidget } from "./widgetBridge";
+import { GROUP_TYPES, getGroupType } from "./groupUtils";
+import { getPeriodRangeMinutes } from "./timeUtils";
+import { MAX_PERIOD, MAX_WEEK, MIN_PERIOD } from "./constants";
 
 const STORAGE_VERSION = 1;
+const WIDGET_SNAPSHOT_VERSION = 2;
+const WIDGET_SNAPSHOT_FORCE_REWRITE_DELAY_MS = 2000;
 const SCHEDULE_SOURCES = {
   BUILTIN: "builtin",
   REMOTE: "remote",
@@ -18,6 +24,52 @@ const createDefaultSchedule = () => normalizeSchedule(defaultScheduleData);
 const DEFAULT_SCHEDULE_SIGNATURE = buildScheduleSignature(
   createDefaultSchedule()
 );
+
+const buildCourseEligibleGroups = (courseGroup) => {
+  const type = getGroupType(courseGroup);
+  if (type === GROUP_TYPES.ALL) return null;
+  if (type === GROUP_TYPES.G6ALL) return [GROUP_TYPES.G6A, GROUP_TYPES.G6B];
+  if (type === GROUP_TYPES.G7ALL) return [GROUP_TYPES.G7C, GROUP_TYPES.G7D];
+  return [type];
+};
+
+const buildWidgetPeriodRanges = () => {
+  const ranges = {};
+  for (let period = MIN_PERIOD; period <= MAX_PERIOD; period += 1) {
+    const range = getPeriodRangeMinutes(period);
+    if (!range) continue;
+    ranges[String(period)] = { startMin: range.startMin, endMin: range.endMin };
+  }
+  return ranges;
+};
+
+const buildWidgetScheduleSnapshot = (scheduleData) => {
+  const list = Array.isArray(scheduleData) ? scheduleData : [];
+  return list.map((day) => ({
+    ...day,
+    periods: Array.isArray(day?.periods)
+      ? day.periods.map((periodEntry) => ({
+          ...periodEntry,
+          courses: Array.isArray(periodEntry?.courses)
+            ? periodEntry.courses.map((course) => ({
+                ...course,
+                eligibleGroups: buildCourseEligibleGroups(course?.group)
+              }))
+            : []
+        }))
+      : []
+  }));
+};
+
+const isWidgetSnapshotV2 = (raw) => {
+  if (!raw) return false;
+  try {
+    const parsed = JSON.parse(raw);
+    return Number(parsed?.version) === WIDGET_SNAPSHOT_VERSION;
+  } catch {
+    return false;
+  }
+};
 
 const parseRemoteSnapshot = (raw) => {
   if (!raw) return null;
@@ -351,6 +403,58 @@ export const useScheduleData = () => {
     });
     storage.setItem(STORAGE_KEYS.CUSTOM_SCHEDULE, payload);
   }, [scheduleData, hasManualScheduleChanges, isScheduleLoaded]);
+
+  const persistWidgetSnapshot = useCallback(async () => {
+    try {
+      const payload = JSON.stringify({
+        version: WIDGET_SNAPSHOT_VERSION,
+        updatedAt: Date.now(),
+        maxWeek: MAX_WEEK,
+        periodRanges: buildWidgetPeriodRanges(),
+        schedule: buildWidgetScheduleSnapshot(scheduleData)
+      });
+      await storage.setItem(STORAGE_KEYS.WIDGET_SCHEDULE_SNAPSHOT, payload);
+      await refreshWidget();
+    } catch (error) {
+      console.warn("小组件课表快照写入失败:", error);
+    }
+  }, [scheduleData]);
+
+  // Persist a normalized schedule snapshot for the Android home-screen widget.
+  // Stored in Capacitor Preferences (SharedPreferences) so native code can read it.
+  useEffect(() => {
+    if (!isScheduleLoaded) return;
+    void persistWidgetSnapshot();
+  }, [isScheduleLoaded, persistWidgetSnapshot]);
+
+  // Best-effort migration: if the user has an older snapshot version, rewrite once after a short delay
+  // to cover first-launch races where schedule loads before preferences are ready.
+  useEffect(() => {
+    if (!isScheduleLoaded) return;
+
+    let cancelled = false;
+    let timeoutId = null;
+
+    const scheduleRewriteIfNeeded = async () => {
+      try {
+        const raw = await storage.getItem(STORAGE_KEYS.WIDGET_SCHEDULE_SNAPSHOT);
+        if (cancelled) return;
+        if (isWidgetSnapshotV2(raw)) return;
+        await persistWidgetSnapshot();
+      } catch (error) {
+        console.warn("小组件课表快照补写失败:", error);
+      }
+    };
+
+    timeoutId = setTimeout(scheduleRewriteIfNeeded, WIDGET_SNAPSHOT_FORCE_REWRITE_DELAY_MS);
+
+    return () => {
+      cancelled = true;
+      if (timeoutId != null) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [isScheduleLoaded, persistWidgetSnapshot]);
 
   const resetSchedule = async () => {
     hasUserChangedScheduleRef.current = true;

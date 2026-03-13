@@ -64,6 +64,7 @@ export const STORAGE_KEYS = {
   NOTIFICATION_LEAD_MINUTES: "notificationLeadMinutes",
   USER_GROUP: "userGroup",
   DISPLAY_MODE: "displayMode",
+  WIDGET_SCHEDULE_SNAPSHOT: "widgetScheduleSnapshot",
   CUSTOM_SCHEDULE: "customSchedule",
   REMOTE_SCHEDULE_SNAPSHOT: "remoteScheduleSnapshot",
   REMOTE_SCHEDULE_META: "remoteScheduleMeta",

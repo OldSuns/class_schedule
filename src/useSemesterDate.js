@@ -4,6 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import * as storage from "../storage";
 import { calculateTodayInfo } from "./timeUtils";
 import { DEFAULT_SEMESTER_START_DATE, STORAGE_KEYS } from "./constants";
+import { refreshWidget } from "./widgetBridge";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -133,10 +134,12 @@ export const useSemesterDate = () => {
       await storage.setItem(STORAGE_KEYS.SEMESTER_START_DATE, date);
       const info = calculateTodayInfo(date);
       setTodayInfo(info);
+      await refreshWidget();
       return info;
     } else {
       await storage.removeItem(STORAGE_KEYS.SEMESTER_START_DATE);
       setTodayInfo(null);
+      await refreshWidget();
       return null;
     }
   }, []);
