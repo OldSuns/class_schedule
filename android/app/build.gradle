@@ -7,8 +7,8 @@ android {
         applicationId "com.oldsun.classschedule"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 20260312
-        versionName "1.9.13"
+        versionCode 20260316
+        versionName "1.9.14"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

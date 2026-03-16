@@ -60,11 +60,17 @@ final class WidgetTodayCoursesCalculator {
         final List<Item> items;
         final String emptyMessage;
         final long nextRefreshAtMillis;
+        final String title;
 
         Result(List<Item> items, String emptyMessage, long nextRefreshAtMillis) {
+            this(items, emptyMessage, nextRefreshAtMillis, "");
+        }
+
+        Result(List<Item> items, String emptyMessage, long nextRefreshAtMillis, String title) {
             this.items = items != null ? items : Collections.<Item>emptyList();
             this.emptyMessage = emptyMessage != null ? emptyMessage : "";
             this.nextRefreshAtMillis = nextRefreshAtMillis;
+            this.title = title != null ? title : "";
         }
     }
 
@@ -162,9 +168,12 @@ final class WidgetTodayCoursesCalculator {
             return new Result(
                 Collections.<Item>emptyList(),
                 "",
-                nowMillis + SCHEDULE_MIN_DELAY_MS
+                nowMillis + SCHEDULE_MIN_DELAY_MS,
+                ""
             );
         }
+
+        final String todayTitle = context.getString(R.string.widget_today_courses_title);
 
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String semesterStartDate = prefs.getString(KEY_SEMESTER_START_DATE, null);
@@ -175,7 +184,8 @@ final class WidgetTodayCoursesCalculator {
             return new Result(
                 Collections.<Item>emptyList(),
                 context.getString(R.string.widget_today_courses_empty_need_start_date),
-                getNextDailyRefreshMillis(nowMillis)
+                getNextDailyRefreshMillis(nowMillis),
+                todayTitle
             );
         }
 
@@ -183,7 +193,8 @@ final class WidgetTodayCoursesCalculator {
             return new Result(
                 Collections.<Item>emptyList(),
                 context.getString(R.string.widget_today_courses_empty_need_open_app),
-                nowMillis + NEED_SYNC_RETRY_DELAY_MS
+                nowMillis + NEED_SYNC_RETRY_DELAY_MS,
+                todayTitle
             );
         }
 
@@ -207,7 +218,8 @@ final class WidgetTodayCoursesCalculator {
             return new Result(
                 Collections.<Item>emptyList(),
                 context.getString(R.string.widget_today_courses_empty_need_open_app),
-                nowMillis + NEED_SYNC_RETRY_DELAY_MS
+                nowMillis + NEED_SYNC_RETRY_DELAY_MS,
+                todayTitle
             );
         }
 
@@ -216,45 +228,82 @@ final class WidgetTodayCoursesCalculator {
             return new Result(
                 Collections.<Item>emptyList(),
                 context.getString(R.string.widget_today_courses_empty_need_open_app),
-                nowMillis + NEED_SYNC_RETRY_DELAY_MS
+                nowMillis + NEED_SYNC_RETRY_DELAY_MS,
+                todayTitle
             );
         }
 
-        DateInfoResult dateResult = calculateTodayInfo(semesterStartDate, nowMillis, maxWeek);
-        if (dateResult.status != DateStatus.OK || dateResult.info == null) {
-            return new Result(
-                Collections.<Item>emptyList(),
-                messageForDateStatus(context, dateResult.status),
-                getNextDailyRefreshMillis(nowMillis)
-            );
+        List<Item> items = Collections.emptyList();
+        String emptyMessage = context.getString(R.string.widget_today_courses_empty_default);
+        long nextRefreshAtMillis = getNextDailyRefreshMillis(nowMillis);
+
+        DateInfoResult todayResult = calculateDateInfo(semesterStartDate, nowMillis, maxWeek);
+        if (todayResult.status == DateStatus.OK && todayResult.info != null) {
+            DateInfo info = todayResult.info;
+            JSONObject daySchedule = findDaySchedule(scheduleArray, info.dayName);
+            if (daySchedule != null) {
+                Map<Integer, PeriodMatch> periodMatchMap = buildPeriodMatchMap(
+                    daySchedule,
+                    info.week,
+                    userGroup,
+                    periodRangeTable
+                );
+                List<CourseBlock> blocks =
+                    buildCourseBlocks(periodMatchMap, nowMillis, periodRangeTable);
+                items = buildItems(blocks, nowMillis);
+                nextRefreshAtMillis = computeNextRefreshAtMillis(items, nowMillis);
+            }
+        } else {
+            emptyMessage = messageForDateStatus(context, todayResult.status);
         }
 
-        DateInfo info = dateResult.info;
-        JSONObject daySchedule = findDaySchedule(scheduleArray, info.dayName);
-        if (daySchedule == null) {
-            return new Result(
-                Collections.<Item>emptyList(),
-                context.getString(R.string.widget_today_courses_empty_default),
-                getNextDailyRefreshMillis(nowMillis)
-            );
+        if (items != null && !items.isEmpty()) {
+            return new Result(items, emptyMessage, nextRefreshAtMillis, todayTitle);
         }
 
-        Map<Integer, PeriodMatch> periodMatchMap = buildPeriodMatchMap(
-            daySchedule,
-            info.week,
-            userGroup,
-            periodRangeTable
+        // No remaining courses today. If tomorrow has courses, show a preview.
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.setTimeInMillis(nowMillis);
+        truncateToMidnight(tomorrow);
+        tomorrow.add(Calendar.DATE, 1);
+        long tomorrowMidnightMillis = tomorrow.getTimeInMillis();
+
+        DateInfoResult tomorrowResult = calculateDateInfo(
+            semesterStartDate,
+            tomorrowMidnightMillis,
+            maxWeek
         );
-        List<CourseBlock> blocks = buildCourseBlocks(periodMatchMap, nowMillis, periodRangeTable);
-        List<Item> items = buildItems(blocks, nowMillis);
+        if (tomorrowResult.status == DateStatus.OK && tomorrowResult.info != null) {
+            DateInfo info = tomorrowResult.info;
+            JSONObject daySchedule = findDaySchedule(scheduleArray, info.dayName);
+            if (daySchedule != null) {
+                Map<Integer, PeriodMatch> periodMatchMap = buildPeriodMatchMap(
+                    daySchedule,
+                    info.week,
+                    userGroup,
+                    periodRangeTable
+                );
+                List<CourseBlock> blocks =
+                    buildCourseBlocks(periodMatchMap, tomorrowMidnightMillis, periodRangeTable);
+                List<Item> tomorrowItems = buildItems(blocks, nowMillis);
+                if (tomorrowItems != null && !tomorrowItems.isEmpty()) {
+                    long next =
+                        computeNextRefreshAtMillis(tomorrowItems, nowMillis);
+                    long daily = getNextDailyRefreshMillis(nowMillis);
+                    if (daily > 0L && daily < next) {
+                        next = daily;
+                    }
+                    return new Result(
+                        tomorrowItems,
+                        emptyMessage,
+                        next,
+                        context.getString(R.string.widget_tomorrow_courses_title)
+                    );
+                }
+            }
+        }
 
-        String emptyMessage =
-            items.isEmpty()
-                ? context.getString(R.string.widget_today_courses_empty_default)
-                : context.getString(R.string.widget_today_courses_empty_default);
-        long nextRefreshAtMillis = computeNextRefreshAtMillis(items, nowMillis);
-
-        return new Result(items, emptyMessage, nextRefreshAtMillis);
+        return new Result(items, emptyMessage, nextRefreshAtMillis, todayTitle);
     }
 
     private static String messageForDateStatus(Context context, DateStatus status) {
@@ -321,7 +370,7 @@ final class WidgetTodayCoursesCalculator {
         return next.getTimeInMillis();
     }
 
-    private static DateInfoResult calculateTodayInfo(String startDate, long nowMillis, int maxWeek) {
+    private static DateInfoResult calculateDateInfo(String startDate, long nowMillis, int maxWeek) {
         Calendar start = parseLocalDate(startDate);
         if (start == null) {
             return new DateInfoResult(DateStatus.INVALID_START_DATE, null);

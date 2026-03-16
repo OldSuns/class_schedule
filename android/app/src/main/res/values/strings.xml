@@ -7,6 +7,7 @@
 
     <string name="widget_today_courses_name">今日剩余课程</string>
     <string name="widget_today_courses_title">今日剩余课程</string>
+    <string name="widget_tomorrow_courses_title">明日课程</string>
     <string name="widget_today_courses_subtitle">按节次顺序显示</string>
     <string name="widget_today_courses_desc">显示今日接下来需要上的课程</string>
     <string name="widget_today_courses_empty_default">今日已无课程</string>

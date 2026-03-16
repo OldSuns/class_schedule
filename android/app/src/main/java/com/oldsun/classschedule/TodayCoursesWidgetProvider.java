@@ -73,6 +73,11 @@ public class TodayCoursesWidgetProvider extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_today_courses);
 
         if (result != null) {
+            String title = result.title;
+            if (title == null || title.length() == 0) {
+                title = context.getString(R.string.widget_today_courses_title);
+            }
+            views.setTextViewText(R.id.widget_title, title);
             views.setTextViewText(R.id.widget_empty, result.emptyMessage);
         }
 

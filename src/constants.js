@@ -34,7 +34,7 @@ export const DISPLAY_MODES = {
 };
 
 // 当前应用版本（用于更新检查）
-export const APP_VERSION = "1.9.13";
+export const APP_VERSION = "1.9.14";
 
 // Gitee Releases
 export const GITHUB_RELEASES_URL =
