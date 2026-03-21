@@ -2,11 +2,16 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import * as storage from "../storage";
-import { calculateTodayInfo } from "./timeUtils";
+import { calculateDisplayTodayInfo, calculateTodayInfo } from "./timeUtils";
 import { DEFAULT_SEMESTER_START_DATE, STORAGE_KEYS } from "./constants";
 import { refreshWidget } from "./widgetBridge";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+
+const getDateInfos = (date) => ({
+  todayInfo: date ? calculateTodayInfo(date) : null,
+  displayWeekInfo: date ? calculateDisplayTodayInfo(date) : null
+});
 
 /**
  * 管理学期开始日期和今天信息的 Hook
@@ -16,8 +21,9 @@ export const useSemesterDate = () => {
     storage.getItemSync(STORAGE_KEYS.SEMESTER_START_DATE) ||
     DEFAULT_SEMESTER_START_DATE;
   const [semesterStartDate, setSemesterStartDate] = useState(initialDate);
-  const [todayInfo, setTodayInfo] = useState(() =>
-    initialDate ? calculateTodayInfo(initialDate) : null
+  const [todayInfo, setTodayInfo] = useState(() => getDateInfos(initialDate).todayInfo);
+  const [displayWeekInfo, setDisplayWeekInfo] = useState(
+    () => getDateInfos(initialDate).displayWeekInfo
   );
   const hasUserChangedDateRef = useRef(false);
 
@@ -31,12 +37,14 @@ export const useSemesterDate = () => {
 
       if (savedDate) {
         setSemesterStartDate(savedDate);
-        const info = calculateTodayInfo(savedDate);
-        setTodayInfo(info);
+        const infos = getDateInfos(savedDate);
+        setTodayInfo(infos.todayInfo);
+        setDisplayWeekInfo(infos.displayWeekInfo);
       } else if (DEFAULT_SEMESTER_START_DATE) {
         setSemesterStartDate(DEFAULT_SEMESTER_START_DATE);
-        const info = calculateTodayInfo(DEFAULT_SEMESTER_START_DATE);
-        setTodayInfo(info);
+        const infos = getDateInfos(DEFAULT_SEMESTER_START_DATE);
+        setTodayInfo(infos.todayInfo);
+        setDisplayWeekInfo(infos.displayWeekInfo);
         await storage.setItem(
           STORAGE_KEYS.SEMESTER_START_DATE,
           DEFAULT_SEMESTER_START_DATE
@@ -55,11 +63,14 @@ export const useSemesterDate = () => {
   useEffect(() => {
     if (!semesterStartDate) {
       setTodayInfo(null);
+      setDisplayWeekInfo(null);
       return;
     }
 
     const updateTodayInfo = () => {
-      setTodayInfo(calculateTodayInfo(semesterStartDate));
+      const infos = getDateInfos(semesterStartDate);
+      setTodayInfo(infos.todayInfo);
+      setDisplayWeekInfo(infos.displayWeekInfo);
     };
 
     updateTodayInfo();
@@ -91,7 +102,9 @@ export const useSemesterDate = () => {
     if (!semesterStartDate) return;
 
     const refreshTodayInfo = () => {
-      setTodayInfo(calculateTodayInfo(semesterStartDate));
+      const infos = getDateInfos(semesterStartDate);
+      setTodayInfo(infos.todayInfo);
+      setDisplayWeekInfo(infos.displayWeekInfo);
     };
 
     let listenerHandle = null;
@@ -132,21 +145,24 @@ export const useSemesterDate = () => {
 
     if (date) {
       await storage.setItem(STORAGE_KEYS.SEMESTER_START_DATE, date);
-      const info = calculateTodayInfo(date);
-      setTodayInfo(info);
+      const infos = getDateInfos(date);
+      setTodayInfo(infos.todayInfo);
+      setDisplayWeekInfo(infos.displayWeekInfo);
       await refreshWidget();
-      return info;
+      return infos;
     } else {
       await storage.removeItem(STORAGE_KEYS.SEMESTER_START_DATE);
       setTodayInfo(null);
+      setDisplayWeekInfo(null);
       await refreshWidget();
-      return null;
+      return { todayInfo: null, displayWeekInfo: null };
     }
   }, []);
 
   return {
     semesterStartDate,
     todayInfo,
+    displayWeekInfo,
     handleStartDateChange
   };
 };

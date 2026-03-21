@@ -7,6 +7,7 @@ import { MIN_WEEK, MAX_WEEK } from "./constants";
  */
 const Header = ({
   todayInfo,
+  displayWeekInfo,
   currentWeek,
   currentClassProgress,
   onOpenMenu,
@@ -17,6 +18,16 @@ const Header = ({
   const handleWeekInputChange = (e) => {
     onWeekChange(e.target.value);
   };
+
+  const statusText = todayInfo
+    ? `今天是第${todayInfo.week}周 星期${["一", "二", "三", "四", "五"][todayInfo.dayOfWeek - 1]}`
+    : displayWeekInfo?.isWeekendPreview
+    ? `今天是周末，默认显示第${displayWeekInfo.week}周课表`
+    : "";
+
+  const statusClassName = displayWeekInfo?.isWeekendPreview
+    ? "text-indigo-600 font-medium"
+    : "text-green-600 font-medium";
 
   return (
     <div className="text-center mb-3 sm:mb-6 md:mb-8">
@@ -103,11 +114,9 @@ const Header = ({
       </div>
 
       {/* 当前状态显示 */}
-      {todayInfo && (
+      {statusText && (
         <div className="flex justify-center items-center text-xs sm:text-sm md:text-base">
-          <span className="text-green-600 font-medium">
-            今天是第{todayInfo.week}周 星期{["一", "二", "三", "四", "五"][todayInfo.dayOfWeek - 1]}
-          </span>
+          <span className={statusClassName}>{statusText}</span>
         </div>
       )}
     </div>

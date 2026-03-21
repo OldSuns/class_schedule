@@ -16,6 +16,7 @@ const SettingsMenu = ({
   semesterStartDate,
   onStartDateChange,
   todayInfo,
+  displayWeekInfo,
   currentWeek,
   onSelectWeek,
   displayMode = DISPLAY_MODES.ALL,
@@ -78,6 +79,16 @@ const SettingsMenu = ({
 
   const currentScheduleSourceLabel =
     scheduleSourceLabelMap[scheduleSource] || "未知来源";
+
+  const weekStatusText = todayInfo
+    ? `今天是第${todayInfo.week}周 星期${["一", "二", "三", "四", "五"][todayInfo.dayOfWeek - 1]}`
+    : displayWeekInfo?.isWeekendPreview
+    ? `今天是周末，默认显示第${displayWeekInfo.week}周课表`
+    : "";
+
+  const weekStatusClassName = displayWeekInfo?.isWeekendPreview
+    ? "text-sm text-indigo-600 font-medium bg-indigo-50 p-3 rounded-lg"
+    : "text-sm text-green-600 font-medium bg-green-50 p-3 rounded-lg";
 
   useEffect(() => {
     if (!isOpen) {
@@ -572,12 +583,12 @@ const SettingsMenu = ({
                               colorScheme: 'light'
                             }}
                           />
-                          {todayInfo && (
-                            <div className="text-sm text-green-600 font-medium bg-green-50 p-3 rounded-lg">
-                              今天是第{todayInfo.week}周 星期{["一", "二", "三", "四", "五"][todayInfo.dayOfWeek - 1]}
+                          {weekStatusText && (
+                            <div className={weekStatusClassName}>
+                              {weekStatusText}
                             </div>
                           )}
-                          {!todayInfo && semesterStartDate && (
+                          {!weekStatusText && semesterStartDate && (
                             <div className="text-sm text-gray-500 font-medium bg-gray-50 p-3 rounded-lg">
                               今天不在上课时间
                             </div>

@@ -173,11 +173,9 @@ export const scheduleData = [
       { period: 4, courses: [] },
       { period: 5, courses: [] },
       { period: 6, courses: [
-          { name: "形势与政策A", weeks: [4,14,15], group: null, note: { default: "", weeks: { 4: "讲座", 14: "网课" } }, location: "未排地点" }
+          { name: "形势与政策A", weeks: [14,15], group: null, note: { default: "", weeks: { 4: "讲座", 14: "网课" } }, location: "未排地点" }
         ]},
-      { period: 7, courses: [
-          { name: "形势与政策A", weeks: [4], group: null, note: "讲座", location: "未排地点" }
-        ] },
+      { period: 7, courses: [] },
       { period: 8, courses: [] },
       { period: 9, courses: [] },
       { period: 10, courses: [] },

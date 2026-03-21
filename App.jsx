@@ -63,7 +63,12 @@ const getTodayKey = (date = new Date()) => {
 const App = () => {
 
   // 学期日期管理
-  const { semesterStartDate, todayInfo, handleStartDateChange } = useSemesterDate();
+  const {
+    semesterStartDate,
+    todayInfo,
+    displayWeekInfo,
+    handleStartDateChange
+  } = useSemesterDate();
 
   // 周数选择管理
   const {
@@ -184,13 +189,13 @@ const App = () => {
     setupStatusBar();
   }, []);
 
-  // 当 todayInfo 更新时，自动设置当前周
+  // 当显示周更新时，自动设置当前周
   useEffect(() => {
-    if (todayInfo) {
-      // 进入应用时跳转到今天所在的周次
-      setCurrentWeek(todayInfo.week);
+    if (displayWeekInfo) {
+      // 进入应用时跳转到当前应显示的周次
+      setCurrentWeek(displayWeekInfo.week);
     }
-  }, [todayInfo, setCurrentWeek]);
+  }, [displayWeekInfo, setCurrentWeek]);
 
   // 前台恢复时刷新当前时间，避免后台暂停导致进度条不更新
   useEffect(() => {
@@ -570,10 +575,10 @@ const App = () => {
 
   // 处理开学日期变化
   const handleDateChange = async (date) => {
-    const info = await handleStartDateChange(date);
-    if (info) {
+    const infos = await handleStartDateChange(date);
+    if (infos?.displayWeekInfo) {
       // 手动修改开学日期后同步周次
-      setCurrentWeek(info.week);
+      setCurrentWeek(infos.displayWeekInfo.week);
     }
   };
 
@@ -636,6 +641,7 @@ const App = () => {
         {/* 顶部标题和菜单按钮 */}
         <Header
           todayInfo={todayInfo}
+          displayWeekInfo={displayWeekInfo}
           currentWeek={currentWeek}
           currentClassProgress={currentClassProgress}
           onOpenMenu={() => setIsSettingsMenuOpen(true)}
@@ -651,6 +657,7 @@ const App = () => {
           semesterStartDate={semesterStartDate}
           onStartDateChange={handleDateChange}
           todayInfo={todayInfo}
+          displayWeekInfo={displayWeekInfo}
           currentWeek={currentWeek}
           onSelectWeek={handleQuickSelectWeek}
           displayMode={displayMode}
