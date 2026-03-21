@@ -46,8 +46,10 @@ const SettingsMenu = ({
 }) => {
   const [showWeekSelector, setShowWeekSelector] = useState(false);
   const [updateStatus, setUpdateStatus] = useState("");
+  const [updateResultType, setUpdateResultType] = useState("");
   const [updateUrl, setUpdateUrl] = useState("");
   const [apkUrl, setApkUrl] = useState("");
+  const [releaseInfo, setReleaseInfo] = useState(null);
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
   const [resetStatus, setResetStatus] = useState("");
   const [softUpdateStatus, setSoftUpdateStatus] = useState("");
@@ -90,6 +92,31 @@ const SettingsMenu = ({
     ? "text-sm text-indigo-600 font-medium bg-indigo-50 p-3 rounded-lg"
     : "text-sm text-green-600 font-medium bg-green-50 p-3 rounded-lg";
 
+  const formatReleasePublishedAt = (value) => {
+    if (!value) return "";
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return String(value);
+    }
+
+    return date.toLocaleString("zh-CN", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  };
+
+  const releaseNotesTitle = releaseInfo
+    ? updateResultType === "update"
+      ? `新版本说明${releaseInfo.version ? ` v${releaseInfo.version}` : ""}`
+      : releaseInfo.isFallback
+      ? `最新版本说明${releaseInfo.version ? ` v${releaseInfo.version}` : ""}`
+      : `当前版本说明${releaseInfo.version ? ` v${releaseInfo.version}` : ""}`
+    : "";
+
   useEffect(() => {
     if (!isOpen) {
       setResetStatus("");
@@ -112,10 +139,28 @@ const SettingsMenu = ({
   const handleCheckUpdate = async () => {
     setIsCheckingUpdate(true);
     setUpdateStatus("");
+    setUpdateResultType("");
     setUpdateUrl("");
     setApkUrl("");
-    const result = await checkForUpdates(APP_VERSION);
+    setReleaseInfo(null);
+    const result = await checkForUpdates(APP_VERSION, {
+      includeReleaseNotes: true
+    });
+    setUpdateResultType(result.status || "");
     setUpdateStatus(result.message || "检查完成");
+    if (
+      result.releaseVersion ||
+      result.releaseNotes ||
+      result.releasePublishedAt ||
+      result.releaseIsFallback
+    ) {
+      setReleaseInfo({
+        version: result.releaseVersion || "",
+        notes: result.releaseNotes || "",
+        publishedAt: result.releasePublishedAt || "",
+        isFallback: Boolean(result.releaseIsFallback)
+      });
+    }
     if (result.status === "update" && result.url) {
       setUpdateUrl(result.url);
       if (result.apkUrl) {
@@ -367,6 +412,28 @@ const SettingsMenu = ({
                 {updateStatus && (
                   <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
                     {updateStatus}
+                  </div>
+                )}
+                {releaseInfo && (
+                  <div className="rounded-lg border border-indigo-100 bg-white/70 p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="text-sm font-semibold text-indigo-900">
+                        {releaseNotesTitle}
+                      </div>
+                      {releaseInfo.publishedAt && (
+                        <div className="text-[11px] text-gray-500 text-right">
+                          发布于 {formatReleasePublishedAt(releaseInfo.publishedAt)}
+                        </div>
+                      )}
+                    </div>
+                    {releaseInfo.isFallback && (
+                      <div className="mt-2 rounded-lg bg-amber-50 px-2.5 py-2 text-xs text-amber-700">
+                        未找到当前版本说明，已显示最新版本说明。
+                      </div>
+                    )}
+                    <div className="mt-2 max-h-56 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 px-3 py-2 text-xs leading-6 text-gray-700">
+                      {releaseInfo.notes || "暂无更新说明"}
+                    </div>
                   </div>
                 )}
                 {updateUrl && (

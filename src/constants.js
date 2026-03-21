@@ -41,6 +41,8 @@ export const GITHUB_RELEASES_URL =
   "https://gitee.com/oldsuns/class_schedule/releases";
 export const GITHUB_RELEASES_API_LATEST =
   "https://gitee.com/api/v5/repos/oldsuns/class_schedule/releases/latest";
+export const GITHUB_RELEASES_API_LIST =
+  "https://gitee.com/api/v5/repos/oldsuns/class_schedule/releases";
 
 // 远端课表更新（软更新）地址（按优先级依次回退）
 export const SCHEDULE_REMOTE_URLS = [

@@ -1,10 +1,15 @@
 import {
+  GITHUB_RELEASES_API_LIST,
   GITHUB_RELEASES_API_LATEST,
   GITHUB_RELEASES_URL
 } from "./constants";
 import { fetchWithTimeout, isTimeoutError } from "./fetchWithTimeout";
 
 const UPDATE_REQUEST_TIMEOUT_MS = 10000;
+const RELEASE_LIST_PAGE_SIZE = 20;
+const RELEASE_REQUEST_HEADERS = {
+  Accept: "application/json"
+};
 
 // 统一版本格式：去掉前缀 v 与构建/预发布标记
 const normalizeVersion = (input) => {
@@ -52,6 +57,95 @@ const isApkAsset = (asset) => {
 const getAssetUrl = (asset) =>
   asset?.browser_download_url || asset?.download_url || asset?.url || "";
 
+const normalizeReleaseNotes = (value) => {
+  if (typeof value !== "string") return "";
+  return value.replace(/\r\n/g, "\n").trim();
+};
+
+const getReleaseIdentifier = (release) =>
+  release?.tag_name || release?.name || "";
+
+const getReleaseVersion = (release) =>
+  normalizeVersion(getReleaseIdentifier(release));
+
+const getReleaseUrl = (release) => release?.html_url || GITHUB_RELEASES_URL;
+
+const toReleaseDetails = (release, isFallback = false) => ({
+  releaseVersion: getReleaseVersion(release),
+  releaseUrl: getReleaseUrl(release),
+  releaseNotes: normalizeReleaseNotes(
+    release?.body || release?.description || ""
+  ),
+  releasePublishedAt: String(release?.published_at || release?.created_at || ""),
+  releaseIsFallback: isFallback
+});
+
+const fetchReleaseJson = async (url) => {
+  const response = await fetchWithTimeout(
+    url,
+    { headers: RELEASE_REQUEST_HEADERS },
+    UPDATE_REQUEST_TIMEOUT_MS
+  );
+
+  if (!response.ok) {
+    const error = new Error(`HTTP ${response.status}`);
+    error.code = "http";
+    error.status = response.status;
+    throw error;
+  }
+
+  try {
+    return await response.json();
+  } catch (error) {
+    const parseError = new Error("invalid-json");
+    parseError.code = "parse";
+    throw parseError;
+  }
+};
+
+const fetchReleaseList = async () => {
+  const url =
+    `${GITHUB_RELEASES_API_LIST}?page=1&per_page=${RELEASE_LIST_PAGE_SIZE}`;
+  const data = await fetchReleaseJson(url);
+  return Array.isArray(data) ? data : [];
+};
+
+const findReleaseByVersion = (releases, version) => {
+  const targetVersion = normalizeVersion(version);
+  if (!targetVersion) return null;
+  return releases.find((release) => getReleaseVersion(release) === targetVersion) || null;
+};
+
+const resolveReleaseDetails = async ({
+  latestRelease,
+  currentVersion,
+  latestVersion,
+  compare
+}) => {
+  if (!latestRelease) return null;
+
+  if (compare < 0) {
+    return toReleaseDetails(latestRelease, false);
+  }
+
+  const currentNormalized = normalizeVersion(currentVersion);
+  if (!currentNormalized || currentNormalized === latestVersion) {
+    return toReleaseDetails(latestRelease, false);
+  }
+
+  try {
+    const releases = await fetchReleaseList();
+    const matchedRelease = findReleaseByVersion(releases, currentNormalized);
+    if (matchedRelease) {
+      return toReleaseDetails(matchedRelease, false);
+    }
+  } catch (error) {
+    // 说明查询失败时回退到 latest release，不影响主流程。
+  }
+
+  return toReleaseDetails(latestRelease, true);
+};
+
 const pickApkUrl = (data, latestVersion) => {
   const assets = [];
   if (Array.isArray(data?.assets)) assets.push(...data.assets);
@@ -89,30 +183,12 @@ const pickApkUrl = (data, latestVersion) => {
   return url;
 };
 
-export const checkForUpdates = async (currentVersion) => {
+export const checkForUpdates = async (
+  currentVersion,
+  { includeReleaseNotes = false } = {}
+) => {
   try {
-    const response = await fetchWithTimeout(GITHUB_RELEASES_API_LATEST, {
-      headers: {
-        Accept: "application/json"
-      }
-    }, UPDATE_REQUEST_TIMEOUT_MS);
-
-    if (!response.ok) {
-      return {
-        status: "error",
-        message: `检查失败（HTTP ${response.status}）`
-      };
-    }
-
-    let data;
-    try {
-      data = await response.json();
-    } catch (error) {
-      return {
-        status: "error",
-        message: "版本信息解析失败"
-      };
-    }
+    const data = await fetchReleaseJson(GITHUB_RELEASES_API_LATEST);
 
     const latestTag = data.tag_name || data.name || "";
     const latestVersion = normalizeVersion(latestTag);
@@ -125,6 +201,15 @@ export const checkForUpdates = async (currentVersion) => {
       };
     }
 
+    const releaseDetails = includeReleaseNotes
+      ? await resolveReleaseDetails({
+          latestRelease: data,
+          currentVersion,
+          latestVersion,
+          compare
+        })
+      : null;
+
     if (compare < 0) {
       const apkUrl = pickApkUrl(data, latestVersion);
       return {
@@ -132,20 +217,34 @@ export const checkForUpdates = async (currentVersion) => {
         latestVersion,
         url: data.html_url || GITHUB_RELEASES_URL,
         apkUrl,
-        message: `发现新版本 v${latestVersion}`
+        message: `发现新版本 v${latestVersion}`,
+        ...(releaseDetails || {})
       };
     }
 
     return {
       status: "latest",
       latestVersion,
-      message: `当前已是最新版本 v${latestVersion}`
+      message: `当前已是最新版本 v${latestVersion}`,
+      ...(releaseDetails || {})
     };
   } catch (error) {
     if (isTimeoutError(error)) {
       return {
         status: "error",
         message: "检查超时，请稍后重试"
+      };
+    }
+    if (error?.code === "parse") {
+      return {
+        status: "error",
+        message: "版本信息解析失败"
+      };
+    }
+    if (error?.code === "http") {
+      return {
+        status: "error",
+        message: `检查失败（HTTP ${error.status}）`
       };
     }
     return {
