@@ -46,9 +46,9 @@ export const GITHUB_RELEASES_API_LIST =
 
 // 远端课表更新（软更新）地址（按优先级依次回退）
 export const SCHEDULE_REMOTE_URLS = [
-  "https://gcore.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json",
+  "https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json",
   "https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json",
-  "https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json"
+  "https://gcore.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json"
 ]; 
 
 
