@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --android-statusbar: 0px;
+  --android-statusbar: 26px;
   --safe-top: max(env(safe-area-inset-top), var(--android-statusbar));
   --safe-bottom: env(safe-area-inset-bottom);
 
