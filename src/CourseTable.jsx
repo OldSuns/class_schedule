@@ -237,21 +237,28 @@ const CourseTable = ({
                             isScheduleLoaded &&
                             onCellClick(day, cell.periodStart, cell.periodEnd)
                           }
-                          className={`py-2 sm:py-2.5 px-1 align-middle transition-colors duration-200 ${
+                          className={`p-1.5 align-top transition-colors duration-200 ${
                             isScheduleLoaded ? "cursor-pointer" : "cursor-not-allowed"
                           }`}
                           rowSpan={cell.rowSpan}
                           style={{
-                            backgroundColor: tonalColor.bg,
-                            borderBottom: `1px solid ${tonalColor.border}`,
+                            backgroundColor: isToday ? "#F7F2FF" : "#FFFBFE",
+                            borderBottom: "1px solid #E6E0E9",
                             borderRight: "1px solid #E6E0E9",
-                            // Today: stronger left accent
-                            borderLeft: isTodayAndHasClass
-                              ? "3px solid #6750A4"
-                              : undefined
+                            height: "1px",
                           }}
                         >
-                          <div className="w-full flex flex-col justify-center items-center gap-0.5">
+                          <div
+                            className="w-full flex flex-col justify-center items-center gap-0.5 rounded-2xl py-1.5 sm:py-2 px-1"
+                            style={{
+                              height: "100%",
+                              backgroundColor: tonalColor.bg,
+                              border: isTodayAndHasClass
+                                ? `2px solid #6750A4`
+                                : `1px solid ${tonalColor.border}`,
+                              minHeight: "2.5rem"
+                            }}
+                          >
                             {cell.displayCourses.length > 0 ? (
                               <>
                                 {cell.displayCourses.map((course, idx) => (

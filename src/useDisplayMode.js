@@ -10,9 +10,9 @@ const isValidMode = (mode) =>
  */
 export const useDisplayMode = () => {
   const initialMode =
-    storage.getItemSync(STORAGE_KEYS.DISPLAY_MODE) || DISPLAY_MODES.ALL;
+    storage.getItemSync(STORAGE_KEYS.DISPLAY_MODE) || DISPLAY_MODES.CURRENT_ONLY;
   const [displayMode, setDisplayMode] = useState(
-    isValidMode(initialMode) ? initialMode : DISPLAY_MODES.ALL
+    isValidMode(initialMode) ? initialMode : DISPLAY_MODES.CURRENT_ONLY
   );
   const [isLoaded, setIsLoaded] = useState(false);
   const hasUserChangedModeRef = useRef(false);
@@ -27,7 +27,7 @@ export const useDisplayMode = () => {
       if (!hasUserChangedModeRef.current && isValidMode(saved)) {
         setDisplayMode(saved);
       } else if (!saved && !hasUserChangedModeRef.current) {
-        await storage.setItem(STORAGE_KEYS.DISPLAY_MODE, DISPLAY_MODES.ALL);
+        await storage.setItem(STORAGE_KEYS.DISPLAY_MODE, DISPLAY_MODES.CURRENT_ONLY);
       }
       if (!cancelled) {
         setIsLoaded(true);

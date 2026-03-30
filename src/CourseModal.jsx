@@ -490,8 +490,8 @@ const CourseModal = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 48 }}
             transition={{ duration: 0.3, ease: [0.2, 0, 0, 1] }}
-          className="w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
-            style={{backgroundColor:"#FFFBFE",borderRadius:"28px 28px 0 0",boxShadow:"0 4px 32px rgba(103,80,164,0.18)"}}
+          className="w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] overflow-hidden flex flex-col rounded-t-[28px] sm:rounded-[28px]"
+            style={{backgroundColor:"#FFFBFE",boxShadow:"0 4px 32px rgba(103,80,164,0.18)"}}
             onClick={e => e.stopPropagation()}
           >
             <div className="flex-shrink-0 p-4 sm:p-5 flex justify-between items-center" style={{backgroundColor:"#6750A4",borderRadius:"28px 28px 0 0"}}>
