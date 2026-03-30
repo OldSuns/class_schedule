@@ -15,12 +15,41 @@ const getCanHover = () => {
   if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
     return false;
   }
-
   return window.matchMedia(HOVER_CAPABLE_MEDIA_QUERY).matches;
 };
 
+// M3 tonal course colors — low-saturation, harmonious with primary #6750A4
+// Each index maps to a stable color for a given course slot
+const COURSE_TONAL_COLORS = [
+  { bg: "#EAD8FF", text: "#21005D", border: "#C9B1F0" }, // primary-adjacent purple
+  { bg: "#C8E6FF", text: "#00315F", border: "#9DC8F0" }, // blue
+  { bg: "#D3EDDF", text: "#002113", border: "#9ACDB5" }, // green
+  { bg: "#FFE4CC", text: "#3A1A00", border: "#F0C59A" }, // orange
+  { bg: "#FFD8E4", text: "#31111D", border: "#EBA8BF" }, // tertiary pink
+  { bg: "#FFF0C2", text: "#261A00", border: "#E8CC7A" }, // yellow
+  { bg: "#DCF0F5", text: "#001F24", border: "#9FD0DA" }, // teal
+  { bg: "#EDE3FF", text: "#2C0052", border: "#C5ADEB" }, // lavender
+];
+
+// Stable color index derived from course name string
+const getCourseColor = (name) => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  }
+  return COURSE_TONAL_COLORS[hash % COURSE_TONAL_COLORS.length];
+};
+
 /**
- * 课程表格组件
+ * CourseTable — M3 style
+ *
+ * Design decisions:
+ * - Table header: primary (#6750A4) filled row, white text
+ * - Period column: surface-mid (#F3EDF7) tonal, not bright white — creates subtle depth
+ * - Empty cells: surface (#FFFBFE), hover shows a ghost + icon
+ * - Course cells: tonal color card derived from course name hash (stable per course)
+ * - Today highlight: primary-container (#EADDFF) header chip, primary border on cells
+ * - Separator rows (午休/晚休): secondary-container strip
  */
 const CourseTable = ({
   mergedCellsByDay,
@@ -46,49 +75,73 @@ const CourseTable = ({
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return undefined;
     }
-
     const mediaQuery = window.matchMedia(HOVER_CAPABLE_MEDIA_QUERY);
-    const updateCanHover = () => {
-      setCanHover(mediaQuery.matches);
-    };
-
+    const updateCanHover = () => setCanHover(mediaQuery.matches);
     updateCanHover();
-
     if (typeof mediaQuery.addEventListener === "function") {
       mediaQuery.addEventListener("change", updateCanHover);
       return () => mediaQuery.removeEventListener("change", updateCanHover);
     }
-
     mediaQuery.addListener(updateCanHover);
     return () => mediaQuery.removeListener(updateCanHover);
   }, []);
 
   return (
-    <div className="bg-white rounded-lg sm:rounded-2xl shadow-xl overflow-hidden border border-indigo-100">
+    <div
+      className="rounded-2xl overflow-hidden shadow-sm"
+      style={{ border: "1px solid #CAC4D0", backgroundColor: "#F3EDF7" }}
+    >
       <div className="overflow-x-auto">
         <table className="w-full table-auto border-collapse text-xs sm:text-sm">
-          <thead className="bg-indigo-600">
-            <tr>
-              <th className="px-1 sm:px-2 md:px-3 py-1.5 sm:py-2 md:py-3 text-center text-xs sm:text-sm font-medium text-white uppercase tracking-tight sm:tracking-wider w-[1%] max-w-[6.5rem] sticky left-0 bg-indigo-600 z-10 whitespace-nowrap">
+          <thead>
+            <tr style={{ backgroundColor: "#6750A4" }}>
+              {/* Period column header */}
+              <th
+                className="px-1 sm:px-2 py-2 sm:py-3 text-center text-xs font-semibold uppercase tracking-wide sticky left-0 z-10 whitespace-nowrap w-[1%] max-w-[6.5rem]"
+                style={{ backgroundColor: "#6750A4", color: "#FFFFFF" }}
+              >
                 节次
               </th>
-              {DAYS.map(day => (
-                <th key={day} className="px-1 sm:px-2 md:px-3 py-1.5 sm:py-2 md:py-3 text-center text-xs sm:text-sm font-medium text-white uppercase tracking-tight sm:tracking-wider w-[17.5%] sm:w-auto">
-                  <div className="flex flex-col items-center leading-tight">
-                    <span className="hidden sm:inline">{DAY_NAMES[day].zh}</span>
-                    <span className="inline sm:hidden">{DAY_NAMES[day].short}</span>
-                    {headerDateLabels[day] ? (
-                      <span className="mt-0.5 text-[10px] sm:text-xs font-normal text-indigo-100 normal-case tracking-normal">
-                        {headerDateLabels[day]}
+              {DAYS.map((day) => {
+                const isToday =
+                  todayInfo &&
+                  todayInfo.day === day &&
+                  todayInfo.week === currentWeek;
+                return (
+                  <th
+                    key={day}
+                    className="px-1 sm:px-2 py-2 sm:py-3 text-center font-semibold w-[17.5%] sm:w-auto"
+                    style={{ backgroundColor: "#6750A4", color: "#FFFFFF" }}
+                  >
+                    <div className="flex flex-col items-center leading-tight gap-0.5">
+                      {/* Today: tonal chip in primary-container */}
+                      <span
+                        className="text-xs sm:text-sm px-1.5 py-0.5 rounded-full font-semibold"
+                        style={
+                          isToday
+                            ? { backgroundColor: "#EADDFF", color: "#21005D" }
+                            : { color: "#FFFFFF" }
+                        }
+                      >
+                        <span className="hidden sm:inline">{DAY_NAMES[day].zh}</span>
+                        <span className="inline sm:hidden">{DAY_NAMES[day].short}</span>
                       </span>
-                    ) : null}
-                  </div>
-                </th>
-              ))}
+                      {headerDateLabels[day] ? (
+                        <span
+                          className="text-[10px] sm:text-xs font-normal normal-case tracking-normal"
+                          style={{ color: isToday ? "#EADDFF" : "rgba(255,255,255,0.75)" }}
+                        >
+                          {headerDateLabels[day]}
+                        </span>
+                      ) : null}
+                    </div>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
-          <tbody className="bg-white">
-            {Array.from({ length: MAX_PERIOD }, (_, i) => i + 1).map(period => {
+          <tbody>
+            {Array.from({ length: MAX_PERIOD }, (_, i) => i + 1).map((period) => {
               const periodLabel = getPeriodLabel(period);
               const isEveningPeriod = periodLabel.startsWith("晚");
               const periodTime = getPeriodTime(period);
@@ -96,20 +149,48 @@ const CourseTable = ({
               return (
                 <React.Fragment key={period}>
                   <tr>
-                    <td className="px-1 sm:px-2 md:px-3 py-2 sm:py-3 md:py-4 text-xs sm:text-sm md:text-base font-medium text-gray-900 bg-indigo-50 border border-gray-200 sticky left-0 z-10 w-[1%] max-w-[6.5rem]">
-                      <div className="flex flex-col items-center w-full max-w-[6.5rem]">
-                        <div className={`font-bold ${isEveningPeriod ? "text-[11px] sm:text-xs md:text-sm" : ""}`}>
+                    {/* Period label cell */}
+                    <td
+                      className="px-1 sm:px-2 py-2 sm:py-3 text-center sticky left-0 z-10 w-[1%] max-w-[6.5rem]"
+                      style={{
+                        backgroundColor: "#F3EDF7",
+                        borderRight: "1px solid #CAC4D0",
+                        borderBottom: "1px solid #E6E0E9"
+                      }}
+                    >
+                      <div className="flex flex-col items-center">
+                        <span
+                          className={`font-bold leading-tight ${
+                            isEveningPeriod ? "text-[10px] sm:text-xs" : "text-xs sm:text-sm"
+                          }`}
+                          style={{ color: "#1C1B1F" }}
+                        >
                           {periodLabel}
-                        </div>
-                        <div className="text-[10px] sm:text-xs text-gray-600 mt-0.5 leading-tight truncate w-full text-center">
+                        </span>
+                        <span
+                          className="text-[9px] sm:text-[10px] mt-0.5 leading-tight"
+                          style={{ color: "#49454F" }}
+                        >
                           {periodTime}
-                        </div>
+                        </span>
                       </div>
                     </td>
-                    {DAYS.map(day => {
+
+                    {DAYS.map((day) => {
                       const cell = mergedCellsByDay?.[day]?.[period];
                       if (cell?.skip) return null;
 
+                      const isToday =
+                        todayInfo &&
+                        todayInfo.day === day &&
+                        todayInfo.week === currentWeek;
+
+                      const cellBorder = {
+                        borderBottom: "1px solid #E6E0E9",
+                        borderRight: "1px solid #E6E0E9"
+                      };
+
+                      // Empty cell
                       if (!cell || cell.empty) {
                         return (
                           <td
@@ -117,37 +198,37 @@ const CourseTable = ({
                             onClick={() =>
                               isScheduleLoaded && onCellClick(day, period, period)
                             }
-                            className={`group py-2 sm:py-3 md:py-4 border border-gray-200 transition-colors ${
-                              isScheduleLoaded
-                                ? `cursor-pointer bg-white ${
-                                    canHover ? "hover:bg-indigo-50" : ""
-                                  }`
-                                : "cursor-not-allowed bg-gray-50"
+                            className={`group py-2 sm:py-3 align-middle transition-colors ${
+                              isScheduleLoaded ? "cursor-pointer" : "cursor-not-allowed"
                             }`}
+                            style={{
+                              backgroundColor: isToday
+                                ? "#F7F2FF"
+                                : "#FFFBFE",
+                              ...cellBorder
+                            }}
                             title={isScheduleLoaded ? "点击添加课程" : "课表加载中"}
                           >
-                            {isScheduleLoaded ? (
-                              canHover ? (
-                                <div className="flex items-center justify-center text-xs text-indigo-400 opacity-0 transition-opacity group-hover:opacity-100">
-                                  <Plus size={12} className="mr-0.5" />
-                                  <span className="hidden sm:inline">新增课程</span>
-                                  <span className="inline sm:hidden">新增</span>
-                                </div>
-                              ) : null
-                            ) : (
-                              <div className="flex items-center justify-center text-xs text-gray-400 opacity-100">
-                                <Plus size={12} className="mr-0.5" />
-                                <span className="hidden sm:inline">加载中</span>
-                                <span className="inline sm:hidden">...</span>
+                            {isScheduleLoaded && canHover && (
+                              <div
+                                className="flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
+                                style={{ color: "#6750A4" }}
+                              >
+                                <Plus size={11} className="mr-0.5" />
+                                <span className="hidden sm:inline">新增</span>
                               </div>
                             )}
                           </td>
                         );
                       }
 
-                      // 检查是否是今天的课程且本周有课
-                      const isToday = todayInfo && todayInfo.day === day && todayInfo.week === currentWeek;
                       const isTodayAndHasClass = isToday && cell.hasCurrentWeekCourse;
+
+                      // Derive tonal color from first display course name
+                      const primaryCourseName = cell.displayCourses[0]?.name ?? "";
+                      const tonalColor = cell.hasCurrentWeekCourse
+                        ? getCourseColor(primaryCourseName)
+                        : { bg: "#F3EDF7", text: "#49454F", border: "#CAC4D0" };
 
                       return (
                         <td
@@ -156,40 +237,61 @@ const CourseTable = ({
                             isScheduleLoaded &&
                             onCellClick(day, cell.periodStart, cell.periodEnd)
                           }
-                          className={`py-2 sm:py-3 md:py-4 px-1 sm:px-1.5 md:px-2 align-middle border transition-colors duration-200 ${
+                          className={`py-2 sm:py-2.5 px-1 align-middle transition-colors duration-200 ${
                             isScheduleLoaded ? "cursor-pointer" : "cursor-not-allowed"
-                          } ${
-                            isTodayAndHasClass
-                              ? "bg-green-100 hover:bg-green-200 border-green-400 border-2"
-                              : cell.hasCurrentWeekCourse
-                              ? "bg-blue-50 hover:bg-blue-100 border-gray-200"
-                              : "bg-gray-50 hover:bg-gray-100 border-gray-200"
                           }`}
                           rowSpan={cell.rowSpan}
+                          style={{
+                            backgroundColor: tonalColor.bg,
+                            borderBottom: `1px solid ${tonalColor.border}`,
+                            borderRight: "1px solid #E6E0E9",
+                            // Today: stronger left accent
+                            borderLeft: isTodayAndHasClass
+                              ? "3px solid #6750A4"
+                              : undefined
+                          }}
                         >
-                          <div className="w-full flex flex-col justify-center items-center gap-1">
+                          <div className="w-full flex flex-col justify-center items-center gap-0.5">
                             {cell.displayCourses.length > 0 ? (
                               <>
                                 {cell.displayCourses.map((course, idx) => (
                                   <div
                                     key={`${course.name}-${course.group ?? ""}-${idx}`}
-                                    className={`text-center font-medium text-[11px] sm:text-xs md:text-sm leading-snug ${
-                                      course.isCurrentWeek ? "text-blue-700" : "text-gray-600"
-                                    }`}
+                                    className="text-center leading-snug"
                                   >
-                                    <div className="break-words">{course.name}</div>
-                                    {course.group && <div className="text-[10px] sm:text-xs md:text-sm mt-0.5">({course.group})</div>}
+                                    <div
+                                      className="font-semibold text-[11px] sm:text-xs break-words"
+                                      style={{ color: tonalColor.text }}
+                                    >
+                                      {course.name}
+                                    </div>
+                                    {course.group && (
+                                      <div
+                                        className="text-[9px] sm:text-[10px] mt-0.5"
+                                        style={{ color: tonalColor.text, opacity: 0.75 }}
+                                      >
+                                        {course.group}
+                                      </div>
+                                    )}
                                     {course.location && (
-                                      <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-0.5 break-words">
+                                      <div
+                                        className="text-[9px] sm:text-[10px] mt-0.5 break-words"
+                                        style={{ color: tonalColor.text, opacity: 0.65 }}
+                                      >
                                         📍 {getCourseLocation(course.location, currentWeek)}
                                       </div>
                                     )}
                                   </div>
                                 ))}
                                 {cell.otherCoursesCount > 0 && (
-                                  <div className="mt-0.5 flex items-center justify-center text-[10px] sm:text-xs md:text-sm text-indigo-600 font-medium">
-                                    <Plus size={10} className="mr-0.5" />
-                                    <span className="hidden sm:inline">{cell.otherCoursesCount} 门其他</span>
+                                  <div
+                                    className="mt-0.5 flex items-center justify-center text-[9px] sm:text-[10px] font-medium"
+                                    style={{ color: "#6750A4" }}
+                                  >
+                                    <Plus size={9} className="mr-0.5" />
+                                    <span className="hidden sm:inline">
+                                      {cell.otherCoursesCount} 门其他
+                                    </span>
                                     <span className="inline sm:hidden">+{cell.otherCoursesCount}</span>
                                   </div>
                                 )}
@@ -200,13 +302,19 @@ const CourseTable = ({
                       );
                     })}
                   </tr>
+
+                  {/* 午休 / 晚休 separator */}
                   {period === 5 || period === 10 ? (
                     <tr aria-hidden="true">
                       <td
                         colSpan={DAYS.length + 1}
-                        className="p-0 bg-indigo-50/40 border-t border-b border-indigo-100"
+                        className="p-0"
+                        style={{ backgroundColor: "#E8DEF8" }}
                       >
-                        <div className="h-4 flex items-center justify-center text-[10px] sm:text-xs text-indigo-400 tracking-wide leading-none select-none">
+                        <div
+                          className="h-5 flex items-center justify-center text-[10px] sm:text-xs tracking-wide select-none"
+                          style={{ color: "#49454F" }}
+                        >
                           {period === 5 ? "午休" : "晚休"}
                         </div>
                       </td>

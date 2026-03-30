@@ -210,20 +210,21 @@ const CourseEditor = ({
   const hasPeriodSelection = normalizedPeriods.length > 1;
 
   return (
-    <div className="mt-4 border-2 border-indigo-200 rounded-lg p-4 bg-indigo-50/40">
+    <div className="mt-4 rounded-2xl p-4" style={{border:"1px solid #CAC4D0",backgroundColor:"#F3EDF7"}}>
       <div className="flex items-center justify-between">
-        <div className="text-sm font-semibold text-indigo-900">{title}</div>
+        <div className="text-sm font-semibold" style={{color:"#1C1B1F"}}>{title}</div>
         <button
           type="button"
           onClick={requestCancel}
-          className="text-xs text-gray-500 hover:text-gray-700"
+          className="text-xs font-medium transition-colors"
+          style={{color:"#49454F"}}
         >
           取消
         </button>
       </div>
 
       {errors.length > 0 && (
-        <div className="mt-2 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-md p-2 space-y-1">
+        <div className="mt-2 text-xs rounded-xl p-3 space-y-1" style={{backgroundColor:"#F9DEDC",color:"#410E0B",border:"1px solid #EFB8C8"}}>
           {errors.map((err, index) => (
             <div key={`${err}-${index}`}>{err}</div>
           ))}
@@ -231,20 +232,22 @@ const CourseEditor = ({
       )}
 
       <div className="mt-3 space-y-3">
-        <label className="block text-xs font-semibold text-gray-600">课程名称</label>
+        <label className="block text-xs font-semibold" style={{color:"#49454F"}}>课程名称</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2 rounded-md border border-indigo-200 text-sm focus:ring-2 focus:ring-indigo-400"
+          className="w-full px-3 py-2 rounded-xl text-sm focus:ring-2 focus:outline-none"
+          style={{backgroundColor:"#ECE6F0",border:"1px solid #CAC4D0",color:"#1C1B1F","--tw-ring-color":"#6750A4"}}
           placeholder="如：内科学A"
         />
 
-        <label className="block text-xs font-semibold text-gray-600">组别（可选）</label>
+        <label className="block text-xs font-semibold" style={{color:"#49454F"}}>组别（可选）</label>
         <select
           value={group || ""}
           onChange={(e) => setGroup(e.target.value)}
-          className="w-full px-3 py-2 rounded-md border border-indigo-200 text-sm focus:ring-2 focus:ring-indigo-400 bg-white"
+          className="w-full px-3 py-2 rounded-xl text-sm focus:ring-2 focus:outline-none"
+          style={{backgroundColor:"#ECE6F0",border:"1px solid #CAC4D0",color:"#1C1B1F"}}
         >
           <option value="">无</option>
           <option value="6班A组">6班A组</option>
@@ -257,7 +260,7 @@ const CourseEditor = ({
         </select>
 
         <div>
-          <div className="text-xs font-semibold text-gray-600 mb-2">上课周次</div>
+          <div className="text-xs font-semibold mb-2" style={{color:"#49454F"}}>上课周次</div>
           <WeekMultiSelect
             weeks={weeks}
             onChange={setWeeks}
@@ -272,25 +275,27 @@ const CourseEditor = ({
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="w-full px-3 py-2 rounded-md border border-indigo-200 text-sm focus:ring-2 focus:ring-indigo-400"
+            className="w-full px-3 py-2 rounded-xl text-sm focus:ring-2 focus:outline-none"
+            style={{backgroundColor:"#ECE6F0",border:"1px solid #CAC4D0",color:"#1C1B1F"}}
             placeholder="如：教学楼A101"
           />
         </div>
 
         <div>
-          <div className="text-xs font-semibold text-gray-600 mb-1">备注</div>
+          <div className="text-xs font-semibold mb-1" style={{color:"#49454F"}}>备注</div>
           <input
             type="text"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className="w-full px-3 py-2 rounded-md border border-indigo-200 text-sm focus:ring-2 focus:ring-indigo-400"
+            className="w-full px-3 py-2 rounded-xl text-sm focus:ring-2 focus:outline-none"
+            style={{backgroundColor:"#ECE6F0",border:"1px solid #CAC4D0",color:"#1C1B1F"}}
             placeholder="如：需要带白大褂"
           />
         </div>
 
         {hasPeriodSelection && (
           <div>
-            <div className="text-xs font-semibold text-gray-600 mb-2">作用节次</div>
+          <div className="text-xs font-semibold mb-2" style={{color:"#49454F"}}>作用节次</div>
             <WeekMultiSelect
               weeks={selectedPeriods}
               onChange={setSelectedPeriods}
@@ -305,14 +310,16 @@ const CourseEditor = ({
           <button
             type="button"
             onClick={requestCancel}
-            className="px-3 py-1.5 rounded-md text-xs font-semibold text-gray-600 hover:text-gray-800"
+            className="px-4 py-1.5 rounded-pill text-xs font-semibold transition-colors"
+            style={{color:"#6750A4",backgroundColor:"transparent"}}
           >
             取消
           </button>
           <button
             type="button"
             onClick={handleSave}
-            className="px-4 py-1.5 rounded-md text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700"
+            className="px-5 py-1.5 rounded-pill text-xs font-semibold transition-colors"
+            style={{backgroundColor:"#6750A4",color:"#FFFFFF"}}
           >
             保存
           </button>
@@ -474,25 +481,28 @@ const CourseModal = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50"
+          className="fixed inset-0 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
+          style={{backgroundColor:"rgba(0,0,0,0.45)"}}
           onClick={handleRequestClose}
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden"
+            initial={{ opacity: 0, y: 48 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 48 }}
+            transition={{ duration: 0.3, ease: [0.2, 0, 0, 1] }}
+          className="w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
+            style={{backgroundColor:"#FFFBFE",borderRadius:"28px 28px 0 0",boxShadow:"0 4px 32px rgba(103,80,164,0.18)"}}
             onClick={e => e.stopPropagation()}
           >
-            <div className="bg-indigo-600 p-3 sm:p-4 flex justify-between items-center">
-              <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0">
+            <div className="flex-shrink-0 p-4 sm:p-5 flex justify-between items-center" style={{backgroundColor:"#6750A4",borderRadius:"28px 28px 0 0"}}>
+              <div className="flex items-center gap-2 flex-1 min-w-0">
                 <Clock className="flex-shrink-0" size={20} color="white" />
                 <h2 className="text-base sm:text-xl font-bold text-white truncate">
                   {DAY_NAMES[selectedCell.day].zh} · {getPeriodRangeLabel(selectedCell.periodStart, selectedCell.periodEnd)}
                 </h2>
               </div>
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1 text-white text-xs">
+                <div className="flex items-center gap-1.5 text-white text-xs">
                   <span>编辑</span>
                   <button
                     type="button"
@@ -500,33 +510,32 @@ const CourseModal = ({
                       if (isEditMode && !requestDiscardIfNeeded()) return;
                       setIsEditMode((prev) => !prev);
                     }}
-                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                      isEditMode ? "bg-white/90" : "bg-white/30"
-                    }`}
+                    className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors"
+                    style={{backgroundColor: isEditMode ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.30)"}}
                     aria-pressed={isEditMode}
                   >
                     <span
-                      className={`inline-block h-3 w-3 transform rounded-full bg-indigo-600 transition-transform ${
-                        isEditMode ? "translate-x-5" : "translate-x-1"
-                      }`}
+                      className="inline-block h-3 w-3 transform rounded-full transition-transform"
+                      style={{backgroundColor:"#6750A4", transform: isEditMode ? "translateX(20px)" : "translateX(4px)"}}
                     />
                   </button>
                 </div>
                 <button
                   onClick={handleRequestClose}
-                  className="text-white hover:text-indigo-200 transition-colors flex-shrink-0"
+                  className="transition-opacity hover:opacity-75 flex-shrink-0"
+                  style={{color:"#FFFFFF"}}
                 >
                   <X size={20} />
                 </button>
               </div>
             </div>
 
-            <div className="p-3 sm:p-6 overflow-y-auto max-h-[calc(95vh-140px)] sm:max-h-[70vh]">
+            <div className="flex-1 p-3 sm:p-5 overflow-y-auto" style={{backgroundColor:"#FFFBFE"}}>
               {courses.length === 0 ? (
-                <div className="text-center py-8 sm:py-12">
-                  <Calendar className="mx-auto mb-3 sm:mb-4 text-gray-400" size={40} />
-                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-1">本节无课程安排</h3>
-                  <p className="text-sm sm:text-base text-gray-500">该时间段没有安排课程</p>
+                <div className="text-center py-10">
+                  <Calendar className="mx-auto mb-3" size={36} style={{color:"#CAC4D0"}} />
+                  <h3 className="text-base font-semibold mb-1" style={{color:"#1C1B1F"}}>本节无课程安排</h3>
+                  <p className="text-sm" style={{color:"#49454F"}}>该时间段没有安排课程</p>
                 </div>
               ) : (
                 courses.map((course) => {
@@ -560,51 +569,50 @@ const CourseModal = ({
                   return (
                     <div
                       key={courseId}
-                      className={`mb-3 sm:mb-6 p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 ${
-                        course.isCurrentWeek
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 bg-gray-50"
-                      }`}
+                      className="mb-3 p-3 sm:p-4"
+                      style={{
+                        borderRadius: "16px",
+                        backgroundColor: course.isCurrentWeek ? "#EADDFF" : "#F3EDF7",
+                        border: course.isCurrentWeek ? "1.5px solid #6750A4" : "1px solid #CAC4D0"
+                      }}
                     >
                       <div className="flex justify-between items-start gap-2">
                         <div className="flex-1 min-w-0">
-                          <h3 className={`text-base sm:text-lg font-bold ${
-                            course.isCurrentWeek ? "text-blue-700" : "text-gray-700"
-                          }`}>
+                          <h3 className="text-base sm:text-lg font-bold" style={{color: course.isCurrentWeek ? "#21005D" : "#1C1B1F"}}>
                             {course.name}
                           </h3>
                           {course.group && (
-                            <p className="text-sm sm:text-base text-indigo-600 font-medium mt-1">{course.group}</p>
+                            <p className="text-sm font-medium mt-0.5" style={{color:"#6750A4"}}>{course.group}</p>
                           )}
                         </div>
                         {course.isCurrentWeek && (
-                          <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 sm:px-2.5 py-0.5 rounded flex-shrink-0">
+                          <span className="text-xs font-semibold px-2.5 py-0.5 flex-shrink-0" style={{backgroundColor:"#6750A4",color:"#FFFFFF",borderRadius:"9999px"}}>
                             本周课程
                           </span>
                         )}
                       </div>
 
                       <div className="mt-2 sm:mt-3">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">上课周次</p>
-                        <p className="text-sm sm:text-base font-medium mt-1 break-words">
+                        <p className="text-xs uppercase tracking-wider" style={{color:"#49454F"}}>上课周次</p>
+                        <p className="text-sm font-medium mt-1 break-words" style={{color:"#1C1B1F"}}>
                           {course.weeks.join("、")}周
                         </p>
                       </div>
 
                       {course.location && (
-                        <div className="mt-2 sm:mt-3">
-                          <p className="text-xs text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                        <div className="mt-2">
+                          <p className="text-xs uppercase tracking-wider flex items-center gap-1" style={{color:"#49454F"}}>
                             <MapPin size={12} />
                             上课地点
                           </p>
-                          <p className="text-sm sm:text-base font-medium mt-1 break-words">{getCourseLocation(course.location, currentWeek)}</p>
+                          <p className="text-sm font-medium mt-1 break-words" style={{color:"#1C1B1F"}}>{getCourseLocation(course.location, currentWeek)}</p>
                         </div>
                       )}
 
                       {hasNote && (
-                        <div className="mt-2 sm:mt-3">
-                          <p className="text-xs text-gray-500 uppercase tracking-wider">备注</p>
-                          <p className="text-sm sm:text-base font-medium mt-1 break-words">{noteText}</p>
+                        <div className="mt-2">
+                          <p className="text-xs uppercase tracking-wider" style={{color:"#49454F"}}>备注</p>
+                          <p className="text-sm font-medium mt-1 break-words" style={{color:"#1C1B1F"}}>{noteText}</p>
                         </div>
                       )}
 
@@ -621,7 +629,8 @@ const CourseModal = ({
                               setDeletePeriods([]);
                               setDeleteError("");
                             }}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold transition-colors"
+                            style={{backgroundColor:"#E8DEF8",color:"#1D192B",borderRadius:"9999px"}}
                           >
                             <Pencil size={14} />
                             编辑
@@ -629,7 +638,8 @@ const CourseModal = ({
                           <button
                             type="button"
                             onClick={() => openDelete(courseId)}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-rose-100 text-rose-600 hover:bg-rose-200"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold transition-colors"
+                            style={{backgroundColor:"#F9DEDC",color:"#410E0B",borderRadius:"9999px"}}
                           >
                             <Trash2 size={14} />
                             删除
@@ -638,7 +648,7 @@ const CourseModal = ({
                       )}
 
                       {isDeleting && isEditMode && hasRange && (
-                        <div className="mt-3 border border-rose-200 rounded-md p-2 bg-rose-50 text-xs text-rose-700">
+                        <div className="mt-3 p-3 text-xs" style={{backgroundColor:"#F9DEDC",borderRadius:"12px",border:"1px solid #EFB8C8",color:"#410E0B"}}>
                           <div className="font-semibold">选择要删除的节次</div>
                           <div className="mt-2">
                             <WeekMultiSelect
@@ -650,13 +660,14 @@ const CourseModal = ({
                             />
                           </div>
                           {deleteError && (
-                            <div className="mt-2 text-rose-600">{deleteError}</div>
+                            <div className="mt-2" style={{color:"#B3261E"}}>{deleteError}</div>
                           )}
-                          <div className="flex gap-2 mt-2">
+                          <div className="flex gap-2 mt-3">
                             <button
                               type="button"
                               onClick={confirmDelete}
-                              className="px-3 py-1 rounded-md bg-rose-500 text-white"
+                              className="px-4 py-1.5 text-xs font-semibold"
+                              style={{backgroundColor:"#B3261E",color:"#FFFFFF",borderRadius:"9999px"}}
                             >
                               确认删除
                             </button>
@@ -667,7 +678,8 @@ const CourseModal = ({
                                 setDeletePeriods([]);
                                 setDeleteError("");
                               }}
-                              className="px-3 py-1 rounded-md border border-rose-200 text-rose-600"
+                              className="px-4 py-1.5 text-xs font-semibold"
+                              style={{border:"1px solid #EFB8C8",color:"#410E0B",borderRadius:"9999px",backgroundColor:"transparent"}}
                             >
                               取消
                             </button>
@@ -696,7 +708,7 @@ const CourseModal = ({
               )}
             </div>
 
-            <div className="bg-gray-50 px-3 sm:px-6 py-3 sm:py-4 border-t border-gray-100 flex justify-between items-center">
+            <div className="flex-shrink-0 px-4 py-3 flex justify-between items-center" style={{backgroundColor:"#F3EDF7",borderTop:"1px solid #CAC4D0"}}>
               {isEditMode ? (
                 <button
                   onClick={() => {
@@ -708,17 +720,19 @@ const CourseModal = ({
                     setDeletePeriods([]);
                     setDeleteError("");
                   }}
-                  className="inline-flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-2 bg-indigo-100 text-indigo-700 text-sm sm:text-base font-medium rounded-lg hover:bg-indigo-200 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold transition-colors"
+                  style={{backgroundColor:"#E8DEF8",color:"#1D192B",borderRadius:"9999px"}}
                 >
                   <Plus size={16} />
                   新增课程
                 </button>
               ) : (
-                <span className="text-xs text-gray-500">开启编辑模式以修改课程</span>
+                <span className="text-xs" style={{color:"#79747E"}}>开启编辑模式以修改课程</span>
               )}
               <button
                 onClick={handleRequestClose}
-                className="px-3 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 text-white text-sm sm:text-base font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                className="px-5 py-2 text-sm font-semibold transition-colors"
+                style={{backgroundColor:"#6750A4",color:"#FFFFFF",borderRadius:"9999px"}}
               >
                 关闭
               </button>
