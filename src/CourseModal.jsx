@@ -2,11 +2,21 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Clock, Calendar, MapPin, Pencil, Trash2, Plus } from "lucide-react";
 import { getPeriodRangeLabel } from "./timeUtils";
-import { DAY_NAMES, DISPLAY_MODES, MAX_WEEK, MIN_WEEK } from "./constants";
+import {
+  DAY_NAMES,
+  DISPLAY_MODES,
+  ELECTIVE_OPTIONS,
+  MAX_WEEK,
+  MIN_WEEK
+} from "./constants";
 import { getCourseLocation, getCourseNote } from "./courseUtils";
+import {
+  getElectiveLabel,
+  normalizeElectives,
+  shouldIncludeCourseForAudience
+} from "./electiveUtils";
 import WeekMultiSelect from "./WeekMultiSelect";
 import { buildCourseIdentity, collectCoursesForRange } from "./scheduleUtils";
-import { shouldNotifyForGroup } from "./groupUtils";
 
 const LEGACY_GROUP_VALUE = "__legacy_group__";
 const EDITOR_GROUP_OPTIONS = ["6班A组", "6班B组", "7班C组", "7班D组"];
@@ -26,6 +36,13 @@ const resolveTextValue = (value) => {
 const normalizeNumbers = (list) => {
   const result = Array.isArray(list) ? list : [];
   return Array.from(new Set(result)).sort((a, b) => a - b);
+};
+
+const toggleValue = (list, value) => {
+  const values = Array.isArray(list) ? list : [];
+  return values.includes(value)
+    ? values.filter((item) => item !== value)
+    : [...values, value];
 };
 
 const getKnownGroup = (value) => {
@@ -58,6 +75,7 @@ const CourseEditor = ({
   const [name, setName] = useState("");
   const [group, setGroup] = useState("");
   const [legacyGroup, setLegacyGroup] = useState("");
+  const [electives, setElectives] = useState([]);
   const [weeks, setWeeks] = useState([]);
   const [location, setLocation] = useState("");
   const [note, setNote] = useState("");
@@ -74,6 +92,7 @@ const CourseEditor = ({
     const baseCourse = initialCourse ?? {
       name: "",
       group: "",
+      electives: [],
       weeks: [],
       location: "",
       note: ""
@@ -83,6 +102,7 @@ const CourseEditor = ({
     const baseKnownGroup = getKnownGroup(baseCourse.group ?? "");
     const baseLegacyGroup = getLegacyGroup(baseCourse.group ?? "");
     const baseGroup = baseLegacyGroup ? LEGACY_GROUP_VALUE : baseKnownGroup;
+    const baseElectives = normalizeElectives(baseCourse.electives);
     const baseWeeks = Array.isArray(baseCourse.weeks) ? baseCourse.weeks : [];
     const baseLocation = resolveTextValue(baseCourse.location);
     const baseNote = resolveTextValue(baseCourse.note);
@@ -90,6 +110,7 @@ const CourseEditor = ({
     setName(baseName);
     setGroup(baseGroup);
     setLegacyGroup(baseLegacyGroup);
+    setElectives(baseElectives);
     setWeeks(baseWeeks);
     setLocation(baseLocation);
     setNote(baseNote);
@@ -100,6 +121,7 @@ const CourseEditor = ({
       name: baseName,
       group: baseGroup,
       legacyGroup: baseLegacyGroup,
+      electives: baseElectives,
       weeks: normalizeNumbers(baseWeeks),
       location: baseLocation,
       note: baseNote,
@@ -120,12 +142,22 @@ const CourseEditor = ({
       name,
       group,
       legacyGroup,
+      electives: normalizeElectives(electives),
       weeks: normalizeNumbers(weeks),
       location,
       note,
       periods: normalizedSelectedPeriods
     }),
-    [name, group, legacyGroup, weeks, location, note, normalizedSelectedPeriods]
+    [
+      name,
+      group,
+      legacyGroup,
+      electives,
+      weeks,
+      location,
+      note,
+      normalizedSelectedPeriods
+    ]
   );
 
   const isDirty = useMemo(() => {
@@ -176,6 +208,7 @@ const CourseEditor = ({
         : EDITOR_GROUP_OPTIONS.includes(group)
         ? group
         : null;
+    const normalizedCourseElectives = normalizeElectives(electives);
 
     const normalizedLocationText = location.trim();
     const normalizedNoteText = note.trim();
@@ -199,6 +232,7 @@ const CourseEditor = ({
     const course = {
       name: trimmedName,
       group: normalizedGroup,
+      electives: normalizedCourseElectives,
       weeks: normalizedWeeks,
       location: locationValue,
       note: noteValue
@@ -258,6 +292,32 @@ const CourseEditor = ({
             <option value={LEGACY_GROUP_VALUE}>保留原值（{legacyGroup}）</option>
           )}
         </select>
+
+        <div>
+          <div className="text-xs font-semibold mb-2" style={{color:"#49454F"}}>
+            选修归属（可选 / 可多选）
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {ELECTIVE_OPTIONS.map((option) => {
+              const isSelected = electives.includes(option.value);
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() =>
+                    setElectives((prev) => toggleValue(prev, option.value))
+                  }
+                  className="py-2 rounded-xl text-sm font-semibold transition-colors"
+                  style={isSelected
+                    ? {backgroundColor:"#6750A4",color:"#FFFFFF"}
+                    : {backgroundColor:"#ECE6F0",color:"#1D192B"}}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         <div>
           <div className="text-xs font-semibold mb-2" style={{color:"#49454F"}}>上课周次</div>
@@ -338,6 +398,7 @@ const CourseModal = ({
   currentWeek,
   displayMode = DISPLAY_MODES.ALL,
   userGroup,
+  selectedElectives = [],
   scheduleData,
   onAddCourse,
   onUpdateCourse,
@@ -396,16 +457,16 @@ const CourseModal = ({
       selectedCell.periodStart,
       selectedCell.periodEnd
     );
-    const groupFilteredCourses = list.filter((course) =>
-      shouldNotifyForGroup(course.group, userGroup)
+    const audienceFilteredCourses = list.filter((course) =>
+      shouldIncludeCourseForAudience(course, userGroup, selectedElectives)
     );
     const visibleCourses =
       displayMode === DISPLAY_MODES.CURRENT_ONLY
-        ? groupFilteredCourses.filter(
+        ? audienceFilteredCourses.filter(
             (course) =>
               Array.isArray(course.weeks) && course.weeks.includes(currentWeek)
           )
-        : groupFilteredCourses;
+        : audienceFilteredCourses;
 
     return visibleCourses.map((course) => ({
       ...course,
@@ -413,7 +474,14 @@ const CourseModal = ({
         ? course.weeks.includes(currentWeek)
         : false
     }));
-  }, [scheduleData, selectedCell, currentWeek, displayMode, userGroup]);
+  }, [
+    scheduleData,
+    selectedCell,
+    currentWeek,
+    displayMode,
+    userGroup,
+    selectedElectives
+  ]);
 
   if (!selectedCell) return null;
 
@@ -583,6 +651,13 @@ const CourseModal = ({
                           </h3>
                           {course.group && (
                             <p className="text-sm font-medium mt-0.5" style={{color:"#6750A4"}}>{course.group}</p>
+                          )}
+                          {normalizeElectives(course.electives).length > 0 && (
+                            <p className="text-xs font-medium mt-1" style={{color:"#7D5260"}}>
+                              {normalizeElectives(course.electives)
+                                .map(getElectiveLabel)
+                                .join(" / ")}
+                            </p>
                           )}
                         </div>
                         {course.isCurrentWeek && (

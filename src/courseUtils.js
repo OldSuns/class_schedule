@@ -1,5 +1,8 @@
 import { DISPLAY_MODES } from "./constants";
-import { shouldNotifyForGroup } from "./groupUtils";
+import {
+  normalizeElectives,
+  shouldIncludeCourseForAudience
+} from "./electiveUtils";
 import { buildCourseIdentity } from "./scheduleUtils";
 
 /**
@@ -92,6 +95,11 @@ export const getCourseLocation = (location, week) => {
   return "";
 };
 
+const getCourseAudienceKey = (course) =>
+  `${course.name}::${course.group ?? ""}::${normalizeElectives(
+    course.electives
+  ).join(",")}`;
+
 /**
  * 获取课程在指定周次的备注
  * @param {Object|string} note - 备注信息，可以是字符串或对象
@@ -145,14 +153,16 @@ const serializeNoteForKey = (note) => {
 
 // 获取课程唯一标识
 export const getCourseKey = (course) =>
-  `${course.name}::${course.group ?? ""}::${serializeNoteForKey(course.note)}::${course.weeks.join(",")}`;
+  `${getCourseAudienceKey(course)}::${serializeNoteForKey(
+    course.note
+  )}::${course.weeks.join(",")}`;
 
 // 获取显示课程的唯一标识
 export const getDisplayKey = (courses) => {
   const keys = [];
   const seen = new Set();
   for (const course of courses) {
-    const key = `${course.name}::${course.group ?? ""}`;
+    const key = getCourseAudienceKey(course);
     if (seen.has(key)) continue;
     seen.add(key);
     keys.push(key);
@@ -166,7 +176,7 @@ export const getDisplayCourses = (courses) => {
   const result = [];
   const seen = new Set();
   for (const course of courses) {
-    const key = `${course.name}::${course.group ?? ""}`;
+    const key = getCourseAudienceKey(course);
     if (seen.has(key)) continue;
     seen.add(key);
     result.push(course);
@@ -180,7 +190,8 @@ export const mergeCellsByDay = (
   scheduleData,
   currentWeek,
   displayMode = DISPLAY_MODES.ALL,
-  userGroup
+  userGroup,
+  selectedElectives = []
 ) => {
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const periods = Array.from({ length: 13 }, (_, i) => i + 1);
@@ -213,14 +224,20 @@ export const mergeCellsByDay = (
         ...course,
         isCurrentWeek:
           Array.isArray(course.weeks) && course.weeks.includes(currentWeek),
-        isGroupMatch: shouldNotifyForGroup(course.group, userGroup)
+        isAudienceMatch: shouldIncludeCourseForAudience(
+          course,
+          userGroup,
+          selectedElectives
+        )
       }));
       const hasAnyCourse = annotatedCourses.length > 0;
 
       const currentWeekCourses = annotatedCourses.filter(
-        c => c.isCurrentWeek && c.isGroupMatch
+        (course) => course.isCurrentWeek && course.isAudienceMatch
       );
-      const groupFilteredCourses = annotatedCourses.filter(c => c.isGroupMatch);
+      const audienceFilteredCourses = annotatedCourses.filter(
+        (course) => course.isAudienceMatch
+      );
 
       if (isCurrentOnly) {
         if (currentWeekCourses.length === 0) {
@@ -249,7 +266,7 @@ export const mergeCellsByDay = (
         continue;
       }
 
-      if (groupFilteredCourses.length === 0) {
+      if (audienceFilteredCourses.length === 0) {
         raw[period] = {
           empty: true,
           allCourses: annotatedCourses,
@@ -261,8 +278,8 @@ export const mergeCellsByDay = (
 
       const orderedCourses =
         currentWeekCourses.length > 0
-          ? groupFilteredCourses
-          : sortCoursesByNearestWeek(groupFilteredCourses, currentWeek);
+          ? audienceFilteredCourses
+          : sortCoursesByNearestWeek(audienceFilteredCourses, currentWeek);
 
       // 优先显示本周课程；无本周课程时优先显示最近未来周次
       const displayCourses =

@@ -3,7 +3,14 @@ import { Browser } from "@capacitor/browser";
 import { Capacitor } from "@capacitor/core";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
-import { APP_VERSION, DISPLAY_MODES, GITHUB_RELEASES_URL, MIN_WEEK, MAX_WEEK } from "./constants";
+import {
+  APP_VERSION,
+  DISPLAY_MODES,
+  ELECTIVE_OPTIONS,
+  GITHUB_RELEASES_URL,
+  MAX_WEEK,
+  MIN_WEEK
+} from "./constants";
 import { GROUP_TYPES } from "./groupUtils";
 import { checkForUpdates } from "./updateChecker";
 
@@ -25,6 +32,8 @@ const SettingsMenu = ({
   onToggleNotifications,
   userGroup = GROUP_TYPES.G6A,
   onGroupChange,
+  selectedElectives = [],
+  onSelectedElectivesChange,
   leadMinutes = 15,
   leadMinuteOptions = [10, 15, 20, 30],
   onLeadMinutesChange,
@@ -55,8 +64,16 @@ const SettingsMenu = ({
   const [softUpdateStatus, setSoftUpdateStatus] = useState("");
   const [showRemoteConfirm, setShowRemoteConfirm] = useState(false);
   const [showAdvancedReminder, setShowAdvancedReminder] = useState(false);
+  const [showGroupElectiveSection, setShowGroupElectiveSection] = useState(false);
   const [showUpdateSection, setShowUpdateSection] = useState(false);
   const [showScheduleManagement, setShowScheduleManagement] = useState(false);
+
+  const toggleElective = (value) => {
+    const next = selectedElectives.includes(value)
+      ? selectedElectives.filter((item) => item !== value)
+      : [...selectedElectives, value];
+    onSelectedElectivesChange?.(next);
+  };
 
   const getSourceHost = (sourceUrl) => {
     if (!sourceUrl) return "";
@@ -123,6 +140,7 @@ const SettingsMenu = ({
       setSoftUpdateStatus("");
       setShowRemoteConfirm(false);
       setShowAdvancedReminder(false);
+      setShowGroupElectiveSection(false);
       setShowUpdateSection(false);
       setShowScheduleManagement(false);
       setApkUrl("");
@@ -354,6 +372,58 @@ const SettingsMenu = ({
               </div>
 
               {/* 课程提醒 */}
+              <div className="hidden">
+                <label className="block text-sm font-semibold" style={{color:"#1C1B1F"}}>
+                  分组与选修
+                </label>
+                <div className="rounded-2xl p-3 space-y-4" style={{backgroundColor:"#F3EDF7",border:"1px solid #CAC4D0"}}>
+                  <div className="space-y-2">
+                    <div className="text-sm font-semibold" style={{color:"#1C1B1F"}}>组别</div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[GROUP_TYPES.G6A, GROUP_TYPES.G6B, GROUP_TYPES.G7C, GROUP_TYPES.G7D].map((g) => (
+                        <button
+                          key={g}
+                          onClick={() => onGroupChange?.(g)}
+                          className="py-2 rounded-xl text-sm font-semibold transition-colors"
+                          style={userGroup === g
+                            ? {backgroundColor:"#6750A4",color:"#FFFFFF"}
+                            : {backgroundColor:"#ECE6F0",color:"#1D192B"}}
+                        >
+                          {g}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="text-sm font-semibold" style={{color:"#1C1B1F"}}>
+                      选修课（可不选 / 可多选）
+                    </div>
+                    <div className="grid grid-cols-1 gap-2">
+                      {ELECTIVE_OPTIONS.map((option) => {
+                        const isSelected = selectedElectives.includes(option.value);
+                        return (
+                          <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => toggleElective(option.value)}
+                            className="py-2.5 rounded-xl text-sm font-semibold transition-colors"
+                            style={isSelected
+                              ? {backgroundColor:"#6750A4",color:"#FFFFFF"}
+                              : {backgroundColor:"#ECE6F0",color:"#1D192B"}}
+                          >
+                            {option.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <p className="text-xs" style={{color:"#49454F"}}>
+                      勾选后，该选修课会参与课表、课程详情、提醒和小组件的显示。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-semibold" style={{color:"#1C1B1F"}}>课程提醒</label>
@@ -432,6 +502,74 @@ const SettingsMenu = ({
                 )}
               </div>
 
+              <div className="space-y-2">
+                <button
+                  onClick={() => setShowGroupElectiveSection(!showGroupElectiveSection)}
+                  className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold rounded-xl transition-colors"
+                  style={{backgroundColor:"#E8DEF8",color:"#1D192B"}}
+                >
+                  <span>分组与选修</span>
+                  {showGroupElectiveSection ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                </button>
+                <AnimatePresence>
+                  {showGroupElectiveSection && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="rounded-2xl p-3 space-y-4" style={{backgroundColor:"#F3EDF7",border:"1px solid #CAC4D0"}}>
+                        <div className="space-y-2">
+                          <div className="text-sm font-semibold" style={{color:"#1C1B1F"}}>组别</div>
+                          <div className="grid grid-cols-2 gap-2">
+                            {[GROUP_TYPES.G6A, GROUP_TYPES.G6B, GROUP_TYPES.G7C, GROUP_TYPES.G7D].map((g) => (
+                              <button
+                                key={g}
+                                onClick={() => onGroupChange?.(g)}
+                                className="py-2 rounded-xl text-sm font-semibold transition-colors"
+                                style={userGroup === g
+                                  ? {backgroundColor:"#6750A4",color:"#FFFFFF"}
+                                  : {backgroundColor:"#ECE6F0",color:"#1D192B"}}
+                              >
+                                {g}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="text-sm font-semibold" style={{color:"#1C1B1F"}}>
+                            选修课（可不选 / 可多选）
+                          </div>
+                          <div className="grid grid-cols-1 gap-2">
+                            {ELECTIVE_OPTIONS.map((option) => {
+                              const isSelected = selectedElectives.includes(option.value);
+                              return (
+                                <button
+                                  key={option.value}
+                                  type="button"
+                                  onClick={() => toggleElective(option.value)}
+                                  className="py-2.5 rounded-xl text-sm font-semibold transition-colors"
+                                  style={isSelected
+                                    ? {backgroundColor:"#6750A4",color:"#FFFFFF"}
+                                    : {backgroundColor:"#ECE6F0",color:"#1D192B"}}
+                                >
+                                  {option.label}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <p className="text-xs" style={{color:"#49454F"}}>
+                            勾选后，该选修课会参与课表、课程详情、提醒和小组件的显示。
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
               {/* 提醒高级 */}
               <div className="space-y-2">
                 <button
@@ -453,23 +591,7 @@ const SettingsMenu = ({
                       <div className="rounded-2xl p-3 space-y-4" style={{backgroundColor:"#F3EDF7",border:"1px solid #CAC4D0"}}>
                         <div className="space-y-2">
                           <div className="text-sm font-semibold" style={{color:"#1C1B1F"}}>我的组别</div>
-                          <div className="grid grid-cols-2 gap-2">
-                            {[GROUP_TYPES.G6A, GROUP_TYPES.G6B, GROUP_TYPES.G7C, GROUP_TYPES.G7D].map((g) => (
-                              <button
-                                key={g}
-                                onClick={() => onGroupChange(g)}
-                                className="py-2 rounded-xl text-sm font-semibold transition-colors"
-                                style={userGroup === g
-                                  ? {backgroundColor:"#6750A4",color:"#FFFFFF"}
-                                  : {backgroundColor:"#ECE6F0",color:"#1D192B"}}
-                              >
-                                {g}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
+                        </div><div className="space-y-2">
                           <div className="text-sm font-semibold" style={{color:"#1C1B1F"}}>提前量（分钟）</div>
                           <div className="grid grid-cols-4 gap-2">
                             {leadMinuteOptions.map((minutes) => (

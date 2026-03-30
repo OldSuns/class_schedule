@@ -1,4 +1,5 @@
 import { DAYS, MAX_PERIOD, MAX_WEEK, MIN_PERIOD, MIN_WEEK } from "./constants";
+import { normalizeElectives } from "./electiveUtils";
 
 const normalizeWeeks = (weeks) => {
   const list = Array.isArray(weeks) ? weeks : [];
@@ -22,6 +23,7 @@ export const normalizeCourse = (course) => {
     return {
       name: "",
       group: null,
+      electives: [],
       weeks: [],
       note: "",
       location: ""
@@ -29,12 +31,14 @@ export const normalizeCourse = (course) => {
   }
   const name = typeof course.name === "string" ? course.name.trim() : "";
   const group = typeof course.group === "string" ? course.group.trim() : "";
+  const electives = normalizeElectives(course.electives);
   const note = course.note ?? "";
   const location = course.location ?? "";
   return {
     ...course,
     name,
     group: group.length > 0 ? group : null,
+    electives,
     weeks: normalizeWeeks(course.weeks),
     note,
     location
@@ -83,10 +87,11 @@ const stableStringify = (value) => {
 export const buildCourseIdentity = (course) => {
   const name = typeof course?.name === "string" ? course.name : "";
   const group = typeof course?.group === "string" ? course.group : "";
+  const electives = normalizeElectives(course?.electives ?? []);
   const weeks = normalizeWeeks(course?.weeks ?? []);
   const note = stableStringify(course?.note);
   const location = stableStringify(course?.location);
-  return `${name}::${group}::${weeks.join(",")}::${note}::${location}`;
+  return `${name}::${group}::${electives.join(",")}::${weeks.join(",")}::${note}::${location}`;
 };
 
 export const collectCoursesForRange = (
@@ -119,11 +124,16 @@ export const cloneSchedule = (schedule) => {
   if (!Array.isArray(schedule)) return [];
   return schedule.map((day) => ({
     ...day,
-    periods: Array.isArray(day.periods)
+        periods: Array.isArray(day.periods)
       ? day.periods.map((period) => ({
           ...period,
           courses: Array.isArray(period.courses)
-            ? period.courses.map((course) => ({ ...course }))
+            ? period.courses.map((course) => ({
+                ...course,
+                electives: Array.isArray(course?.electives)
+                  ? [...course.electives]
+                  : []
+              }))
             : []
         }))
       : []

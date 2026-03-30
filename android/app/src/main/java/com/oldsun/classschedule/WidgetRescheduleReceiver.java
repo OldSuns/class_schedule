@@ -11,7 +11,7 @@ import org.json.JSONObject;
 public class WidgetRescheduleReceiver extends BroadcastReceiver {
     private static final String PREFS_NAME = "CapacitorStorage";
     private static final String KEY_WIDGET_SCHEDULE_SNAPSHOT = "widgetScheduleSnapshot";
-    private static final int REQUIRED_WIDGET_SNAPSHOT_VERSION = 2;
+    private static final int REQUIRED_WIDGET_SNAPSHOT_VERSION = 3;
 
     @Override
     public void onReceive(Context context, Intent intent) {

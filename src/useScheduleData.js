@@ -8,12 +8,13 @@ import {
   fetchRemoteSchedule
 } from "./remoteSchedule";
 import { refreshWidget } from "./widgetBridge";
+import { getCourseEligibleElectives } from "./electiveUtils";
 import { GROUP_TYPES, getGroupType } from "./groupUtils";
 import { getPeriodRangeMinutes } from "./timeUtils";
 import { MAX_PERIOD, MAX_WEEK, MIN_PERIOD } from "./constants";
 
 const STORAGE_VERSION = 1;
-const WIDGET_SNAPSHOT_VERSION = 2;
+const WIDGET_SNAPSHOT_VERSION = 3;
 const WIDGET_SNAPSHOT_FORCE_REWRITE_DELAY_MS = 2000;
 const SCHEDULE_SOURCES = {
   BUILTIN: "builtin",
@@ -53,7 +54,8 @@ const buildWidgetScheduleSnapshot = (scheduleData) => {
           courses: Array.isArray(periodEntry?.courses)
             ? periodEntry.courses.map((course) => ({
                 ...course,
-                eligibleGroups: buildCourseEligibleGroups(course?.group)
+                eligibleGroups: buildCourseEligibleGroups(course?.group),
+                eligibleElectives: getCourseEligibleElectives(course?.electives)
               }))
             : []
         }))
@@ -61,7 +63,7 @@ const buildWidgetScheduleSnapshot = (scheduleData) => {
   }));
 };
 
-const isWidgetSnapshotV2 = (raw) => {
+const hasCurrentWidgetSnapshotVersion = (raw) => {
   if (!raw) return false;
   try {
     const parsed = JSON.parse(raw);
@@ -439,7 +441,7 @@ export const useScheduleData = () => {
       try {
         const raw = await storage.getItem(STORAGE_KEYS.WIDGET_SCHEDULE_SNAPSHOT);
         if (cancelled) return;
-        if (isWidgetSnapshotV2(raw)) return;
+        if (hasCurrentWidgetSnapshotVersion(raw)) return;
         await persistWidgetSnapshot();
       } catch (error) {
         console.warn("小组件课表快照补写失败:", error);

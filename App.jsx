@@ -23,7 +23,7 @@ import { useWeekSwipe } from "./src/useWeekSwipe";
 
 // 数据和工具
 import { mergeCellsByDay } from "./src/courseUtils";
-import { shouldNotifyForGroup } from "./src/groupUtils";
+import { shouldIncludeCourseForAudience } from "./src/electiveUtils";
 import { buildCourseIdentity, cloneSchedule } from "./src/scheduleUtils";
 import {
   getCurrentPeriod,
@@ -142,6 +142,7 @@ const App = () => {
   const {
     notificationsEnabled,
     userGroup,
+    selectedElectives,
     leadMinutes,
     leadMinuteOptions,
     statusMessage,
@@ -150,6 +151,7 @@ const App = () => {
     exactAlarmMessage,
     onToggleNotifications,
     onGroupChange,
+    onSelectedElectivesChange,
     onLeadMinutesChange,
     onTestNotification,
     onOpenExactAlarmSettings
@@ -466,8 +468,14 @@ const App = () => {
   // 合并课程单元格
   const mergedCellsByDay = useMemo(() => {
     // 将同日连续课程合并，便于表格渲染
-    return mergeCellsByDay(scheduleData, currentWeek, displayMode, userGroup);
-  }, [scheduleData, currentWeek, displayMode, userGroup]);
+    return mergeCellsByDay(
+      scheduleData,
+      currentWeek,
+      displayMode,
+      userGroup,
+      selectedElectives
+    );
+  }, [scheduleData, currentWeek, displayMode, userGroup, selectedElectives]);
 
   const currentClassProgress = useMemo(() => {
     if (!todayInfo) return null;
@@ -480,7 +488,7 @@ const App = () => {
       (course) =>
         Array.isArray(course.weeks) &&
         course.weeks.includes(todayInfo.week) &&
-        shouldNotifyForGroup(course.group, userGroup)
+        shouldIncludeCourseForAudience(course, userGroup, selectedElectives)
     );
 
     if (courses.length === 0) return null;
@@ -514,7 +522,7 @@ const App = () => {
       remainingMinutes: remaining,
       percent
     };
-  }, [now, todayInfo, userGroup, scheduleData]);
+  }, [now, todayInfo, userGroup, selectedElectives, scheduleData]);
 
   const updateSchedule = (mutate) => {
     setScheduleData((prev) => {
@@ -666,6 +674,8 @@ const App = () => {
           onToggleNotifications={onToggleNotifications}
           userGroup={userGroup}
           onGroupChange={onGroupChange}
+          selectedElectives={selectedElectives}
+          onSelectedElectivesChange={onSelectedElectivesChange}
           leadMinutes={leadMinutes}
           leadMinuteOptions={leadMinuteOptions}
           onLeadMinutesChange={onLeadMinutesChange}
@@ -715,6 +725,7 @@ const App = () => {
           currentWeek={currentWeek}
           displayMode={displayMode}
           userGroup={userGroup}
+          selectedElectives={selectedElectives}
           scheduleData={scheduleData}
           onAddCourse={handleAddCourse}
           onUpdateCourse={handleUpdateCourse}

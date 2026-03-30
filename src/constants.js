@@ -33,6 +33,16 @@ export const DISPLAY_MODES = {
   CURRENT_ONLY: "currentOnly"
 };
 
+export const ELECTIVE_TYPES = {
+  INNOVATION_CAMP: "innovationCamp",
+  CLINICAL_SKILLS: "clinicalSkills"
+};
+
+export const ELECTIVE_OPTIONS = [
+  { value: ELECTIVE_TYPES.INNOVATION_CAMP, label: "科创营" },
+  { value: ELECTIVE_TYPES.CLINICAL_SKILLS, label: "临床技能班" }
+];
+
 // 当前应用版本（用于更新检查）
 export const APP_VERSION = "1.9.14";
 
@@ -65,6 +75,7 @@ export const STORAGE_KEYS = {
   NOTIFICATION_PLAN_SNAPSHOT: "notificationPlanSnapshot",
   NOTIFICATION_LEAD_MINUTES: "notificationLeadMinutes",
   USER_GROUP: "userGroup",
+  SELECTED_ELECTIVES: "selectedElectives",
   DISPLAY_MODE: "displayMode",
   WIDGET_SCHEDULE_SNAPSHOT: "widgetScheduleSnapshot",
   CUSTOM_SCHEDULE: "customSchedule",

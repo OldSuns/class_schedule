@@ -13,7 +13,7 @@ import {
   getPeriodRangeLabel,
   getPeriodStartTime
 } from "./timeUtils";
-import { shouldNotifyForGroup } from "./groupUtils";
+import { shouldIncludeCourseForAudience } from "./electiveUtils";
 import { getCourseLocation, getDisplayKey } from "./courseUtils";
 
 export const NOTIFICATION_CHANNEL_ID = "course-reminders";
@@ -161,6 +161,7 @@ const buildCourseNotificationBody = (
 const buildDayCourseBlocks = ({
   semesterStartDate,
   userGroup,
+  selectedElectives,
   currentDate,
   scheduleData
 }) => {
@@ -179,7 +180,9 @@ const buildDayCourseBlocks = ({
 
     const matchingCourses = (periodEntry.courses || [])
       .filter((course) => course.weeks.includes(info.week))
-      .filter((course) => shouldNotifyForGroup(course.group, userGroup));
+      .filter((course) =>
+        shouldIncludeCourseForAudience(course, userGroup, selectedElectives)
+      );
 
     if (!matchingCourses.length) continue;
 
@@ -243,6 +246,7 @@ const buildDayCourseBlocks = ({
 const collectUpcomingClasses = ({
   semesterStartDate,
   userGroup,
+  selectedElectives,
   fromDate,
   windowDays,
   scheduleData
@@ -261,6 +265,7 @@ const collectUpcomingClasses = ({
     const blocks = buildDayCourseBlocks({
       semesterStartDate,
       userGroup,
+      selectedElectives,
       currentDate,
       scheduleData
     });
@@ -364,6 +369,7 @@ export const openExactAlarmPermissionSettings = async () => {
 export const buildNotificationPlan = ({
   semesterStartDate,
   userGroup,
+  selectedElectives,
   scheduleData,
   leadMinutes = DEFAULT_NOTIFICATION_LEAD_MINUTES,
   fromDate = new Date(),
@@ -391,6 +397,7 @@ export const buildNotificationPlan = ({
     const blocks = buildDayCourseBlocks({
       semesterStartDate,
       userGroup,
+      selectedElectives,
       currentDate,
       scheduleData
     });
@@ -553,6 +560,7 @@ export const reconcileScheduledNotifications = async ({
 export const scheduleCourseNotifications = async ({
   semesterStartDate,
   userGroup,
+  selectedElectives,
   scheduleData,
   leadMinutes = DEFAULT_NOTIFICATION_LEAD_MINUTES,
   force = false,
@@ -582,6 +590,7 @@ export const scheduleCourseNotifications = async ({
   const planSnapshot = buildNotificationPlan({
     semesterStartDate,
     userGroup,
+    selectedElectives,
     scheduleData,
     leadMinutes
   });
@@ -602,6 +611,7 @@ export const scheduleCourseNotifications = async ({
 export const sendTestNotification = async ({
   semesterStartDate,
   userGroup,
+  selectedElectives,
   scheduleData,
   leadMinutes = DEFAULT_NOTIFICATION_LEAD_MINUTES
 }) => {
@@ -635,6 +645,7 @@ export const sendTestNotification = async ({
   const upcoming = collectUpcomingClasses({
     semesterStartDate,
     userGroup,
+    selectedElectives,
     fromDate: now,
     windowDays: NOTIFICATION_WINDOW_DAYS,
     scheduleData

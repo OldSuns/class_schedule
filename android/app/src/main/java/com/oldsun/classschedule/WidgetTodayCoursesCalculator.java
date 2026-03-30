@@ -26,6 +26,7 @@ final class WidgetTodayCoursesCalculator {
 
     private static final String KEY_SEMESTER_START_DATE = "semesterStartDate";
     private static final String KEY_USER_GROUP = "userGroup";
+    private static final String KEY_SELECTED_ELECTIVES = "selectedElectives";
     private static final String KEY_WIDGET_SCHEDULE_SNAPSHOT = "widgetScheduleSnapshot";
 
     private static final int DEFAULT_MIN_PERIOD = 1;
@@ -107,12 +108,20 @@ final class WidgetTodayCoursesCalculator {
         final String group;
         final Object location;
         final Set<String> eligibleGroups;
+        final Set<String> eligibleElectives;
 
-        CourseRef(String name, String group, Object location, Set<String> eligibleGroups) {
+        CourseRef(
+            String name,
+            String group,
+            Object location,
+            Set<String> eligibleGroups,
+            Set<String> eligibleElectives
+        ) {
             this.name = name != null ? name : "";
             this.group = (group != null && group.trim().length() > 0) ? group : null;
             this.location = location;
             this.eligibleGroups = eligibleGroups;
+            this.eligibleElectives = eligibleElectives;
         }
     }
 
@@ -178,7 +187,9 @@ final class WidgetTodayCoursesCalculator {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String semesterStartDate = prefs.getString(KEY_SEMESTER_START_DATE, null);
         String userGroup = prefs.getString(KEY_USER_GROUP, null);
+        String selectedElectivesRaw = prefs.getString(KEY_SELECTED_ELECTIVES, null);
         String rawSnapshot = prefs.getString(KEY_WIDGET_SCHEDULE_SNAPSHOT, null);
+        Set<String> selectedElectives = parseSelectedElectives(selectedElectivesRaw);
 
         if (TextUtils.isEmpty(semesterStartDate)) {
             return new Result(
@@ -246,6 +257,7 @@ final class WidgetTodayCoursesCalculator {
                     daySchedule,
                     info.week,
                     userGroup,
+                    selectedElectives,
                     periodRangeTable
                 );
                 List<CourseBlock> blocks =
@@ -281,6 +293,7 @@ final class WidgetTodayCoursesCalculator {
                     daySchedule,
                     info.week,
                     userGroup,
+                    selectedElectives,
                     periodRangeTable
                 );
                 List<CourseBlock> blocks =
@@ -449,6 +462,7 @@ final class WidgetTodayCoursesCalculator {
         JSONObject daySchedule,
         int currentWeek,
         String userGroup,
+        Set<String> selectedElectives,
         PeriodRangeTable periodRanges
     ) {
         Map<Integer, PeriodMatch> result = new HashMap<>();
@@ -482,10 +496,21 @@ final class WidgetTodayCoursesCalculator {
                 }
                 Set<String> eligibleGroups = parseEligibleGroups(course.optJSONArray("eligibleGroups"));
                 if (!shouldIncludeForUser(eligibleGroups, userGroup)) continue;
+                Set<String> eligibleElectives =
+                    parseEligibleElectives(course.optJSONArray("eligibleElectives"));
+                if (!shouldIncludeForElectives(eligibleElectives, selectedElectives)) continue;
 
                 String name = course.optString("name", "");
                 Object location = course.opt("location");
-                matchingCourses.add(new CourseRef(name, courseGroup, location, eligibleGroups));
+                matchingCourses.add(
+                    new CourseRef(
+                        name,
+                        courseGroup,
+                        location,
+                        eligibleGroups,
+                        eligibleElectives
+                    )
+                );
             }
 
             if (matchingCourses.isEmpty()) continue;
@@ -633,7 +658,9 @@ final class WidgetTodayCoursesCalculator {
             String key =
                 String.valueOf(course.name) +
                 "::" +
-                (course.group != null ? course.group : "");
+                (course.group != null ? course.group : "") +
+                "::" +
+                serializeEligibility(course.eligibleElectives);
             if (seen.add(key)) {
                 keys.add(key);
             }
@@ -721,6 +748,56 @@ final class WidgetTodayCoursesCalculator {
         if (eligibleGroups == null) return true;
         if (TextUtils.isEmpty(userGroup)) return true;
         return eligibleGroups.contains(userGroup);
+    }
+
+    private static Set<String> parseEligibleElectives(JSONArray eligibleElectives) {
+        if (eligibleElectives == null) return null;
+        HashSet<String> set = new HashSet<>();
+        for (int i = 0; i < eligibleElectives.length(); i += 1) {
+            String value = eligibleElectives.optString(i, "");
+            if (!TextUtils.isEmpty(value)) {
+                set.add(value);
+            }
+        }
+        return set.isEmpty() ? null : set;
+    }
+
+    private static Set<String> parseSelectedElectives(String raw) {
+        if (TextUtils.isEmpty(raw)) return Collections.emptySet();
+        try {
+            JSONArray array = new JSONArray(raw);
+            HashSet<String> set = new HashSet<>();
+            for (int i = 0; i < array.length(); i += 1) {
+                String value = array.optString(i, "");
+                if (!TextUtils.isEmpty(value)) {
+                    set.add(value);
+                }
+            }
+            return set;
+        } catch (JSONException error) {
+            return Collections.emptySet();
+        }
+    }
+
+    private static boolean shouldIncludeForElectives(
+        Set<String> eligibleElectives,
+        Set<String> selectedElectives
+    ) {
+        if (eligibleElectives == null) return true;
+        if (selectedElectives == null || selectedElectives.isEmpty()) return false;
+        for (String value : eligibleElectives) {
+            if (selectedElectives.contains(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String serializeEligibility(Set<String> values) {
+        if (values == null || values.isEmpty()) return "";
+        List<String> sorted = new ArrayList<>(values);
+        Collections.sort(sorted);
+        return join(sorted, ",");
     }
 
     private static String join(List<String> items, String sep) {

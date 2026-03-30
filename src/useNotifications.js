@@ -4,9 +4,11 @@ import { Capacitor } from "@capacitor/core";
 import * as storage from "../storage";
 import {
   DEFAULT_NOTIFICATION_LEAD_MINUTES,
+  ELECTIVE_OPTIONS,
   NOTIFICATION_LEAD_MINUTE_OPTIONS,
   STORAGE_KEYS
 } from "./constants";
+import { normalizeElectives } from "./electiveUtils";
 import { GROUP_TYPES, SELECTABLE_GROUP_TYPES } from "./groupUtils";
 import { refreshWidget } from "./widgetBridge";
 import {
@@ -51,6 +53,7 @@ const getMsUntilNextDailyReconcile = () => {
 export const useNotifications = (semesterStartDate, scheduleData) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [userGroup, setUserGroup] = useState(DEFAULT_USER_GROUP);
+  const [selectedElectives, setSelectedElectives] = useState([]);
   const [leadMinutes, setLeadMinutes] = useState(
     DEFAULT_NOTIFICATION_LEAD_MINUTES
   );
@@ -65,10 +68,12 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
 
   useEffect(() => {
     const loadSettings = async () => {
-      const [savedEnabled, savedGroup, savedLeadMinutes] = await Promise.all([
+      const [savedEnabled, savedGroup, savedLeadMinutes, savedElectives] =
+        await Promise.all([
         storage.getItem(STORAGE_KEYS.NOTIFICATIONS_ENABLED),
         storage.getItem(STORAGE_KEYS.USER_GROUP),
-        storage.getItem(STORAGE_KEYS.NOTIFICATION_LEAD_MINUTES)
+        storage.getItem(STORAGE_KEYS.NOTIFICATION_LEAD_MINUTES),
+        storage.getItem(STORAGE_KEYS.SELECTED_ELECTIVES)
       ]);
 
       if (savedEnabled != null) {
@@ -81,6 +86,13 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
       }
       if (savedLeadMinutes != null) {
         setLeadMinutes(sanitizeLeadMinutes(savedLeadMinutes));
+      }
+      if (savedElectives) {
+        try {
+          setSelectedElectives(normalizeElectives(JSON.parse(savedElectives)));
+        } catch (error) {
+          setSelectedElectives([]);
+        }
       }
 
       // 检查 POST_NOTIFICATIONS 权限
@@ -120,6 +132,16 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
       .setItem(STORAGE_KEYS.USER_GROUP, userGroup)
       .then(() => refreshWidget());
   }, [userGroup, isLoaded]);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    void storage
+      .setItem(
+        STORAGE_KEYS.SELECTED_ELECTIVES,
+        JSON.stringify(normalizeElectives(selectedElectives))
+      )
+      .then(() => refreshWidget());
+  }, [selectedElectives, isLoaded]);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -179,6 +201,7 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
         const result = await scheduleCourseNotifications({
           semesterStartDate,
           userGroup,
+          selectedElectives,
           scheduleData,
           leadMinutes,
           force,
@@ -240,7 +263,14 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
         }
       }
     },
-    [notificationsEnabled, semesterStartDate, userGroup, scheduleData, leadMinutes]
+    [
+      notificationsEnabled,
+      semesterStartDate,
+      userGroup,
+      selectedElectives,
+      scheduleData,
+      leadMinutes
+    ]
   );
 
   scheduleIfNeededRef.current = scheduleIfNeeded;
@@ -258,7 +288,16 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
       showMessage: showMessage && !scheduleChanged,
       source: "settings-change"
     });
-  }, [isLoaded, notificationsEnabled, semesterStartDate, userGroup, leadMinutes, scheduleIfNeeded, scheduleData]);
+  }, [
+    isLoaded,
+    notificationsEnabled,
+    semesterStartDate,
+    userGroup,
+    selectedElectives,
+    leadMinutes,
+    scheduleIfNeeded,
+    scheduleData
+  ]);
 
   useEffect(() => {
     prevScheduleRef.current = scheduleData;
@@ -330,6 +369,10 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
     setLeadMinutes(sanitizeLeadMinutes(minutes));
   }, []);
 
+  const handleSelectedElectivesChange = useCallback((electives) => {
+    setSelectedElectives(normalizeElectives(electives));
+  }, []);
+
   const handleTestNotification = useCallback(async () => {
     setStatusMessage("");
     try {
@@ -338,6 +381,7 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
       const result = await sendTestNotification({
         semesterStartDate,
         userGroup,
+        selectedElectives,
         scheduleData,
         leadMinutes
       });
@@ -358,7 +402,13 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
       console.error("发送测试通知失败:", error);
       setStatusMessage("测试通知发送失败");
     }
-  }, [semesterStartDate, userGroup, scheduleData, leadMinutes]);
+  }, [
+    semesterStartDate,
+    userGroup,
+    selectedElectives,
+    scheduleData,
+    leadMinutes
+  ]);
 
   const handleOpenExactAlarmSettings = useCallback(async () => {
     const status = await openExactAlarmPermissionSettings();
@@ -383,6 +433,8 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
   return {
     notificationsEnabled,
     userGroup,
+    selectedElectives,
+    electiveOptions: ELECTIVE_OPTIONS,
     leadMinutes,
     leadMinuteOptions: NOTIFICATION_LEAD_MINUTE_OPTIONS,
     statusMessage,
@@ -392,6 +444,7 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
       EXACT_ALARM_MESSAGES[exactAlarmStatus] || EXACT_ALARM_MESSAGES.unknown,
     onToggleNotifications: handleToggleNotifications,
     onGroupChange: handleGroupChange,
+    onSelectedElectivesChange: handleSelectedElectivesChange,
     onLeadMinutesChange: handleLeadMinutesChange,
     onTestNotification: handleTestNotification,
     onOpenExactAlarmSettings: handleOpenExactAlarmSettings
