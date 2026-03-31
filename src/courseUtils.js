@@ -185,6 +185,14 @@ export const getDisplayCourses = (courses) => {
   return result.slice(0, 2);
 };
 
+const getDistinctAudienceCourseCount = (courses) => {
+  const seen = new Set();
+  for (const course of Array.isArray(courses) ? courses : []) {
+    seen.add(getCourseAudienceKey(course));
+  }
+  return seen.size;
+};
+
 // 合并同一天内连续的同一课程
 export const mergeCellsByDay = (
   scheduleData,
@@ -260,7 +268,8 @@ export const mergeCellsByDay = (
           hasCurrentWeekCourse: true,
           otherCoursesCount: Math.max(
             0,
-            currentWeekCourses.length - displayCourses.length
+            getDistinctAudienceCourseCount(currentWeekCourses) -
+              displayCourses.length
           ),
         };
         continue;
@@ -290,7 +299,9 @@ export const mergeCellsByDay = (
         currentWeekCourses.length > 0 ? getDisplayKey(currentWeekCourses) : "";
       const otherCoursesCount = Math.max(
         0,
-        orderedCourses.length - displayCourses.length
+        getDistinctAudienceCourseCount(
+          currentWeekCourses.length > 0 ? currentWeekCourses : orderedCourses
+        ) - displayCourses.length
       );
 
       raw[period] = {
@@ -377,7 +388,11 @@ export const mergeCellsByDay = (
       const mergedAllCourses = Array.from(combinedAllCoursesMap.values());
       const mergedCurrentWeekCourses = mergedCourses.filter(c => c.isCurrentWeek);
       const displayCourses = getDisplayCourses(mergedCurrentWeekCourses);
-      const otherCoursesCount = Math.max(0, mergedCourses.length - displayCourses.length);
+      const otherCoursesCount = Math.max(
+        0,
+        getDistinctAudienceCourseCount(mergedCurrentWeekCourses) -
+          displayCourses.length
+      );
 
       merged[period] = {
         ...cell,

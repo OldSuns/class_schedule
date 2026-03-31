@@ -16,27 +16,17 @@ import {
   shouldIncludeCourseForAudience
 } from "./electiveUtils";
 import WeekMultiSelect from "./WeekMultiSelect";
-import { buildCourseIdentity, collectCoursesForRange } from "./scheduleUtils";
+import { collectLogicalCoursesForRange } from "./scheduleUtils";
 
 const LEGACY_GROUP_VALUE = "__legacy_group__";
 const EDITOR_GROUP_OPTIONS = ["6班A组", "6班B组", "7班C组", "7班D组"];
 const LEGACY_GROUP_ALIAS_MAP = {
-  "A组": "6班A组",
-  "B组": "6班B组"
+  A组: "6班A组",
+  B组: "6班B组"
 };
 
-const resolveTextValue = (value) => {
-  if (typeof value === "string") return value;
-  if (value && typeof value === "object" && typeof value.default === "string") {
-    return value.default;
-  }
-  return "";
-};
-
-const normalizeNumbers = (list) => {
-  const result = Array.isArray(list) ? list : [];
-  return Array.from(new Set(result)).sort((a, b) => a - b);
-};
+const normalizeNumbers = (list) =>
+  Array.from(new Set(Array.isArray(list) ? list : [])).sort((a, b) => a - b);
 
 const toggleValue = (list, value) => {
   const values = Array.isArray(list) ? list : [];
@@ -62,15 +52,142 @@ const getLegacyGroup = (value) => {
   return normalized;
 };
 
+const buildRanges = (numbers) => {
+  const values = normalizeNumbers(numbers);
+  if (values.length === 0) return [];
+  const ranges = [];
+  let start = values[0];
+  let end = values[0];
+  for (let index = 1; index < values.length; index += 1) {
+    const current = values[index];
+    if (current === end + 1) {
+      end = current;
+      continue;
+    }
+    ranges.push([start, end]);
+    start = current;
+    end = current;
+  }
+  ranges.push([start, end]);
+  return ranges;
+};
+
+const formatWeekList = (weeks) =>
+  buildRanges(weeks)
+    .map(([start, end]) => (start === end ? `${start}` : `${start}-${end}`))
+    .join("、");
+
+const formatWeekSentence = (weeks) => {
+  const label = formatWeekList(weeks);
+  return label ? `第${label}周` : "";
+};
+
+const formatPeriodSetLabel = (periods) =>
+  buildRanges(periods)
+    .map(([start, end]) => getPeriodRangeLabel(start, end))
+    .join("、");
+
+const getUniqueNonEmptyTexts = (values) =>
+  Array.from(
+    new Set(
+      (Array.isArray(values) ? values : [])
+        .map((value) => (typeof value === "string" ? value.trim() : ""))
+        .filter(Boolean)
+    )
+  );
+
+const buildWeekPeriodSummary = (logicalCourse) => {
+  const groups = new Map();
+  for (const week of logicalCourse.allWeeks) {
+    const periods = normalizeNumbers(logicalCourse.weekPeriodMap?.[week] ?? []);
+    const key = periods.join(",");
+    if (!groups.has(key)) {
+      groups.set(key, { periods, weeks: [] });
+    }
+    groups.get(key).weeks.push(week);
+  }
+
+  const items = Array.from(groups.values()).map((item) => ({
+    ...item,
+    weeks: normalizeNumbers(item.weeks)
+  }));
+  if (items.length <= 1) {
+    return items.map((item) => ({
+      label: "",
+      periodsLabel: formatPeriodSetLabel(item.periods)
+    }));
+  }
+  const mainItem =
+    items.length > 1
+      ? items.reduce((best, item) =>
+          !best || item.weeks.length > best.weeks.length ? item : best
+        , null)
+      : null;
+
+  return items
+    .sort((a, b) => a.weeks.length - b.weeks.length || a.weeks[0] - b.weeks[0])
+    .map((item) => ({
+      label:
+        mainItem && item === mainItem && item.weeks.length !== logicalCourse.allWeeks.length
+          ? "其余周"
+          : formatWeekSentence(item.weeks),
+      periodsLabel: formatPeriodSetLabel(item.periods)
+    }));
+};
+
+const buildLogicalCourseDisplay = (logicalCourse, currentWeek) => {
+  const currentWeekFragments = logicalCourse.fragments.filter((fragment) =>
+    Array.isArray(fragment.course?.weeks)
+      ? fragment.course.weeks.includes(currentWeek)
+      : false
+  );
+  const activeFragments =
+    currentWeekFragments.length > 0 ? currentWeekFragments : logicalCourse.fragments;
+  const locationTexts = getUniqueNonEmptyTexts(
+    activeFragments.map((fragment) =>
+      getCourseLocation(fragment.course?.location, currentWeek)
+    )
+  );
+  const noteTexts = getUniqueNonEmptyTexts(
+    activeFragments.map((fragment) =>
+      getCourseNote(fragment.course?.note, currentWeek)
+    )
+  );
+  const currentWeekPeriods = normalizeNumbers(
+    logicalCourse.weekPeriodMap?.[currentWeek] ??
+      activeFragments[0]?.periods ??
+      logicalCourse.availablePeriods
+  );
+
+  return {
+    ...logicalCourse,
+    isCurrentWeek: logicalCourse.allWeeks.includes(currentWeek),
+    currentWeekPeriods,
+    currentWeekPeriodsLabel: formatPeriodSetLabel(currentWeekPeriods),
+    periodSummary: buildWeekPeriodSummary(logicalCourse),
+    hasPeriodVariation: Object.keys(logicalCourse.weekPeriodMap ?? {}).length > 0 &&
+      new Set(
+        Object.values(logicalCourse.weekPeriodMap ?? {}).map((periods) =>
+          normalizeNumbers(periods).join(",")
+        )
+      ).size > 1,
+    locationText: locationTexts.join(" / "),
+    noteText: noteTexts.join(" / ")
+  };
+};
+
 const CourseEditor = ({
   title,
-  initialCourse,
+  initialValues,
   onSave,
   onCancel,
   onDirtyChange,
   availablePeriods,
   minWeek,
-  maxWeek
+  maxWeek,
+  allowedWeeks,
+  weekLabel,
+  weekErrorMessage
 }) => {
   const [name, setName] = useState("");
   const [group, setGroup] = useState("");
@@ -82,52 +199,53 @@ const CourseEditor = ({
   const [selectedPeriods, setSelectedPeriods] = useState([]);
   const [errors, setErrors] = useState([]);
   const [initialSnapshot, setInitialSnapshot] = useState(null);
+  const [initialLocationText, setInitialLocationText] = useState("");
+  const [initialNoteText, setInitialNoteText] = useState("");
 
   const normalizedPeriods = useMemo(
     () => normalizeNumbers(availablePeriods),
     [availablePeriods]
   );
+  const normalizedAllowedWeeks = useMemo(
+    () => normalizeNumbers(allowedWeeks),
+    [allowedWeeks]
+  );
 
   useEffect(() => {
-    const baseCourse = initialCourse ?? {
-      name: "",
-      group: "",
-      electives: [],
-      weeks: [],
-      location: "",
-      note: ""
-    };
-
-    const baseName = baseCourse.name ?? "";
-    const baseKnownGroup = getKnownGroup(baseCourse.group ?? "");
-    const baseLegacyGroup = getLegacyGroup(baseCourse.group ?? "");
+    const base = initialValues ?? {};
+    const baseKnownGroup = getKnownGroup(base.group ?? "");
+    const baseLegacyGroup = getLegacyGroup(base.group ?? "");
     const baseGroup = baseLegacyGroup ? LEGACY_GROUP_VALUE : baseKnownGroup;
-    const baseElectives = normalizeElectives(baseCourse.electives);
-    const baseWeeks = Array.isArray(baseCourse.weeks) ? baseCourse.weeks : [];
-    const baseLocation = resolveTextValue(baseCourse.location);
-    const baseNote = resolveTextValue(baseCourse.note);
+    const baseElectives = normalizeElectives(base.electives);
+    const baseWeeks = normalizeNumbers(base.weeks);
+    const basePeriods = normalizeNumbers(
+      base.periods?.length ? base.periods : normalizedPeriods
+    );
+    const baseLocation = typeof base.location === "string" ? base.location : "";
+    const baseNote = typeof base.note === "string" ? base.note : "";
 
-    setName(baseName);
+    setName(base.name ?? "");
     setGroup(baseGroup);
     setLegacyGroup(baseLegacyGroup);
     setElectives(baseElectives);
     setWeeks(baseWeeks);
     setLocation(baseLocation);
     setNote(baseNote);
-    setSelectedPeriods(normalizedPeriods);
+    setSelectedPeriods(basePeriods);
     setErrors([]);
-
+    setInitialLocationText(baseLocation);
+    setInitialNoteText(baseNote);
     setInitialSnapshot({
-      name: baseName,
+      name: base.name ?? "",
       group: baseGroup,
       legacyGroup: baseLegacyGroup,
       electives: baseElectives,
-      weeks: normalizeNumbers(baseWeeks),
+      weeks: baseWeeks,
       location: baseLocation,
       note: baseNote,
-      periods: normalizedPeriods
+      periods: basePeriods
     });
-  }, [initialCourse, normalizedPeriods]);
+  }, [initialValues, normalizedPeriods]);
 
   const normalizedSelectedPeriods = useMemo(
     () =>
@@ -137,13 +255,21 @@ const CourseEditor = ({
     [selectedPeriods, normalizedPeriods]
   );
 
+  const normalizedSelectedWeeks = useMemo(
+    () =>
+      normalizeNumbers(weeks).filter((item) =>
+        normalizedAllowedWeeks.length > 0 ? normalizedAllowedWeeks.includes(item) : true
+      ),
+    [weeks, normalizedAllowedWeeks]
+  );
+
   const currentSnapshot = useMemo(
     () => ({
       name,
       group,
       legacyGroup,
       electives: normalizeElectives(electives),
-      weeks: normalizeNumbers(weeks),
+      weeks: normalizedSelectedWeeks,
       location,
       note,
       periods: normalizedSelectedPeriods
@@ -153,7 +279,7 @@ const CourseEditor = ({
       group,
       legacyGroup,
       electives,
-      weeks,
+      normalizedSelectedWeeks,
       location,
       note,
       normalizedSelectedPeriods
@@ -188,15 +314,12 @@ const CourseEditor = ({
     if (!trimmedName) {
       nextErrors.push("课程名称不能为空");
     }
-    const normalizedWeeks = normalizeNumbers(weeks);
-    if (normalizedWeeks.length === 0) {
-      nextErrors.push("请选择上课周次");
+    if (normalizedSelectedWeeks.length === 0) {
+      nextErrors.push(weekErrorMessage);
     }
-
     if (normalizedSelectedPeriods.length === 0) {
       nextErrors.push("请选择作用节次");
     }
-
     if (nextErrors.length > 0) {
       setErrors(nextErrors);
       return;
@@ -208,57 +331,57 @@ const CourseEditor = ({
         : EDITOR_GROUP_OPTIONS.includes(group)
         ? group
         : null;
-    const normalizedCourseElectives = normalizeElectives(electives);
 
-    const normalizedLocationText = location.trim();
-    const normalizedNoteText = note.trim();
-    const initialLocation = initialCourse?.location;
-    const initialNote = initialCourse?.note;
-
-    const locationValue =
-      initialLocation &&
-      typeof initialLocation === "object" &&
-      normalizedLocationText === resolveTextValue(initialLocation).trim()
-        ? initialLocation
-        : normalizedLocationText;
-
-    const noteValue =
-      initialNote &&
-      typeof initialNote === "object" &&
-      normalizedNoteText === resolveTextValue(initialNote).trim()
-        ? initialNote
-        : normalizedNoteText;
-
-    const course = {
-      name: trimmedName,
-      group: normalizedGroup,
-      electives: normalizedCourseElectives,
-      weeks: normalizedWeeks,
-      location: locationValue,
-      note: noteValue
-    };
-
-    onSave?.(course, normalizedSelectedPeriods);
+    onSave?.(
+      {
+        name: trimmedName,
+        group: normalizedGroup,
+        electives: normalizeElectives(electives),
+        weeks: normalizedSelectedWeeks,
+        location: location.trim(),
+        note: note.trim()
+      },
+      {
+        weeks: normalizedSelectedWeeks,
+        periods: normalizedSelectedPeriods,
+        changedFields: {
+          location: location.trim() !== initialLocationText.trim(),
+          note: note.trim() !== initialNoteText.trim()
+        }
+      }
+    );
   };
 
   const hasPeriodSelection = normalizedPeriods.length > 1;
 
   return (
-    <div className="mt-4 rounded-2xl p-4" style={{border:"1px solid #CAC4D0",backgroundColor:"#F3EDF7"}}>
+    <div
+      className="mt-4 rounded-2xl p-4"
+      style={{ border: "1px solid #CAC4D0", backgroundColor: "#F3EDF7" }}
+    >
       <div className="flex items-center justify-between">
-        <div className="text-sm font-semibold" style={{color:"#1C1B1F"}}>{title}</div>
+        <div className="text-sm font-semibold" style={{ color: "#1C1B1F" }}>
+          {title}
+        </div>
         <button
           type="button"
           onClick={requestCancel}
           className="text-xs font-medium transition-colors"
-          style={{color:"#49454F"}}
+          style={{ color: "#49454F" }}
         >
           取消
         </button>
       </div>
 
       {errors.length > 0 && (
-        <div className="mt-2 text-xs rounded-xl p-3 space-y-1" style={{backgroundColor:"#F9DEDC",color:"#410E0B",border:"1px solid #EFB8C8"}}>
+        <div
+          className="mt-2 text-xs rounded-xl p-3 space-y-1"
+          style={{
+            backgroundColor: "#F9DEDC",
+            color: "#410E0B",
+            border: "1px solid #EFB8C8"
+          }}
+        >
           {errors.map((err, index) => (
             <div key={`${err}-${index}`}>{err}</div>
           ))}
@@ -266,22 +389,35 @@ const CourseEditor = ({
       )}
 
       <div className="mt-3 space-y-3">
-        <label className="block text-xs font-semibold" style={{color:"#49454F"}}>课程名称</label>
+        <label className="block text-xs font-semibold" style={{ color: "#49454F" }}>
+          课程名称
+        </label>
         <input
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(event) => setName(event.target.value)}
           className="w-full px-3 py-2 rounded-xl text-sm focus:ring-2 focus:outline-none"
-          style={{backgroundColor:"#ECE6F0",border:"1px solid #CAC4D0",color:"#1C1B1F","--tw-ring-color":"#6750A4"}}
-          placeholder="如：内科学A"
+          style={{
+            backgroundColor: "#ECE6F0",
+            border: "1px solid #CAC4D0",
+            color: "#1C1B1F",
+            "--tw-ring-color": "#6750A4"
+          }}
+          placeholder="如：儿科学A"
         />
 
-        <label className="block text-xs font-semibold" style={{color:"#49454F"}}>组别（可选）</label>
+        <label className="block text-xs font-semibold" style={{ color: "#49454F" }}>
+          组别（可选）
+        </label>
         <select
           value={group || ""}
-          onChange={(e) => setGroup(e.target.value)}
+          onChange={(event) => setGroup(event.target.value)}
           className="w-full px-3 py-2 rounded-xl text-sm focus:ring-2 focus:outline-none"
-          style={{backgroundColor:"#ECE6F0",border:"1px solid #CAC4D0",color:"#1C1B1F"}}
+          style={{
+            backgroundColor: "#ECE6F0",
+            border: "1px solid #CAC4D0",
+            color: "#1C1B1F"
+          }}
         >
           <option value="">无</option>
           <option value="6班A组">6班A组</option>
@@ -294,7 +430,7 @@ const CourseEditor = ({
         </select>
 
         <div>
-          <div className="text-xs font-semibold mb-2" style={{color:"#49454F"}}>
+          <div className="text-xs font-semibold mb-2" style={{ color: "#49454F" }}>
             选修归属（可选 / 可多选）
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -308,9 +444,11 @@ const CourseEditor = ({
                     setElectives((prev) => toggleValue(prev, option.value))
                   }
                   className="py-2 rounded-xl text-sm font-semibold transition-colors"
-                  style={isSelected
-                    ? {backgroundColor:"#6750A4",color:"#FFFFFF"}
-                    : {backgroundColor:"#ECE6F0",color:"#1D192B"}}
+                  style={
+                    isSelected
+                      ? { backgroundColor: "#6750A4", color: "#FFFFFF" }
+                      : { backgroundColor: "#ECE6F0", color: "#1D192B" }
+                  }
                 >
                   {option.label}
                 </button>
@@ -320,12 +458,15 @@ const CourseEditor = ({
         </div>
 
         <div>
-          <div className="text-xs font-semibold mb-2" style={{color:"#49454F"}}>上课周次</div>
+          <div className="text-xs font-semibold mb-2" style={{ color: "#49454F" }}>
+            {weekLabel}
+          </div>
           <WeekMultiSelect
             weeks={weeks}
             onChange={setWeeks}
             minWeek={minWeek}
             maxWeek={maxWeek}
+            allowedWeeks={normalizedAllowedWeeks}
           />
         </div>
 
@@ -334,28 +475,40 @@ const CourseEditor = ({
           <input
             type="text"
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={(event) => setLocation(event.target.value)}
             className="w-full px-3 py-2 rounded-xl text-sm focus:ring-2 focus:outline-none"
-            style={{backgroundColor:"#ECE6F0",border:"1px solid #CAC4D0",color:"#1C1B1F"}}
+            style={{
+              backgroundColor: "#ECE6F0",
+              border: "1px solid #CAC4D0",
+              color: "#1C1B1F"
+            }}
             placeholder="如：教学楼A101"
           />
         </div>
 
         <div>
-          <div className="text-xs font-semibold mb-1" style={{color:"#49454F"}}>备注</div>
+          <div className="text-xs font-semibold mb-1" style={{ color: "#49454F" }}>
+            备注
+          </div>
           <input
             type="text"
             value={note}
-            onChange={(e) => setNote(e.target.value)}
+            onChange={(event) => setNote(event.target.value)}
             className="w-full px-3 py-2 rounded-xl text-sm focus:ring-2 focus:outline-none"
-            style={{backgroundColor:"#ECE6F0",border:"1px solid #CAC4D0",color:"#1C1B1F"}}
+            style={{
+              backgroundColor: "#ECE6F0",
+              border: "1px solid #CAC4D0",
+              color: "#1C1B1F"
+            }}
             placeholder="如：需要带白大褂"
           />
         </div>
 
         {hasPeriodSelection && (
           <div>
-          <div className="text-xs font-semibold mb-2" style={{color:"#49454F"}}>作用节次</div>
+            <div className="text-xs font-semibold mb-2" style={{ color: "#49454F" }}>
+              作用节次
+            </div>
             <WeekMultiSelect
               weeks={selectedPeriods}
               onChange={setSelectedPeriods}
@@ -371,7 +524,7 @@ const CourseEditor = ({
             type="button"
             onClick={requestCancel}
             className="px-4 py-1.5 rounded-pill text-xs font-semibold transition-colors"
-            style={{color:"#6750A4",backgroundColor:"transparent"}}
+            style={{ color: "#6750A4", backgroundColor: "transparent" }}
           >
             取消
           </button>
@@ -379,7 +532,7 @@ const CourseEditor = ({
             type="button"
             onClick={handleSave}
             className="px-5 py-1.5 rounded-pill text-xs font-semibold transition-colors"
-            style={{backgroundColor:"#6750A4",color:"#FFFFFF"}}
+            style={{ backgroundColor: "#6750A4", color: "#FFFFFF" }}
           >
             保存
           </button>
@@ -389,9 +542,6 @@ const CourseEditor = ({
   );
 };
 
-/**
- * 课程详情模态框组件
- */
 const CourseModal = ({
   isOpen,
   selectedCell,
@@ -406,14 +556,15 @@ const CourseModal = ({
   onClose
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editingCourseId, setEditingCourseId] = useState(null);
+  const [editingLogicalId, setEditingLogicalId] = useState(null);
   const [addingCourse, setAddingCourse] = useState(false);
-  const [deletingCourseId, setDeletingCourseId] = useState(null);
+  const [deletingLogicalId, setDeletingLogicalId] = useState(null);
   const [deletePeriods, setDeletePeriods] = useState([]);
+  const [deleteWeeks, setDeleteWeeks] = useState([]);
   const [deleteError, setDeleteError] = useState("");
   const [hasUnsavedEditorChanges, setHasUnsavedEditorChanges] = useState(false);
 
-  const availablePeriods = useMemo(() => {
+  const selectedRangePeriods = useMemo(() => {
     if (!selectedCell) return [];
     const start = Math.min(selectedCell.periodStart, selectedCell.periodEnd);
     const end = Math.max(selectedCell.periodStart, selectedCell.periodEnd);
@@ -424,15 +575,14 @@ const CourseModal = ({
     return list;
   }, [selectedCell]);
 
-  const hasRange = availablePeriods.length > 1;
-
   useEffect(() => {
     if (!isOpen) {
       setIsEditMode(false);
-      setEditingCourseId(null);
+      setEditingLogicalId(null);
       setAddingCourse(false);
-      setDeletingCourseId(null);
+      setDeletingLogicalId(null);
       setDeletePeriods([]);
+      setDeleteWeeks([]);
       setDeleteError("");
       setHasUnsavedEditorChanges(false);
     }
@@ -440,40 +590,41 @@ const CourseModal = ({
 
   useEffect(() => {
     if (!isEditMode) {
-      setEditingCourseId(null);
+      setEditingLogicalId(null);
       setAddingCourse(false);
-      setDeletingCourseId(null);
+      setDeletingLogicalId(null);
       setDeletePeriods([]);
+      setDeleteWeeks([]);
       setDeleteError("");
       setHasUnsavedEditorChanges(false);
     }
   }, [isEditMode]);
 
-  const courses = useMemo(() => {
+  const logicalCourses = useMemo(() => {
     if (!selectedCell || !scheduleData) return [];
-    const list = collectCoursesForRange(
+    return collectLogicalCoursesForRange(
       scheduleData,
       selectedCell.day,
       selectedCell.periodStart,
       selectedCell.periodEnd
-    );
-    const audienceFilteredCourses = list.filter((course) =>
-      shouldIncludeCourseForAudience(course, userGroup, selectedElectives)
-    );
-    const visibleCourses =
-      displayMode === DISPLAY_MODES.CURRENT_ONLY
-        ? audienceFilteredCourses.filter(
-            (course) =>
-              Array.isArray(course.weeks) && course.weeks.includes(currentWeek)
-          )
-        : audienceFilteredCourses;
-
-    return visibleCourses.map((course) => ({
-      ...course,
-      isCurrentWeek: Array.isArray(course.weeks)
-        ? course.weeks.includes(currentWeek)
-        : false
-    }));
+    )
+      .filter((course) =>
+        shouldIncludeCourseForAudience(
+          {
+            ...course.baseCourse,
+            group: course.baseCourse.group,
+            electives: course.baseCourse.electives
+          },
+          userGroup,
+          selectedElectives
+        )
+      )
+      .filter((course) =>
+        displayMode === DISPLAY_MODES.CURRENT_ONLY
+          ? course.allWeeks.includes(currentWeek)
+          : true
+      )
+      .map((course) => buildLogicalCourseDisplay(course, currentWeek));
   }, [
     scheduleData,
     selectedCell,
@@ -482,6 +633,31 @@ const CourseModal = ({
     userGroup,
     selectedElectives
   ]);
+
+  const addingInitialValues = useMemo(
+    () => ({
+      name: "",
+      group: "",
+      electives: [],
+      weeks: [],
+      location: "",
+      note: "",
+      periods: selectedRangePeriods
+    }),
+    [selectedRangePeriods]
+  );
+
+  const editingCourse = useMemo(
+    () =>
+      logicalCourses.find((course) => course.logicalId === editingLogicalId) || null,
+    [logicalCourses, editingLogicalId]
+  );
+
+  const deletingCourse = useMemo(
+    () =>
+      logicalCourses.find((course) => course.logicalId === deletingLogicalId) || null,
+    [logicalCourses, deletingLogicalId]
+  );
 
   if (!selectedCell) return null;
 
@@ -495,51 +671,75 @@ const CourseModal = ({
     onClose?.();
   };
 
-  const handleAdd = (course, selectedPeriods) => {
-    onAddCourse?.(selectedCell.day, selectedPeriods, course);
+  const handleAdd = (course, payload) => {
+    onAddCourse?.(selectedCell.day, payload.periods, {
+      ...course,
+      weeks: payload.weeks
+    });
     setAddingCourse(false);
     setHasUnsavedEditorChanges(false);
   };
 
-  const handleUpdate = (courseId, course, selectedPeriods) => {
-    onUpdateCourse?.(selectedCell.day, selectedPeriods, courseId, course);
-    setEditingCourseId(null);
+  const handleUpdate = (logicalCourse, course, payload) => {
+    onUpdateCourse?.({
+      day: selectedCell.day,
+      logicalId: logicalCourse.logicalId,
+      scopePeriods: logicalCourse.availablePeriods,
+      selectedWeeks: payload.weeks,
+      selectedPeriods: payload.periods,
+      course: {
+        ...course,
+        weeks: payload.weeks
+      },
+      preserveLocation: !payload.changedFields.location,
+      preserveNote: !payload.changedFields.note
+    });
+    setEditingLogicalId(null);
     setHasUnsavedEditorChanges(false);
   };
 
-  const handleDelete = (courseId, selectedPeriods) => {
-    onDeleteCourse?.(selectedCell.day, selectedPeriods, courseId);
-    setDeletingCourseId(null);
+  const handleDelete = (logicalCourse, weeks, periods) => {
+    onDeleteCourse?.({
+      day: selectedCell.day,
+      logicalId: logicalCourse.logicalId,
+      scopePeriods: logicalCourse.availablePeriods,
+      selectedWeeks: weeks,
+      selectedPeriods: periods
+    });
+    setDeletingLogicalId(null);
     setDeletePeriods([]);
+    setDeleteWeeks([]);
     setDeleteError("");
   };
 
-  const openDelete = (courseId) => {
-    if (!hasRange) {
-      if (window.confirm("确认删除该课程？")) {
-        handleDelete(courseId, availablePeriods);
-      }
-      return;
-    }
+  const openDelete = (logicalCourse) => {
     if (!requestDiscardIfNeeded()) return;
     setHasUnsavedEditorChanges(false);
-    setEditingCourseId(null);
+    setEditingLogicalId(null);
     setAddingCourse(false);
-    setDeletingCourseId(courseId);
-    setDeletePeriods(availablePeriods);
+    setDeletingLogicalId(logicalCourse.logicalId);
+    setDeletePeriods(logicalCourse.currentWeekPeriods);
+    setDeleteWeeks([]);
     setDeleteError("");
   };
 
   const confirmDelete = () => {
-    if (!deletingCourseId) return;
-    const normalized = normalizeNumbers(deletePeriods).filter((item) =>
-      availablePeriods.includes(item)
+    if (!deletingCourse) return;
+    const normalizedWeeks = normalizeNumbers(deleteWeeks).filter((item) =>
+      deletingCourse.allWeeks.includes(item)
     );
-    if (normalized.length === 0) {
+    const normalizedPeriods = normalizeNumbers(deletePeriods).filter((item) =>
+      deletingCourse.availablePeriods.includes(item)
+    );
+    if (normalizedWeeks.length === 0) {
+      setDeleteError("请选择要删除的周次");
+      return;
+    }
+    if (normalizedPeriods.length === 0) {
       setDeleteError("请选择要删除的节次");
       return;
     }
-    handleDelete(deletingCourseId, normalized);
+    handleDelete(deletingCourse, normalizedWeeks, normalizedPeriods);
   };
 
   return (
@@ -550,7 +750,7 @@ const CourseModal = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
-          style={{backgroundColor:"rgba(0,0,0,0.45)"}}
+          style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
           onClick={handleRequestClose}
         >
           <motion.div
@@ -558,15 +758,25 @@ const CourseModal = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 48 }}
             transition={{ duration: 0.3, ease: [0.2, 0, 0, 1] }}
-          className="w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] overflow-hidden flex flex-col rounded-t-[28px] sm:rounded-[28px]"
-            style={{backgroundColor:"#FFFBFE",boxShadow:"0 4px 32px rgba(103,80,164,0.18)"}}
-            onClick={e => e.stopPropagation()}
+            className="w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] overflow-hidden flex flex-col rounded-t-[28px] sm:rounded-[28px]"
+            style={{
+              backgroundColor: "#FFFBFE",
+              boxShadow: "0 4px 32px rgba(103,80,164,0.18)"
+            }}
+            onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex-shrink-0 p-4 sm:p-5 flex justify-between items-center" style={{backgroundColor:"#6750A4",borderRadius:"28px 28px 0 0"}}>
+            <div
+              className="flex-shrink-0 p-4 sm:p-5 flex justify-between items-center"
+              style={{ backgroundColor: "#6750A4", borderRadius: "28px 28px 0 0" }}
+            >
               <div className="flex items-center gap-2 flex-1 min-w-0">
                 <Clock className="flex-shrink-0" size={20} color="white" />
                 <h2 className="text-base sm:text-xl font-bold text-white truncate">
-                  {DAY_NAMES[selectedCell.day].zh} · {getPeriodRangeLabel(selectedCell.periodStart, selectedCell.periodEnd)}
+                  {DAY_NAMES[selectedCell.day].zh} ·{" "}
+                  {getPeriodRangeLabel(
+                    selectedCell.periodStart,
+                    selectedCell.periodEnd
+                  )}
                 </h2>
               </div>
               <div className="flex items-center gap-3">
@@ -579,115 +789,222 @@ const CourseModal = ({
                       setIsEditMode((prev) => !prev);
                     }}
                     className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors"
-                    style={{backgroundColor: isEditMode ? "rgba(255,255,255,0.90)" : "rgba(255,255,255,0.30)"}}
+                    style={{
+                      backgroundColor: isEditMode
+                        ? "rgba(255,255,255,0.90)"
+                        : "rgba(255,255,255,0.30)"
+                    }}
                     aria-pressed={isEditMode}
                   >
                     <span
                       className="inline-block h-3 w-3 transform rounded-full transition-transform"
-                      style={{backgroundColor:"#6750A4", transform: isEditMode ? "translateX(20px)" : "translateX(4px)"}}
+                      style={{
+                        backgroundColor: "#6750A4",
+                        transform: isEditMode ? "translateX(20px)" : "translateX(4px)"
+                      }}
                     />
                   </button>
                 </div>
                 <button
                   onClick={handleRequestClose}
                   className="transition-opacity hover:opacity-75 flex-shrink-0"
-                  style={{color:"#FFFFFF"}}
+                  style={{ color: "#FFFFFF" }}
                 >
                   <X size={20} />
                 </button>
               </div>
             </div>
 
-            <div className="flex-1 p-3 sm:p-5 overflow-y-auto" style={{backgroundColor:"#FFFBFE"}}>
-              {courses.length === 0 ? (
+            <div
+              className="flex-1 p-3 sm:p-5 overflow-y-auto"
+              style={{ backgroundColor: "#FFFBFE" }}
+            >
+              {logicalCourses.length === 0 ? (
                 <div className="text-center py-10">
-                  <Calendar className="mx-auto mb-3" size={36} style={{color:"#CAC4D0"}} />
-                  <h3 className="text-base font-semibold mb-1" style={{color:"#1C1B1F"}}>本节无课程安排</h3>
-                  <p className="text-sm" style={{color:"#49454F"}}>该时间段没有安排课程</p>
+                  <Calendar
+                    className="mx-auto mb-3"
+                    size={36}
+                    style={{ color: "#CAC4D0" }}
+                  />
+                  <h3
+                    className="text-base font-semibold mb-1"
+                    style={{ color: "#1C1B1F" }}
+                  >
+                    本节无课程安排
+                  </h3>
+                  <p className="text-sm" style={{ color: "#49454F" }}>
+                    该时间段没有安排课程
+                  </p>
                 </div>
               ) : (
-                courses.map((course) => {
-                  const courseId = buildCourseIdentity(course);
-                  const noteText = getCourseNote(course.note, currentWeek);
-                  const hasNote = noteText.trim().length > 0;
-                  const isEditing = editingCourseId === courseId;
-                  const isDeleting = deletingCourseId === courseId;
+                logicalCourses.map((course) => {
+                  const isEditing =
+                    editingCourse?.logicalId === course.logicalId && isEditMode;
+                  const isDeleting =
+                    deletingCourse?.logicalId === course.logicalId && isEditMode;
 
-                  if (isEditing && isEditMode) {
+                  if (isEditing) {
                     return (
                       <CourseEditor
-                        key={courseId}
+                        key={course.logicalId}
                         title="编辑课程"
-                        initialCourse={course}
-                        onSave={(nextCourse, selectedPeriods) =>
-                          handleUpdate(courseId, nextCourse, selectedPeriods)
+                        initialValues={{
+                          name: course.baseCourse.name,
+                          group: course.baseCourse.group ?? "",
+                          electives: course.baseCourse.electives,
+                          weeks: [],
+                          location: course.locationText,
+                          note: course.noteText,
+                          periods: course.currentWeekPeriods
+                        }}
+                        onSave={(nextCourse, payload) =>
+                          handleUpdate(course, nextCourse, payload)
                         }
                         onCancel={() => {
-                          setEditingCourseId(null);
+                          setEditingLogicalId(null);
                           setHasUnsavedEditorChanges(false);
                         }}
                         onDirtyChange={setHasUnsavedEditorChanges}
-                        availablePeriods={availablePeriods}
+                        availablePeriods={course.availablePeriods}
                         minWeek={MIN_WEEK}
                         maxWeek={MAX_WEEK}
+                        allowedWeeks={course.allWeeks}
+                        weekLabel="选择要修改的周次"
+                        weekErrorMessage="请选择要修改的周次"
                       />
                     );
                   }
 
                   return (
                     <div
-                      key={courseId}
+                      key={course.logicalId}
                       className="mb-3 p-3 sm:p-4"
                       style={{
                         borderRadius: "16px",
                         backgroundColor: course.isCurrentWeek ? "#EADDFF" : "#F3EDF7",
-                        border: course.isCurrentWeek ? "1.5px solid #6750A4" : "1px solid #CAC4D0"
+                        border: course.isCurrentWeek
+                          ? "1.5px solid #6750A4"
+                          : "1px solid #CAC4D0"
                       }}
                     >
                       <div className="flex justify-between items-start gap-2">
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-base sm:text-lg font-bold" style={{color: course.isCurrentWeek ? "#21005D" : "#1C1B1F"}}>
-                            {course.name}
+                          <h3
+                            className="text-base sm:text-lg font-bold"
+                            style={{
+                              color: course.isCurrentWeek ? "#21005D" : "#1C1B1F"
+                            }}
+                          >
+                            {course.baseCourse.name}
                           </h3>
-                          {course.group && (
-                            <p className="text-sm font-medium mt-0.5" style={{color:"#6750A4"}}>{course.group}</p>
+                          {course.baseCourse.group && (
+                            <p
+                              className="text-sm font-medium mt-0.5"
+                              style={{ color: "#6750A4" }}
+                            >
+                              {course.baseCourse.group}
+                            </p>
                           )}
-                          {normalizeElectives(course.electives).length > 0 && (
-                            <p className="text-xs font-medium mt-1" style={{color:"#7D5260"}}>
-                              {normalizeElectives(course.electives)
+                          {normalizeElectives(course.baseCourse.electives).length > 0 && (
+                            <p
+                              className="text-xs font-medium mt-1"
+                              style={{ color: "#7D5260" }}
+                            >
+                              {normalizeElectives(course.baseCourse.electives)
                                 .map(getElectiveLabel)
                                 .join(" / ")}
                             </p>
                           )}
                         </div>
                         {course.isCurrentWeek && (
-                          <span className="text-xs font-semibold px-2.5 py-0.5 flex-shrink-0" style={{backgroundColor:"#6750A4",color:"#FFFFFF",borderRadius:"9999px"}}>
+                          <span
+                            className="text-xs font-semibold px-2.5 py-0.5 flex-shrink-0"
+                            style={{
+                              backgroundColor: "#6750A4",
+                              color: "#FFFFFF",
+                              borderRadius: "9999px"
+                            }}
+                          >
                             本周课程
                           </span>
                         )}
                       </div>
 
                       <div className="mt-2 sm:mt-3">
-                        <p className="text-xs uppercase tracking-wider" style={{color:"#49454F"}}>上课周次</p>
-                        <p className="text-sm font-medium mt-1 break-words" style={{color:"#1C1B1F"}}>
-                          {course.weeks.join("、")}周
+                        <p
+                          className="text-xs uppercase tracking-wider"
+                          style={{ color: "#49454F" }}
+                        >
+                          上课周次
+                        </p>
+                        <p
+                          className="text-sm font-medium mt-1 break-words"
+                          style={{ color: "#1C1B1F" }}
+                        >
+                          {formatWeekList(course.allWeeks)}周
                         </p>
                       </div>
 
-                      {course.location && (
+                      <div className="mt-2">
+                        <p
+                          className="text-xs uppercase tracking-wider"
+                          style={{ color: "#49454F" }}
+                        >
+                          节次安排
+                        </p>
+                        <div className="mt-1 space-y-1">
+                          {course.periodSummary.map((item) => (
+                            <p
+                              key={`${course.logicalId}-${item.label}-${item.periodsLabel}`}
+                              className="text-sm font-medium break-words"
+                              style={{ color: "#1C1B1F" }}
+                            >
+                              {item.label ? `${item.label}：` : ""}
+                              {item.periodsLabel}
+                            </p>
+                          ))}
+                        </div>
+                        {course.isCurrentWeek &&
+                          course.hasPeriodVariation &&
+                          course.currentWeekPeriodsLabel && (
+                          <p className="text-xs mt-2" style={{ color: "#6750A4" }}>
+                            当前周节次：{course.currentWeekPeriodsLabel}
+                          </p>
+                        )}
+                      </div>
+
+                      {course.locationText && (
                         <div className="mt-2">
-                          <p className="text-xs uppercase tracking-wider flex items-center gap-1" style={{color:"#49454F"}}>
+                          <p
+                            className="text-xs uppercase tracking-wider flex items-center gap-1"
+                            style={{ color: "#49454F" }}
+                          >
                             <MapPin size={12} />
                             上课地点
                           </p>
-                          <p className="text-sm font-medium mt-1 break-words" style={{color:"#1C1B1F"}}>{getCourseLocation(course.location, currentWeek)}</p>
+                          <p
+                            className="text-sm font-medium mt-1 break-words"
+                            style={{ color: "#1C1B1F" }}
+                          >
+                            {course.locationText}
+                          </p>
                         </div>
                       )}
 
-                      {hasNote && (
+                      {course.noteText && (
                         <div className="mt-2">
-                          <p className="text-xs uppercase tracking-wider" style={{color:"#49454F"}}>备注</p>
-                          <p className="text-sm font-medium mt-1 break-words" style={{color:"#1C1B1F"}}>{noteText}</p>
+                          <p
+                            className="text-xs uppercase tracking-wider"
+                            style={{ color: "#49454F" }}
+                          >
+                            备注
+                          </p>
+                          <p
+                            className="text-sm font-medium mt-1 break-words"
+                            style={{ color: "#1C1B1F" }}
+                          >
+                            {course.noteText}
+                          </p>
                         </div>
                       )}
 
@@ -698,23 +1015,32 @@ const CourseModal = ({
                             onClick={() => {
                               if (!requestDiscardIfNeeded()) return;
                               setHasUnsavedEditorChanges(false);
-                              setEditingCourseId(courseId);
+                              setEditingLogicalId(course.logicalId);
                               setAddingCourse(false);
-                              setDeletingCourseId(null);
+                              setDeletingLogicalId(null);
                               setDeletePeriods([]);
+                              setDeleteWeeks([]);
                               setDeleteError("");
                             }}
                             className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold transition-colors"
-                            style={{backgroundColor:"#E8DEF8",color:"#1D192B",borderRadius:"9999px"}}
+                            style={{
+                              backgroundColor: "#E8DEF8",
+                              color: "#1D192B",
+                              borderRadius: "9999px"
+                            }}
                           >
                             <Pencil size={14} />
                             编辑
                           </button>
                           <button
                             type="button"
-                            onClick={() => openDelete(courseId)}
+                            onClick={() => openDelete(course)}
                             className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold transition-colors"
-                            style={{backgroundColor:"#F9DEDC",color:"#410E0B",borderRadius:"9999px"}}
+                            style={{
+                              backgroundColor: "#F9DEDC",
+                              color: "#410E0B",
+                              borderRadius: "9999px"
+                            }}
                           >
                             <Trash2 size={14} />
                             删除
@@ -722,39 +1048,69 @@ const CourseModal = ({
                         </div>
                       )}
 
-                      {isDeleting && isEditMode && hasRange && (
-                        <div className="mt-3 p-3 text-xs" style={{backgroundColor:"#F9DEDC",borderRadius:"12px",border:"1px solid #EFB8C8",color:"#410E0B"}}>
-                          <div className="font-semibold">选择要删除的节次</div>
+                      {isDeleting && (
+                        <div
+                          className="mt-3 p-3 text-xs"
+                          style={{
+                            backgroundColor: "#F9DEDC",
+                            borderRadius: "12px",
+                            border: "1px solid #EFB8C8",
+                            color: "#410E0B"
+                          }}
+                        >
+                          <div className="font-semibold">选择要删除的周次</div>
+                          <div className="mt-2">
+                            <WeekMultiSelect
+                              weeks={deleteWeeks}
+                              onChange={setDeleteWeeks}
+                              minWeek={MIN_WEEK}
+                              maxWeek={MAX_WEEK}
+                              allowedWeeks={course.allWeeks}
+                            />
+                          </div>
+                          <div className="font-semibold mt-3">选择要删除的节次</div>
                           <div className="mt-2">
                             <WeekMultiSelect
                               weeks={deletePeriods}
                               onChange={setDeletePeriods}
-                              minWeek={availablePeriods[0]}
-                              maxWeek={availablePeriods[availablePeriods.length - 1]}
-                              allowedWeeks={availablePeriods}
+                              minWeek={course.availablePeriods[0]}
+                              maxWeek={course.availablePeriods[course.availablePeriods.length - 1]}
+                              allowedWeeks={course.availablePeriods}
                             />
                           </div>
                           {deleteError && (
-                            <div className="mt-2" style={{color:"#B3261E"}}>{deleteError}</div>
+                            <div className="mt-2" style={{ color: "#B3261E" }}>
+                              {deleteError}
+                            </div>
                           )}
                           <div className="flex gap-2 mt-3">
                             <button
                               type="button"
                               onClick={confirmDelete}
                               className="px-4 py-1.5 text-xs font-semibold"
-                              style={{backgroundColor:"#B3261E",color:"#FFFFFF",borderRadius:"9999px"}}
+                              style={{
+                                backgroundColor: "#B3261E",
+                                color: "#FFFFFF",
+                                borderRadius: "9999px"
+                              }}
                             >
                               确认删除
                             </button>
                             <button
                               type="button"
                               onClick={() => {
-                                setDeletingCourseId(null);
+                                setDeletingLogicalId(null);
                                 setDeletePeriods([]);
+                                setDeleteWeeks([]);
                                 setDeleteError("");
                               }}
                               className="px-4 py-1.5 text-xs font-semibold"
-                              style={{border:"1px solid #EFB8C8",color:"#410E0B",borderRadius:"9999px",backgroundColor:"transparent"}}
+                              style={{
+                                border: "1px solid #EFB8C8",
+                                color: "#410E0B",
+                                borderRadius: "9999px",
+                                backgroundColor: "transparent"
+                              }}
                             >
                               取消
                             </button>
@@ -769,45 +1125,65 @@ const CourseModal = ({
               {addingCourse && isEditMode && (
                 <CourseEditor
                   title="新增课程"
-                  initialCourse={null}
+                  initialValues={addingInitialValues}
                   onSave={handleAdd}
                   onCancel={() => {
                     setAddingCourse(false);
                     setHasUnsavedEditorChanges(false);
                   }}
                   onDirtyChange={setHasUnsavedEditorChanges}
-                  availablePeriods={availablePeriods}
+                  availablePeriods={selectedRangePeriods}
                   minWeek={MIN_WEEK}
                   maxWeek={MAX_WEEK}
+                  allowedWeeks={Array.from(
+                    { length: MAX_WEEK - MIN_WEEK + 1 },
+                    (_, index) => MIN_WEEK + index
+                  )}
+                  weekLabel="上课周次"
+                  weekErrorMessage="请选择上课周次"
                 />
               )}
             </div>
 
-            <div className="flex-shrink-0 px-4 py-3 flex justify-between items-center" style={{backgroundColor:"#F3EDF7",borderTop:"1px solid #CAC4D0"}}>
+            <div
+              className="flex-shrink-0 px-4 py-3 flex justify-between items-center"
+              style={{ backgroundColor: "#F3EDF7", borderTop: "1px solid #CAC4D0" }}
+            >
               {isEditMode ? (
                 <button
                   onClick={() => {
                     if (!requestDiscardIfNeeded()) return;
                     setHasUnsavedEditorChanges(false);
                     setAddingCourse(true);
-                    setEditingCourseId(null);
-                    setDeletingCourseId(null);
+                    setEditingLogicalId(null);
+                    setDeletingLogicalId(null);
                     setDeletePeriods([]);
+                    setDeleteWeeks([]);
                     setDeleteError("");
                   }}
                   className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold transition-colors"
-                  style={{backgroundColor:"#E8DEF8",color:"#1D192B",borderRadius:"9999px"}}
+                  style={{
+                    backgroundColor: "#E8DEF8",
+                    color: "#1D192B",
+                    borderRadius: "9999px"
+                  }}
                 >
                   <Plus size={16} />
                   新增课程
                 </button>
               ) : (
-                <span className="text-xs" style={{color:"#79747E"}}>开启编辑模式以修改课程</span>
+                <span className="text-xs" style={{ color: "#79747E" }}>
+                  开启编辑模式以修改课程
+                </span>
               )}
               <button
                 onClick={handleRequestClose}
                 className="px-5 py-2 text-sm font-semibold transition-colors"
-                style={{backgroundColor:"#6750A4",color:"#FFFFFF",borderRadius:"9999px"}}
+                style={{
+                  backgroundColor: "#6750A4",
+                  color: "#FFFFFF",
+                  borderRadius: "9999px"
+                }}
               >
                 关闭
               </button>

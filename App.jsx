@@ -24,7 +24,11 @@ import { useWeekSwipe } from "./src/useWeekSwipe";
 // 数据和工具
 import { mergeCellsByDay } from "./src/courseUtils";
 import { shouldIncludeCourseForAudience } from "./src/electiveUtils";
-import { buildCourseIdentity, cloneSchedule } from "./src/scheduleUtils";
+import {
+  applyLogicalCourseDeletion,
+  applyLogicalCourseUpdate,
+  cloneSchedule
+} from "./src/scheduleUtils";
 import {
   getCurrentPeriod,
   getPeriodLabel,
@@ -532,11 +536,11 @@ const App = () => {
     });
   };
 
-  const normalizePeriods = (periods) =>
-    Array.from(new Set(Array.isArray(periods) ? periods : [])).sort((a, b) => a - b);
+  const normalizeNumbers = (values) =>
+    Array.from(new Set(Array.isArray(values) ? values : [])).sort((a, b) => a - b);
 
   const handleAddCourse = (day, periods, course) => {
-    const targets = normalizePeriods(periods);
+    const targets = normalizeNumbers(periods);
     if (targets.length === 0) return;
     updateSchedule((next) => {
       const dayEntry = next.find((entry) => entry.day === day);
@@ -549,35 +553,70 @@ const App = () => {
     });
   };
 
-  const handleUpdateCourse = (day, periods, courseId, course) => {
-    const targets = normalizePeriods(periods);
-    if (targets.length === 0) return;
+  const handleUpdateCourse = ({
+    day,
+    logicalId,
+    scopePeriods,
+    selectedWeeks,
+    selectedPeriods,
+    course,
+    preserveLocation,
+    preserveNote
+  }) => {
+    const normalizedScopePeriods = normalizeNumbers(scopePeriods);
+    const normalizedSelectedWeeks = normalizeNumbers(selectedWeeks);
+    const normalizedSelectedPeriods = normalizeNumbers(selectedPeriods);
+    if (
+      !day ||
+      !logicalId ||
+      normalizedScopePeriods.length === 0 ||
+      normalizedSelectedWeeks.length === 0 ||
+      normalizedSelectedPeriods.length === 0 ||
+      !course
+    ) {
+      return;
+    }
     updateSchedule((next) => {
-      const dayEntry = next.find((entry) => entry.day === day);
-      if (!dayEntry) return;
-      for (const period of targets) {
-        const periodEntry = dayEntry.periods.find((entry) => entry.period === period);
-        if (!periodEntry) continue;
-        periodEntry.courses = periodEntry.courses.map((item) =>
-          buildCourseIdentity(item) === courseId ? course : item
-        );
-      }
+      applyLogicalCourseUpdate(next, {
+        day,
+        logicalId,
+        scopePeriods: normalizedScopePeriods,
+        selectedWeeks: normalizedSelectedWeeks,
+        selectedPeriods: normalizedSelectedPeriods,
+        course,
+        preserveLocation,
+        preserveNote
+      });
     });
   };
 
-  const handleDeleteCourse = (day, periods, courseId) => {
-    const targets = normalizePeriods(periods);
-    if (targets.length === 0) return;
+  const handleDeleteCourse = ({
+    day,
+    logicalId,
+    scopePeriods,
+    selectedWeeks,
+    selectedPeriods
+  }) => {
+    const normalizedScopePeriods = normalizeNumbers(scopePeriods);
+    const normalizedSelectedWeeks = normalizeNumbers(selectedWeeks);
+    const normalizedSelectedPeriods = normalizeNumbers(selectedPeriods);
+    if (
+      !day ||
+      !logicalId ||
+      normalizedScopePeriods.length === 0 ||
+      normalizedSelectedWeeks.length === 0 ||
+      normalizedSelectedPeriods.length === 0
+    ) {
+      return;
+    }
     updateSchedule((next) => {
-      const dayEntry = next.find((entry) => entry.day === day);
-      if (!dayEntry) return;
-      for (const period of targets) {
-        const periodEntry = dayEntry.periods.find((entry) => entry.period === period);
-        if (!periodEntry) continue;
-        periodEntry.courses = periodEntry.courses.filter(
-          (item) => buildCourseIdentity(item) !== courseId
-        );
-      }
+      applyLogicalCourseDeletion(next, {
+        day,
+        logicalId,
+        scopePeriods: normalizedScopePeriods,
+        selectedWeeks: normalizedSelectedWeeks,
+        selectedPeriods: normalizedSelectedPeriods
+      });
     });
   };
 
