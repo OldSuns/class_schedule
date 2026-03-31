@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, ChevronLeft, ChevronRight } from "lucide-react";
+import { Menu } from "lucide-react";
 import { MIN_WEEK, MAX_WEEK } from "./constants";
 
 /**
@@ -35,12 +35,12 @@ const Header = ({
     : { bg: "bg-primary-container", text: "text-[#21005D]" };
 
   return (
-    <div className="mb-2 sm:mb-4">
+    <div className="mb-1 sm:mb-2">
       {/* Mobile top spacing (status bar already handled by safe-top) */}
-      <div className="sm:hidden mb-2" />
+      <div className="sm:hidden mb-1" />
 
       {/* Title row */}
-      <div className="flex items-center gap-2 sm:gap-3 mb-3 px-1">
+      <div className="flex items-center gap-2 sm:gap-3 mb-1 px-1">
         {/* Menu FAB — M3 filled tonal icon button */}
         <button
           onClick={onOpenMenu}
@@ -76,80 +76,39 @@ const Header = ({
             </div>
           ) : (
             <h1 className="text-sm sm:text-lg md:text-2xl font-bold text-[#1C1B1F] leading-tight truncate">
-              五临 2023级课表（2026-1）
+              WL课表（2026-1）
             </h1>
           )}
         </div>
 
-        {/* Spacer matches menu button width */}
-        <div className="flex-shrink-0 w-10 sm:w-11" />
-      </div>
-
-      {/* Week switcher row */}
-      <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 px-1">
-        {/* Prev week — M3 tonal icon button */}
-        <button
-          onClick={onPreviousWeek}
-          disabled={currentWeek === MIN_WEEK}
-          className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-pill
-                      transition-colors duration-200 ${
-            currentWeek === MIN_WEEK
-              ? "bg-[#E6E0E9] text-[#CAC4D0] cursor-not-allowed"
-              : "bg-[#E8DEF8] text-[#1D192B] active:bg-[#D0BCFF]"
-          }`}
-          title="上一周"
-        >
-          <ChevronLeft size={18} />
-        </button>
-
-        {/* Week number — M3 filled text field style */}
-        <div className="relative">
+        {/* Spacer + week input inline */}
+        <div className="flex-shrink-0 flex flex-col items-end gap-1">
           <input
             type="number"
             min={MIN_WEEK}
             max={MAX_WEEK}
             value={currentWeek}
             onChange={handleWeekInputChange}
-            className="w-20 sm:w-24 px-2 py-1.5 sm:py-2 rounded-xl
+            className="w-20 px-2 py-1 rounded-xl
                        bg-[#ECE6F0] border-0
-                       text-base sm:text-lg font-bold text-center text-[#1C1B1F]
+                       text-base font-bold text-center text-[#1C1B1F]
                        focus:ring-2 focus:ring-[#6750A4] focus:outline-none
                        transition-shadow duration-200"
           />
-          <div className="absolute -bottom-0.5 left-2 right-2 h-[2px] rounded-pill bg-[#6750A4] opacity-0 peer-focus:opacity-100 pointer-events-none" />
+          {statusText && (
+            <span
+              className="inline-flex items-center px-2 py-0 rounded-pill text-[10px] font-medium leading-4"
+              style={
+                displayWeekInfo?.isWeekendPreview
+                  ? { backgroundColor: "#E8DEF8", color: "#1D192B" }
+                  : { backgroundColor: "#EADDFF", color: "#21005D" }
+              }
+            >
+              {statusText}
+            </span>
+          )}
         </div>
-
-        {/* Next week */}
-        <button
-          onClick={onNextWeek}
-          disabled={currentWeek === MAX_WEEK}
-          className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-pill
-                      transition-colors duration-200 ${
-            currentWeek === MAX_WEEK
-              ? "bg-[#E6E0E9] text-[#CAC4D0] cursor-not-allowed"
-              : "bg-[#E8DEF8] text-[#1D192B] active:bg-[#D0BCFF]"
-          }`}
-          title="下一周"
-        >
-          <ChevronRight size={18} />
-        </button>
       </div>
-
-      {/* Status chip */}
-      {statusText && (
-        <div className="flex justify-center">
-          <span
-            className={`inline-flex items-center px-3 py-0.5 rounded-pill text-xs font-medium ${statusStyle.bg} ${statusStyle.text}`}
-            style={
-              displayWeekInfo?.isWeekendPreview
-                ? { backgroundColor: "#E8DEF8", color: "#1D192B" }
-                : { backgroundColor: "#EADDFF", color: "#21005D" }
-            }
-          >
-            {statusText}
-          </span>
-        </div>
-      )}
     </div>
   );
 };
