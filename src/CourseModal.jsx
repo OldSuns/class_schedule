@@ -187,7 +187,10 @@ const CourseEditor = ({
   maxWeek,
   allowedWeeks,
   weekLabel,
-  weekErrorMessage
+  weekErrorMessage,
+  currentWeek,
+  weekPeriodMap = {},
+  hasPeriodVariation = false
 }) => {
   const [name, setName] = useState("");
   const [group, setGroup] = useState("");
@@ -201,6 +204,8 @@ const CourseEditor = ({
   const [initialSnapshot, setInitialSnapshot] = useState(null);
   const [initialLocationText, setInitialLocationText] = useState("");
   const [initialNoteText, setInitialNoteText] = useState("");
+  const [userHasModifiedWeeks, setUserHasModifiedWeeks] = useState(false);
+  const hasInitializedRef = React.useRef(false);
 
   const normalizedPeriods = useMemo(
     () => normalizeNumbers(availablePeriods),
@@ -211,7 +216,11 @@ const CourseEditor = ({
     [allowedWeeks]
   );
 
+  // Initialize state from initialValues only once on mount (not on every re-render)
   useEffect(() => {
+    if (hasInitializedRef.current) return;
+    hasInitializedRef.current = true;
+
     const base = initialValues ?? {};
     const baseKnownGroup = getKnownGroup(base.group ?? "");
     const baseLegacyGroup = getLegacyGroup(base.group ?? "");
@@ -262,6 +271,59 @@ const CourseEditor = ({
       ),
     [weeks, normalizedAllowedWeeks]
   );
+
+  // 当选择了不同节次数的周时，计算可选的节次交集
+  // 只有在用户主动修改周次后才应用共同节次限制，初始化时使用所有节次
+  const effectiveAvailablePeriods = useMemo(() => {
+    if (!hasPeriodVariation || !userHasModifiedWeeks || normalizedSelectedWeeks.length === 0) {
+      return normalizedPeriods;
+    }
+    // 找出所有选中周都存在的节次
+    const commonPeriods = normalizedSelectedWeeks.reduce((acc, week) => {
+      const weekPeriods = normalizeNumbers(weekPeriodMap[week] || []);
+      if (acc === null) return weekPeriods;
+      return acc.filter((p) => weekPeriods.includes(p));
+    }, null);
+    const result = commonPeriods || normalizedPeriods;
+    // 如果共同节次为空但有选中周，说明这些周节次完全不同
+    // 此时返回所有涉及节次，让用户自己选择
+    return result.length > 0 ? result : normalizedPeriods;
+  }, [hasPeriodVariation, userHasModifiedWeeks, normalizedSelectedWeeks, weekPeriodMap, normalizedPeriods]);
+
+  // 当周次变化且有节次差异时，自动调整选中的节次
+  useEffect(() => {
+    if (!hasPeriodVariation || weeks.length === 0) return;
+
+    // 计算当前选中周的共同节次
+    const currentCommonPeriods = normalizeNumbers(weeks).reduce((acc, week) => {
+      const weekPeriods = normalizeNumbers(weekPeriodMap[week] || []);
+      if (acc === null) return weekPeriods;
+      return acc.filter((p) => weekPeriods.includes(p));
+    }, null);
+
+    if (!currentCommonPeriods || currentCommonPeriods.length === 0) return;
+
+    // 检查当前选中节次是否都在共同节次中
+    const validPeriods = normalizedSelectedPeriods.filter((p) =>
+      currentCommonPeriods.includes(p)
+    );
+
+    // 如果有节次变化（移除或新增），更新选中节次
+    if (validPeriods.length !== normalizedSelectedPeriods.length) {
+      setSelectedPeriods(validPeriods);
+    }
+
+    // 如果当前选中节次少于共同节次（比如从2节课的周切换到3节课的周），
+    // 自动扩展选中节次到共同节次的超集
+    const needsExpansion = currentCommonPeriods.some(
+      (p) => !normalizedSelectedPeriods.includes(p)
+    );
+    if (needsExpansion) {
+      // 合并当前选中节次和共同节次，但不超过共同节次范围
+      const merged = normalizeNumbers([...normalizedSelectedPeriods, ...currentCommonPeriods]);
+      setSelectedPeriods(merged);
+    }
+  }, [weeks, hasPeriodVariation, weekPeriodMap]);
 
   const currentSnapshot = useMemo(
     () => ({
@@ -352,7 +414,7 @@ const CourseEditor = ({
     );
   };
 
-  const hasPeriodSelection = normalizedPeriods.length > 1;
+  const hasPeriodSelection = effectiveAvailablePeriods.length > 1;
 
   return (
     <div
@@ -461,9 +523,42 @@ const CourseEditor = ({
           <div className="text-xs font-semibold mb-2" style={{ color: "#49454F" }}>
             {weekLabel}
           </div>
+          {normalizedAllowedWeeks.length > 1 && currentWeek != null && (
+            <div className="flex gap-2 mb-2">
+              <button
+                type="button"
+                onClick={() => setWeeks([currentWeek])}
+                className="px-3 py-1 rounded-full text-xs font-semibold transition-colors"
+                style={{
+                  backgroundColor: "#E8DEF8",
+                  color: "#21005D",
+                  border: "1px solid #CAC4D0"
+                }}
+              >
+                仅第{currentWeek}周
+              </button>
+              <button
+                type="button"
+                onClick={() => setWeeks(normalizedAllowedWeeks)}
+                className="px-3 py-1 rounded-full text-xs font-semibold transition-colors"
+                style={{
+                  backgroundColor: "#E8DEF8",
+                  color: "#21005D",
+                  border: "1px solid #CAC4D0"
+                }}
+              >
+                全部周
+              </button>
+            </div>
+          )}
           <WeekMultiSelect
             weeks={weeks}
-            onChange={setWeeks}
+            onChange={(newWeeks) => {
+              if (!userHasModifiedWeeks) {
+                setUserHasModifiedWeeks(true);
+              }
+              setWeeks(newWeeks);
+            }}
             minWeek={minWeek}
             maxWeek={maxWeek}
             allowedWeeks={normalizedAllowedWeeks}
@@ -508,13 +603,18 @@ const CourseEditor = ({
           <div>
             <div className="text-xs font-semibold mb-2" style={{ color: "#49454F" }}>
               作用节次
+              {hasPeriodVariation && normalizedSelectedWeeks.length > 0 && (
+                <span className="ml-1 text-purple-600">
+                  （已过滤到选中周的共同节次）
+                </span>
+              )}
             </div>
             <WeekMultiSelect
               weeks={selectedPeriods}
               onChange={setSelectedPeriods}
-              minWeek={normalizedPeriods[0]}
-              maxWeek={normalizedPeriods[normalizedPeriods.length - 1]}
-              allowedWeeks={normalizedPeriods}
+              minWeek={effectiveAvailablePeriods[0]}
+              maxWeek={effectiveAvailablePeriods[effectiveAvailablePeriods.length - 1]}
+              allowedWeeks={effectiveAvailablePeriods}
             />
           </div>
         )}
@@ -681,10 +781,28 @@ const CourseModal = ({
   };
 
   const handleUpdate = (logicalCourse, course, payload) => {
+    // 计算用户选择的周次在该课程中实际存在的节次
+    const selectedWeeksSet = new Set(payload.weeks);
+    const weeksPeriodsIntersection = (logicalCourse.availablePeriods || []).filter(
+      (period) => {
+        // 检查该节次在每个选中周是否都有课程
+        return payload.weeks.every((week) => {
+          const weekPeriods = logicalCourse.weekPeriodMap?.[week] || [];
+          return weekPeriods.includes(period);
+        });
+      }
+    );
+
+    // scopePeriods 只包含用户选中周实际存在的节次
+    const effectiveScopePeriods =
+      weeksPeriodsIntersection.length > 0
+        ? weeksPeriodsIntersection
+        : payload.periods;
+
     onUpdateCourse?.({
       day: selectedCell.day,
       logicalId: logicalCourse.logicalId,
-      scopePeriods: logicalCourse.availablePeriods,
+      scopePeriods: effectiveScopePeriods,
       selectedWeeks: payload.weeks,
       selectedPeriods: payload.periods,
       course: {
@@ -852,7 +970,7 @@ const CourseModal = ({
                           name: course.baseCourse.name,
                           group: course.baseCourse.group ?? "",
                           electives: course.baseCourse.electives,
-                          weeks: [],
+                          weeks: course.allWeeks,
                           location: course.locationText,
                           note: course.noteText,
                           periods: course.currentWeekPeriods
@@ -866,11 +984,14 @@ const CourseModal = ({
                         }}
                         onDirtyChange={setHasUnsavedEditorChanges}
                         availablePeriods={course.availablePeriods}
+                        weekPeriodMap={course.weekPeriodMap}
+                        hasPeriodVariation={course.hasPeriodVariation}
                         minWeek={MIN_WEEK}
                         maxWeek={MAX_WEEK}
                         allowedWeeks={course.allWeeks}
                         weekLabel="选择要修改的周次"
                         weekErrorMessage="请选择要修改的周次"
+                        currentWeek={currentWeek}
                       />
                     );
                   }
@@ -1141,6 +1262,7 @@ const CourseModal = ({
                   )}
                   weekLabel="上课周次"
                   weekErrorMessage="请选择上课周次"
+                  currentWeek={currentWeek}
                 />
               )}
             </div>
