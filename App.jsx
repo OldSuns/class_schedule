@@ -163,7 +163,7 @@ const App = () => {
       // 仅原生端启用透明叠加的状态栏
       if (Capacitor.isNativePlatform()) {
         try {
-          await StatusBar.setStyle({ style: Style.Dark });
+          await StatusBar.setStyle({ style: Style.Light });
           await StatusBar.setOverlaysWebView({ overlay: true });
           if (Capacitor.getPlatform() === 'android') {
             await StatusBar.setBackgroundColor({ color: '#FFFBFE' });
