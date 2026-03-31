@@ -237,7 +237,7 @@ const CourseTable = ({
                             isScheduleLoaded &&
                             onCellClick(day, cell.periodStart, cell.periodEnd)
                           }
-                          className={`p-1.5 align-top transition-colors duration-200 ${
+                          className={`p-1 align-top transition-colors duration-200 ${   //“p-1”中的数字负责课程离边框距离
                             isScheduleLoaded ? "cursor-pointer" : "cursor-not-allowed"
                           }`}
                           rowSpan={cell.rowSpan}
