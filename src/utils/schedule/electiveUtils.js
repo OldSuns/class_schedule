@@ -1,4 +1,4 @@
-import { ELECTIVE_OPTIONS } from "./constants";
+import { ELECTIVE_OPTIONS } from "../../config/constants";
 import { shouldNotifyForGroup } from "./groupUtils";
 
 const KNOWN_ELECTIVE_IDS = new Set(

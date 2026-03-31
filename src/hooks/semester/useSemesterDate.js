@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
-import * as storage from "../storage";
-import { calculateDisplayTodayInfo, calculateTodayInfo } from "./timeUtils";
-import { DEFAULT_SEMESTER_START_DATE, STORAGE_KEYS } from "./constants";
-import { refreshWidget } from "./widgetBridge";
+import * as storage from "../../../storage";
+import { calculateDisplayTodayInfo, calculateTodayInfo } from "../../utils/schedule/timeUtils";
+import { DEFAULT_SEMESTER_START_DATE, STORAGE_KEYS } from "../../config/constants";
+import { refreshWidget } from "../../services/platform/widgetBridge";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 

@@ -6,7 +6,7 @@ const findProjectRoot = (startDir) => {
   let current = startDir;
   while (true) {
     const hasPackage = fs.existsSync(path.join(current, "package.json"));
-    const hasSrc = fs.existsSync(path.join(current, "src", "scheduleData.js"));
+    const hasSrc = fs.existsSync(path.join(current, "src", "data", "scheduleData.js"));
     if (hasPackage && hasSrc) {
       return current;
     }
@@ -19,7 +19,7 @@ const findProjectRoot = (startDir) => {
 };
 
 const root = findProjectRoot(process.cwd());
-const sourcePath = path.join(root, "src", "scheduleData.js");
+const sourcePath = path.join(root, "src", "data", "scheduleData.js");
 const outputPath = path.join(root, "schedule.json");
 
 const toIsoDate = (date = new Date()) => {
@@ -37,7 +37,7 @@ const loadScheduleData = async () => {
 
 const scheduleData = await loadScheduleData();
 if (!Array.isArray(scheduleData)) {
-  console.error("src/scheduleData.js 未导出有效的 scheduleData 数组");
+  console.error("src/data/scheduleData.js 未导出有效的 scheduleData 数组");
   process.exit(1);
 }
 

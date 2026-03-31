@@ -1,6 +1,6 @@
-import { SCHEDULE_REMOTE_URLS } from "./constants";
-import { fetchWithTimeout, isTimeoutError } from "./fetchWithTimeout";
-import { normalizeSchedule } from "./scheduleUtils";
+import { SCHEDULE_REMOTE_URLS } from "../../config/constants";
+import { fetchWithTimeout, isTimeoutError } from "../platform/fetchWithTimeout";
+import { normalizeSchedule } from "../../utils/schedule/scheduleUtils";
 
 const REMOTE_SCHEDULE_REQUEST_TIMEOUT_MS = 10000;
 

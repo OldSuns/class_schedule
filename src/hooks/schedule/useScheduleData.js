@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import * as storage from "../storage";
-import { DEFAULT_SCHEDULE_VERSION, STORAGE_KEYS } from "./constants";
-import { scheduleData as defaultScheduleData } from "./scheduleData";
-import { normalizeSchedule } from "./scheduleUtils";
+import * as storage from "../../../storage";
+import { DEFAULT_SCHEDULE_VERSION, STORAGE_KEYS } from "../../config/constants";
+import { scheduleData as defaultScheduleData } from "../../data/scheduleData";
+import { normalizeSchedule } from "../../utils/schedule/scheduleUtils";
 import {
   buildScheduleSignature,
   fetchRemoteSchedule
-} from "./remoteSchedule";
-import { refreshWidget } from "./widgetBridge";
-import { getCourseEligibleElectives } from "./electiveUtils";
-import { GROUP_TYPES, getGroupType } from "./groupUtils";
-import { getPeriodRangeMinutes } from "./timeUtils";
-import { MAX_PERIOD, MAX_WEEK, MIN_PERIOD } from "./constants";
+} from "../../services/schedule/remoteSchedule";
+import { refreshWidget } from "../../services/platform/widgetBridge";
+import { getCourseEligibleElectives } from "../../utils/schedule/electiveUtils";
+import { GROUP_TYPES, getGroupType } from "../../utils/schedule/groupUtils";
+import { getPeriodRangeMinutes } from "../../utils/schedule/timeUtils";
+import { MAX_PERIOD, MAX_WEEK, MIN_PERIOD } from "../../config/constants";
 
 const STORAGE_VERSION = 1;
 const WIDGET_SNAPSHOT_VERSION = 3;
@@ -21,6 +21,8 @@ const SCHEDULE_SOURCES = {
   REMOTE: "remote",
   MANUAL: "manual"
 };
+const isValidScheduleSource = (value) =>
+  Object.values(SCHEDULE_SOURCES).includes(value);
 const createDefaultSchedule = () => normalizeSchedule(defaultScheduleData);
 const DEFAULT_SCHEDULE_SIGNATURE = buildScheduleSignature(
   createDefaultSchedule()
@@ -200,12 +202,14 @@ export const useScheduleData = () => {
     setScheduleSource(SCHEDULE_SOURCES.BUILTIN);
     setHasManualScheduleChanges(false);
     setScheduleData(createDefaultSchedule());
+    void storage.setItem(STORAGE_KEYS.SCHEDULE_SOURCE, SCHEDULE_SOURCES.BUILTIN);
   }, []);
 
   const applyScheduleState = useCallback((nextSchedule, nextSource) => {
     setScheduleSource(nextSource);
     setHasManualScheduleChanges(nextSource === SCHEDULE_SOURCES.MANUAL);
     setScheduleData(nextSchedule);
+    void storage.setItem(STORAGE_KEYS.SCHEDULE_SOURCE, nextSource);
   }, []);
 
   useEffect(() => {
@@ -218,14 +222,16 @@ export const useScheduleData = () => {
         remoteMetaRaw,
         skippedRemoteUpdateRaw,
         storedDefaultVersionRaw,
-        storedDefaultSignatureRaw
+        storedDefaultSignatureRaw,
+        storedScheduleSourceRaw
       ] = await Promise.all([
         storage.getItem(STORAGE_KEYS.CUSTOM_SCHEDULE),
         storage.getItem(STORAGE_KEYS.REMOTE_SCHEDULE_SNAPSHOT),
         storage.getItem(STORAGE_KEYS.REMOTE_SCHEDULE_META),
         storage.getItem(STORAGE_KEYS.REMOTE_SKIPPED_UPDATE),
         storage.getItem(STORAGE_KEYS.DEFAULT_SCHEDULE_VERSION),
-        storage.getItem(STORAGE_KEYS.DEFAULT_SCHEDULE_SIGNATURE)
+        storage.getItem(STORAGE_KEYS.DEFAULT_SCHEDULE_SIGNATURE),
+        storage.getItem(STORAGE_KEYS.SCHEDULE_SOURCE)
       ]);
 
       if (cancelled) return;
@@ -240,6 +246,9 @@ export const useScheduleData = () => {
 
       const storedDefaultVersion = storedDefaultVersionRaw ?? "";
       const storedDefaultSignature = storedDefaultSignatureRaw ?? "";
+      const storedScheduleSource = isValidScheduleSource(storedScheduleSourceRaw)
+        ? storedScheduleSourceRaw
+        : "";
       const hasStoredDefaultInfo =
         storedDefaultVersionRaw != null || storedDefaultSignatureRaw != null;
       const defaultChanged =
@@ -308,7 +317,10 @@ export const useScheduleData = () => {
 
       if (hasSavedCustom) {
         applyScheduleState(parsedCustomSchedule, SCHEDULE_SOURCES.MANUAL);
-      } else if (parsedRemoteSnapshot) {
+      } else if (
+        storedScheduleSource === SCHEDULE_SOURCES.REMOTE &&
+        parsedRemoteSnapshot
+      ) {
         applyScheduleState(parsedRemoteSnapshot.schedule, SCHEDULE_SOURCES.REMOTE);
       } else {
         applyBuiltInSchedule();
@@ -465,6 +477,7 @@ export const useScheduleData = () => {
     clearRemoteScheduleState();
     await Promise.all([
       storage.removeItem(STORAGE_KEYS.CUSTOM_SCHEDULE),
+      storage.setItem(STORAGE_KEYS.SCHEDULE_SOURCE, SCHEDULE_SOURCES.BUILTIN),
       clearRemoteScheduleStorage(),
       clearSkippedRemoteUpdate()
     ]);

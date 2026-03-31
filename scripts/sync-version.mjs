@@ -22,7 +22,7 @@ const findProjectRoot = (startDir) => {
 const root = findProjectRoot(process.cwd());
 
 const gradlePath = path.join(root, "android", "app", "build.gradle");
-const constantsPath = path.join(root, "src", "constants.js");
+const constantsPath = path.join(root, "src", "config", "constants.js");
 const packageJsonPath = path.join(root, "package.json");
 
 const buildDateVersionCode = (date = new Date()) => {

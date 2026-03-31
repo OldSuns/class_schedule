@@ -5,38 +5,38 @@ import { Capacitor } from '@capacitor/core';
 import { App as CapacitorApp } from "@capacitor/app";
 
 // 组件
-import Header from "./src/Header";
-import SettingsMenu from "./src/SettingsMenu";
-import CourseTable from "./src/CourseTable";
-import CourseModal from "./src/CourseModal";
-import Toast from "./src/Toast";
+import Header from "../components/layout/Header.jsx";
+import SettingsMenu from "../components/settings/SettingsMenu/SettingsMenu.jsx";
+import CourseTable from "../components/schedule/CourseTable.jsx";
+import CourseModal from "../components/schedule/CourseModal/CourseModal.jsx";
+import Toast from "../components/layout/Toast.jsx";
 
 // Hooks
-import { useSemesterDate } from "./src/useSemesterDate";
-import { useWeekSelector } from "./src/useWeekSelector";
-import { useCourseModal } from "./src/useCourseModal";
-import { useNotifications } from "./src/useNotifications";
-import { useDisplayMode } from "./src/useDisplayMode";
-import { useMobileDetect } from "./src/useMobileDetect";
-import { useScheduleData } from "./src/useScheduleData";
-import { useWeekSwipe } from "./src/useWeekSwipe";
+import { useSemesterDate } from "../hooks/semester/useSemesterDate.js";
+import { useWeekSelector } from "../hooks/ui/useWeekSelector.js";
+import { useCourseModal } from "../hooks/ui/useCourseModal.js";
+import { useNotifications } from "../hooks/notifications/useNotifications.js";
+import { useDisplayMode } from "../hooks/ui/useDisplayMode.js";
+import { useMobileDetect } from "../hooks/ui/useMobileDetect.js";
+import { useScheduleData } from "../hooks/schedule/useScheduleData.js";
+import { useWeekSwipe } from "../hooks/ui/useWeekSwipe.js";
 
 // 数据和工具
-import { mergeCellsByDay } from "./src/courseUtils";
-import { shouldIncludeCourseForAudience } from "./src/electiveUtils";
+import { mergeCellsByDay } from "../utils/schedule/courseUtils.js";
+import { shouldIncludeCourseForAudience } from "../utils/schedule/electiveUtils.js";
 import {
   applyLogicalCourseDeletion,
   applyLogicalCourseUpdate,
   cloneSchedule
-} from "./src/scheduleUtils";
+} from "../utils/schedule/scheduleUtils.js";
 import {
   getCurrentPeriod,
   getPeriodLabel,
   getPeriodRangeMinutes
-} from "./src/timeUtils";
-import { checkForUpdates } from "./src/updateChecker";
-import { APP_VERSION, STORAGE_KEYS } from "./src/constants";
-import { getItem, setItem } from "./storage";
+} from "../utils/schedule/timeUtils.js";
+import { checkForUpdates } from "../services/app/updateChecker.js";
+import { APP_VERSION, STORAGE_KEYS } from "../config/constants.js";
+import { getItem, setItem } from "../../storage";
 
 const UPDATE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const UPDATE_ERROR_RETRY_INTERVAL_MS = 3 * 60 * 1000;

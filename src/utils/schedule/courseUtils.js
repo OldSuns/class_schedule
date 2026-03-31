@@ -1,4 +1,4 @@
-import { DISPLAY_MODES } from "./constants";
+import { DISPLAY_MODES } from "../../config/constants";
 import {
   normalizeElectives,
   shouldIncludeCourseForAudience

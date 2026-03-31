@@ -79,6 +79,7 @@ export const STORAGE_KEYS = {
   DISPLAY_MODE: "displayMode",
   WIDGET_SCHEDULE_SNAPSHOT: "widgetScheduleSnapshot",
   CUSTOM_SCHEDULE: "customSchedule",
+  SCHEDULE_SOURCE: "scheduleSource",
   REMOTE_SCHEDULE_SNAPSHOT: "remoteScheduleSnapshot",
   REMOTE_SCHEDULE_META: "remoteScheduleMeta",
   REMOTE_SKIPPED_UPDATE: "remoteSkippedUpdate",

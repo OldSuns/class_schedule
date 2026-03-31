@@ -1,20 +1,20 @@
 import { Capacitor } from "@capacitor/core";
 import { LocalNotifications } from "@capacitor/local-notifications";
-import * as storage from "../storage";
+import * as storage from "../../../storage";
 import {
   DEFAULT_NOTIFICATION_LEAD_MINUTES,
   NOTIFICATION_LEAD_MINUTE_OPTIONS,
   STORAGE_KEYS
-} from "./constants";
-import { scheduleData as defaultScheduleData } from "./scheduleData";
+} from "../../config/constants";
+import { scheduleData as defaultScheduleData } from "../../data/scheduleData";
 import {
   calculateDateInfo,
   getPeriodLabel,
   getPeriodRangeLabel,
   getPeriodStartTime
-} from "./timeUtils";
-import { shouldIncludeCourseForAudience } from "./electiveUtils";
-import { getCourseLocation, getDisplayKey } from "./courseUtils";
+} from "../../utils/schedule/timeUtils";
+import { shouldIncludeCourseForAudience } from "../../utils/schedule/electiveUtils";
+import { getCourseLocation, getDisplayKey } from "../../utils/schedule/courseUtils";
 
 export const NOTIFICATION_CHANNEL_ID = "course-reminders";
 export const NOTIFICATION_WINDOW_DAYS = 30;

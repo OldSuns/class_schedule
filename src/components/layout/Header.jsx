@@ -1,6 +1,6 @@
 import React from "react";
 import { Menu } from "lucide-react";
-import { MIN_WEEK, MAX_WEEK } from "./constants";
+import { MIN_WEEK, MAX_WEEK } from "../../config/constants";
 
 /**
  * Header — M3 style

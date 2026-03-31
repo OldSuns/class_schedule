@@ -1,4 +1,4 @@
-import { DAYS, MAX_PERIOD, MAX_WEEK, MIN_PERIOD, MIN_WEEK } from "./constants";
+import { DAYS, MAX_PERIOD, MAX_WEEK, MIN_PERIOD, MIN_WEEK } from "../../config/constants";
 import { normalizeElectives } from "./electiveUtils";
 
 const normalizeWeeks = (weeks) => {

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { MIN_WEEK, MAX_WEEK } from "./constants";
+import { MIN_WEEK, MAX_WEEK } from "../../config/constants";
 
 /**
  * 管理周数选择的 Hook

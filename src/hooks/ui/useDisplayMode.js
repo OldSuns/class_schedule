@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import * as storage from "../storage";
-import { DISPLAY_MODES, STORAGE_KEYS } from "./constants";
+import * as storage from "../../../storage";
+import { DISPLAY_MODES, STORAGE_KEYS } from "../../config/constants";
 
 const isValidMode = (mode) =>
   mode === DISPLAY_MODES.ALL || mode === DISPLAY_MODES.CURRENT_ONLY;

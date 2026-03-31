@@ -5,9 +5,9 @@ import {
   getPeriodLabel,
   getPeriodTime,
   getScheduleDate
-} from "./timeUtils";
-import { DAYS, DAY_NAMES, MAX_PERIOD } from "./constants";
-import { getCourseLocation } from "./courseUtils";
+} from "../../utils/schedule/timeUtils";
+import { DAYS, DAY_NAMES, MAX_PERIOD } from "../../config/constants";
+import { getCourseLocation } from "../../utils/schedule/courseUtils";
 
 const HOVER_CAPABLE_MEDIA_QUERY = "(hover: hover) and (pointer: fine)";
 

@@ -2,7 +2,7 @@
  * 时间相关工具函数
  */
 
-import { DAYS, MAX_WEEK } from "./constants";
+import { DAYS, MAX_WEEK } from "../../config/constants";
 
 const createDateAtMidnight = (year, month, day) => {
   const date = new Date(year, month, day);

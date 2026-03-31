@@ -2,8 +2,8 @@ import {
   GITHUB_RELEASES_API_LIST,
   GITHUB_RELEASES_API_LATEST,
   GITHUB_RELEASES_URL
-} from "./constants";
-import { fetchWithTimeout, isTimeoutError } from "./fetchWithTimeout";
+} from "../../config/constants";
+import { fetchWithTimeout, isTimeoutError } from "../platform/fetchWithTimeout";
 
 const UPDATE_REQUEST_TIMEOUT_MS = 10000;
 const RELEASE_LIST_PAGE_SIZE = 20;

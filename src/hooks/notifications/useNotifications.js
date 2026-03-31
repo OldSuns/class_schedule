@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
-import * as storage from "../storage";
+import * as storage from "../../../storage";
 import {
   DEFAULT_NOTIFICATION_LEAD_MINUTES,
   ELECTIVE_OPTIONS,
   NOTIFICATION_LEAD_MINUTE_OPTIONS,
   STORAGE_KEYS
-} from "./constants";
-import { normalizeElectives } from "./electiveUtils";
-import { GROUP_TYPES, SELECTABLE_GROUP_TYPES } from "./groupUtils";
-import { refreshWidget } from "./widgetBridge";
+} from "../../config/constants";
+import { normalizeElectives } from "../../utils/schedule/electiveUtils";
+import { GROUP_TYPES, SELECTABLE_GROUP_TYPES } from "../../utils/schedule/groupUtils";
+import { refreshWidget } from "../../services/platform/widgetBridge";
 import {
   cancelAllScheduledNotifications,
   checkExactAlarmPermission,
@@ -22,7 +22,7 @@ import {
   sanitizeLeadMinutes,
   scheduleCourseNotifications,
   sendTestNotification
-} from "./notificationScheduler";
+} from "../../services/notifications/notificationScheduler";
 
 const APP_ACTIVE_RESCHEDULE_INTERVAL_MS = 2 * 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;

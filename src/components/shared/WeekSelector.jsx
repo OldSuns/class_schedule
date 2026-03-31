@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { MIN_WEEK, MAX_WEEK } from "./constants";
+import { MIN_WEEK, MAX_WEEK } from "../../config/constants";
 
 /**
  * 周数快速选择器组件
