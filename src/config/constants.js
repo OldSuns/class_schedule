@@ -44,7 +44,7 @@ export const ELECTIVE_OPTIONS = [
 ];
 
 // 当前应用版本（用于更新检查）
-export const APP_VERSION = "1.9.15";
+export const APP_VERSION = "2.0.1";
 
 // Gitee Releases
 export const GITHUB_RELEASES_URL =

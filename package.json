@@ -1,7 +1,7 @@
 {
   "name": "class-schedule",
   "private": true,
-  "version": "1.9.15",
+  "version": "2.0.1",
   "type": "module",
   "engines": {
     "node": ">=18"
@@ -14,20 +14,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@capacitor/app": "^8.0.1",
-    "@capacitor/browser": "^8.0.2",
-    "@capacitor/core": "^8.0.0",
-    "@capacitor/local-notifications": "^8.0.1",
-    "@capacitor/preferences": "^8.0.0",
-    "@capacitor/status-bar": "^8.0.0",
+    "@capacitor/app": "^8.1.0",
+    "@capacitor/browser": "^8.0.3",
+    "@capacitor/core": "^8.3.0",
+    "@capacitor/local-notifications": "^8.0.2",
+    "@capacitor/preferences": "^8.0.1",
+    "@capacitor/status-bar": "^8.0.2",
     "framer-motion": "^12.0.0",
     "lucide-react": "^0.474.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@capacitor/android": "^8.0.0",
-    "@capacitor/cli": "^8.0.0",
+    "@capacitor/android": "^8.3.0",
+    "@capacitor/cli": "^8.3.0",
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
