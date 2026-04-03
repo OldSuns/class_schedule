@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import * as storage from "../../../storage";
@@ -13,11 +13,9 @@ import { GROUP_TYPES, SELECTABLE_GROUP_TYPES } from "../../utils/schedule/groupU
 import { refreshWidget } from "../../services/platform/widgetBridge";
 import {
   cancelAllScheduledNotifications,
-  checkExactAlarmPermission,
   checkPostNotificationsPermission,
   clearNotificationPlanSnapshot,
   loadNotificationPlanSnapshot,
-  openExactAlarmPermissionSettings,
   persistNotificationPlanSnapshot,
   sanitizeLeadMinutes,
   scheduleCourseNotifications,
@@ -30,12 +28,6 @@ const DAILY_RECONCILE_HOUR = 0;
 const DAILY_RECONCILE_MINUTE = 5;
 const DEFAULT_USER_GROUP = GROUP_TYPES.G6A;
 const LEGACY_GROUP_VALUES = new Set(["A", "B"]);
-const EXACT_ALARM_MESSAGES = {
-  granted: "精确闹钟权限：已开启（高可靠）",
-  denied: "精确闹钟权限未开启，提醒可能延迟",
-  unknown: "精确闹钟权限状态未知",
-  unsupported: "精确闹钟权限仅限 Android 12+"
-};
 
 const isSelectableGroupType = (group) =>
   SELECTABLE_GROUP_TYPES.includes(group);
@@ -58,7 +50,6 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
     DEFAULT_NOTIFICATION_LEAD_MINUTES
   );
   const [statusMessage, setStatusMessage] = useState("");
-  const [exactAlarmStatus, setExactAlarmStatus] = useState("unknown");
   const [isLoaded, setIsLoaded] = useState(false);
   const schedulingRef = useRef(false);
   const pendingScheduleRef = useRef(null);
@@ -95,7 +86,6 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
         }
       }
 
-      // 检查 POST_NOTIFICATIONS 权限
       if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android") {
         const permCheck = await checkPostNotificationsPermission();
         if (!permCheck.granted) {
@@ -108,15 +98,6 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
 
     loadSettings();
   }, []);
-
-  useEffect(() => {
-    if (!isLoaded) return;
-    const loadExactAlarmStatus = async () => {
-      const status = await checkExactAlarmPermission();
-      setExactAlarmStatus(status);
-    };
-    loadExactAlarmStatus();
-  }, [isLoaded]);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -157,7 +138,6 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
         pendingScheduleRef.current = { force, showMessage, source };
         return;
       }
-      // 避免并发排程，确保一次只跑一个任务
       schedulingRef.current = true;
       try {
         if (!notificationsEnabled) {
@@ -180,11 +160,7 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
           return;
         }
 
-        const alarmStatus = await checkExactAlarmPermission();
-        setExactAlarmStatus(alarmStatus);
-
         if (!force && source === "app-active") {
-          // 前台补排轻节流：2 小时内不重复
           const lastReconciled = await storage.getItem(
             STORAGE_KEYS.NOTIFICATIONS_LAST_RECONCILED_AT
           );
@@ -376,8 +352,6 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
   const handleTestNotification = useCallback(async () => {
     setStatusMessage("");
     try {
-      const alarmStatus = await checkExactAlarmPermission();
-      setExactAlarmStatus(alarmStatus);
       const result = await sendTestNotification({
         semesterStartDate,
         userGroup,
@@ -410,26 +384,6 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
     leadMinutes
   ]);
 
-  const handleOpenExactAlarmSettings = useCallback(async () => {
-    const status = await openExactAlarmPermissionSettings();
-    setExactAlarmStatus(status);
-    if (status === "granted") {
-      await scheduleIfNeeded({
-        force: true,
-        showMessage: false,
-        source: "settings-change"
-      });
-      setStatusMessage("已开启精确闹钟权限并重新同步提醒");
-    } else if (status === "denied") {
-      setStatusMessage("精确闹钟权限仍未开启");
-    }
-  }, [scheduleIfNeeded]);
-
-  const reliabilityMode = useMemo(
-    () => (exactAlarmStatus === "granted" ? "high" : "degraded"),
-    [exactAlarmStatus]
-  );
-
   return {
     notificationsEnabled,
     userGroup,
@@ -438,15 +392,10 @@ export const useNotifications = (semesterStartDate, scheduleData) => {
     leadMinutes,
     leadMinuteOptions: NOTIFICATION_LEAD_MINUTE_OPTIONS,
     statusMessage,
-    exactAlarmStatus,
-    reliabilityMode,
-    exactAlarmMessage:
-      EXACT_ALARM_MESSAGES[exactAlarmStatus] || EXACT_ALARM_MESSAGES.unknown,
     onToggleNotifications: handleToggleNotifications,
     onGroupChange: handleGroupChange,
     onSelectedElectivesChange: handleSelectedElectivesChange,
     onLeadMinutesChange: handleLeadMinutesChange,
-    onTestNotification: handleTestNotification,
-    onOpenExactAlarmSettings: handleOpenExactAlarmSettings
+    onTestNotification: handleTestNotification
   };
 };

@@ -39,10 +39,6 @@ const SettingsMenu = ({
   onLeadMinutesChange,
   onTestNotification,
   notificationStatus = "",
-  exactAlarmStatus = "unknown",
-  reliabilityMode = "degraded",
-  exactAlarmMessage = "",
-  onOpenExactAlarmSettings,
   onSoftUpdateSchedule,
   onConfirmRemoteUpdate,
   onCancelRemoteUpdate,
@@ -314,10 +310,6 @@ const SettingsMenu = ({
                 onLeadMinutesChange={onLeadMinutesChange}
                 onTestNotification={onTestNotification}
                 notificationStatus={notificationStatus}
-                exactAlarmStatus={exactAlarmStatus}
-                reliabilityMode={reliabilityMode}
-                exactAlarmMessage={exactAlarmMessage}
-                onOpenExactAlarmSettings={onOpenExactAlarmSettings}
                 showGroupElectiveSection={showGroupElectiveSection}
                 onToggleGroupElectiveSection={() =>
                   setShowGroupElectiveSection((prev) => !prev)

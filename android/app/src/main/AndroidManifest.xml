@@ -66,6 +66,10 @@
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <receiver
+            android:name=".AlarmClockReceiver"
+            android:exported="false" />
+
+        <receiver
             android:name=".WidgetAlarmReceiver"
             android:exported="false" />
 
@@ -86,6 +90,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 </manifest>

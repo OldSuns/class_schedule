@@ -22,10 +22,6 @@ const ReminderSection = ({
   onLeadMinutesChange,
   onTestNotification,
   notificationStatus,
-  exactAlarmStatus,
-  reliabilityMode,
-  exactAlarmMessage,
-  onOpenExactAlarmSettings,
   showGroupElectiveSection,
   onToggleGroupElectiveSection,
   showAdvancedReminder,
@@ -60,12 +56,6 @@ const ReminderSection = ({
         </div>
         <p className="text-xs" style={{ color: "#49454F" }}>
           每节课开始前 {leadMinutes} 分钟提醒（仅 Android）
-        </p>
-        <p
-          className="text-xs font-medium"
-          style={{ color: reliabilityMode === "high" ? "#386A20" : "#7D5700" }}
-        >
-          {reliabilityMode === "high" ? "可靠性：高" : "可靠性：受系统限制"}
         </p>
       </div>
 
@@ -188,24 +178,6 @@ const ReminderSection = ({
                     ))}
                   </div>
                 </div>
-
-                {exactAlarmMessage && (
-                  <div
-                    className="flex items-center justify-between gap-2 text-xs font-medium p-2 rounded-xl"
-                    style={{ backgroundColor: "#FFF3CD", color: "#7D5700" }}
-                  >
-                    <span>{exactAlarmMessage}</span>
-                    {exactAlarmStatus === "denied" && (
-                      <button
-                        onClick={onOpenExactAlarmSettings}
-                        className="px-2 py-1 rounded-lg text-xs font-semibold"
-                        style={{ backgroundColor: "#E8DEF8", color: "#1D192B" }}
-                      >
-                        去开启
-                      </button>
-                    )}
-                  </div>
-                )}
 
                 <button
                   onClick={onTestNotification}

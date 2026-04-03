@@ -150,15 +150,11 @@ const App = () => {
     leadMinutes,
     leadMinuteOptions,
     statusMessage,
-    exactAlarmStatus,
-    reliabilityMode,
-    exactAlarmMessage,
     onToggleNotifications,
     onGroupChange,
     onSelectedElectivesChange,
     onLeadMinutesChange,
-    onTestNotification,
-    onOpenExactAlarmSettings
+    onTestNotification
   } = useNotifications(semesterStartDate, scheduleData);
 
   // 配置移动端状态栏
@@ -720,10 +716,6 @@ const App = () => {
           onLeadMinutesChange={onLeadMinutesChange}
           onTestNotification={onTestNotification}
           notificationStatus={statusMessage}
-          exactAlarmStatus={exactAlarmStatus}
-          reliabilityMode={reliabilityMode}
-          exactAlarmMessage={exactAlarmMessage}
-          onOpenExactAlarmSettings={onOpenExactAlarmSettings}
           onSoftUpdateSchedule={softUpdateSchedule}
           onConfirmRemoteUpdate={confirmRemoteUpdate}
           onCancelRemoteUpdate={cancelRemoteUpdate}

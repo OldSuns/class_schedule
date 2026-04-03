@@ -15,6 +15,12 @@ import {
 } from "../../utils/schedule/timeUtils";
 import { shouldIncludeCourseForAudience } from "../../utils/schedule/electiveUtils";
 import { getCourseLocation, getDisplayKey } from "../../utils/schedule/courseUtils";
+import {
+  scheduleNotifications as nativeSchedule,
+  cancelNotifications as nativeCancel,
+  cancelAllNotifications as nativeCancelAll,
+  getPendingNotifications as nativeGetPending
+} from "../platform/alarmClockScheduler";
 
 export const NOTIFICATION_CHANNEL_ID = "course-reminders";
 export const NOTIFICATION_WINDOW_DAYS = 30;
@@ -115,9 +121,9 @@ const buildNotificationPayload = (notification) => ({
   id: notification.id,
   title: notification.title,
   body: notification.body,
-  schedule: { at: new Date(notification.at), allowWhileIdle: true },
+  at: notification.at,
   channelId: notification.channelId,
-  extra: { planSignature: notification.signature }
+  extra: notification.signature
 });
 
 const getStartTimeParts = (period) => {
@@ -172,7 +178,6 @@ const buildDayCourseBlocks = ({
   const daySchedule = dataSource.find((entry) => entry.day === info.day);
   if (!daySchedule) return [];
 
-  // 按节次整理当日课程，便于后续合并连续节次
   const periodMap = new Map();
   for (const periodEntry of daySchedule.periods) {
     const startTimeParts = getStartTimeParts(periodEntry.period);
@@ -186,7 +191,6 @@ const buildDayCourseBlocks = ({
 
     if (!matchingCourses.length) continue;
 
-    // 课程地点去重后参与合并判断
     const locations = matchingCourses
       .map((course) => getCourseLocation(course.location, info.week))
       .filter((location) => location && location.trim().length > 0);
@@ -218,7 +222,6 @@ const buildDayCourseBlocks = ({
       end += 1;
     }
 
-    // 将连续相同课程合并为一个提醒
     const classStart = new Date(currentDate);
     classStart.setHours(entry.startTimeParts.hour, entry.startTimeParts.minute, 0, 0);
     const body = buildCourseNotificationBody(
@@ -331,38 +334,11 @@ export const ensureNotificationChannel = async () => {
 export const cancelAllScheduledNotifications = async () => {
   if (!Capacitor.isNativePlatform()) return 0;
   try {
-    const pending = await LocalNotifications.getPending();
-    if (!pending?.notifications?.length) return 0;
-    const toCancel = pending.notifications.map((notification) => ({
-      id: notification.id
-    }));
-    await LocalNotifications.cancel({ notifications: toCancel });
-    return toCancel.length;
+    const result = await nativeCancelAll();
+    return result?.canceled ?? 0;
   } catch (error) {
     console.warn("取消通知失败:", error);
     return 0;
-  }
-};
-
-export const checkExactAlarmPermission = async () => {
-  if (!Capacitor.isNativePlatform()) return "unsupported";
-  try {
-    const status = await LocalNotifications.checkExactNotificationSetting();
-    return status?.exact_alarm ?? "unknown";
-  } catch (error) {
-    console.warn("精确闹钟权限检查失败:", error);
-    return "unknown";
-  }
-};
-
-export const openExactAlarmPermissionSettings = async () => {
-  if (!Capacitor.isNativePlatform()) return "unsupported";
-  try {
-    const status = await LocalNotifications.changeExactNotificationSetting();
-    return status?.exact_alarm ?? "unknown";
-  } catch (error) {
-    console.warn("打开精确闹钟设置失败:", error);
-    return "unknown";
   }
 };
 
@@ -474,19 +450,19 @@ export const reconcileScheduledNotifications = async ({
 
   await ensureNotificationChannel();
 
-  const pending = await LocalNotifications.getPending();
+  const pending = await nativeGetPending();
   const pendingNotifications = Array.isArray(pending?.notifications)
     ? pending.notifications
     : [];
   const pendingIds = new Set();
-  const pendingSignatureMap = new Map();
+  const pendingExtraMap = new Map();
   for (const pendingNotification of pendingNotifications) {
     const id = Number(pendingNotification?.id);
     if (!Number.isInteger(id)) continue;
     pendingIds.add(id);
-    const signature = pendingNotification?.extra?.planSignature;
-    if (typeof signature === "string" && signature.length > 0) {
-      pendingSignatureMap.set(id, signature);
+    const extra = pendingNotification?.extra;
+    if (typeof extra === "string" && extra.length > 0) {
+      pendingExtraMap.set(id, extra);
     }
   }
 
@@ -509,9 +485,9 @@ export const reconcileScheduledNotifications = async ({
   } else {
     for (const notification of normalizedPlan.notifications) {
       if (!pendingIds.has(notification.id)) continue;
-      const pendingSignature = pendingSignatureMap.get(notification.id);
-      if (pendingSignature) {
-        if (pendingSignature !== notification.signature) {
+      const pendingExtra = pendingExtraMap.get(notification.id);
+      if (pendingExtra) {
+        if (pendingExtra !== notification.signature) {
           changedIds.add(notification.id);
         }
         continue;
@@ -538,15 +514,11 @@ export const reconcileScheduledNotifications = async ({
   }
 
   if (idsToCancel.length > 0) {
-    await LocalNotifications.cancel({
-      notifications: idsToCancel.map((id) => ({ id }))
-    });
+    await nativeCancel(idsToCancel);
   }
 
   if (notificationsToSchedule.length > 0) {
-    await LocalNotifications.schedule({
-      notifications: notificationsToSchedule.map(buildNotificationPayload)
-    });
+    await nativeSchedule(notificationsToSchedule.map(buildNotificationPayload));
   }
 
   return {
@@ -573,7 +545,6 @@ export const scheduleCourseNotifications = async ({
     return { scheduled: 0, canceled: 0, planned: 0, reason: "no-start-date" };
   }
 
-  // 检查并请求 POST_NOTIFICATIONS 权限
   const permCheck = await checkPostNotificationsPermission();
   if (!permCheck.granted) {
     const permRequest = await requestPostNotificationsPermission();
@@ -623,7 +594,6 @@ export const sendTestNotification = async ({
     return { sent: false, reason: "no-start-date" };
   }
 
-  // 检查并请求 POST_NOTIFICATIONS 权限
   const permCheck = await checkPostNotificationsPermission();
   if (!permCheck.granted) {
     const permRequest = await requestPostNotificationsPermission();
@@ -654,29 +624,17 @@ export const sendTestNotification = async ({
   const body = nextClass
     ? nextClass.body
     : "暂无近期课程（请检查开学日期与周次）";
-  const signature = buildPlanSignature({
-    id,
-    title: "上课提醒",
-    body,
-    channelId: NOTIFICATION_CHANNEL_ID,
-    at: fireAt.getTime()
-  });
 
-  await LocalNotifications.schedule({
-    notifications: [
-      {
-        id,
-        title: "上课提醒",
-        body,
-        schedule: { at: fireAt, allowWhileIdle: true },
-        channelId: NOTIFICATION_CHANNEL_ID,
-        extra: {
-          planSignature: signature,
-          leadMinutes: sanitizeLeadMinutes(leadMinutes)
-        }
-      }
-    ]
-  });
+  await nativeSchedule([
+    {
+      id,
+      title: "上课提醒",
+      body,
+      channelId: NOTIFICATION_CHANNEL_ID,
+      at: fireAt.getTime(),
+      extra: ""
+    }
+  ]);
 
   return { sent: true, reason: nextClass ? "scheduled" : "no-course" };
 };
