@@ -37,16 +37,16 @@ export const scheduleData = [
     day: "Monday",
     periods: [
       { period: 1, courses: [
-          { name: "内科学A(I)", weeks: [1,2,3,4,5,7,8,9,11,12,13,14,15,16], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "内科学A(I)", weeks: [1,2,3,4,5,7,8,9,11,12,13,14,15,16], group: null, note: { default: "", weeks: { 7: "心力衰竭、心律失常（中） - 沈枫" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼的大教室" } } }
         ]},
       { period: 2, courses: [
-          { name: "内科学A(I)", weeks: [1,2,3,4,5,7,8,9,11,12,13,14,15,16], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "内科学A(I)", weeks: [1,2,3,4,5,7,8,9,11,12,13,14,15,16], group: null, note: { default: "", weeks: { 7: "心力衰竭、心律失常（中） - 沈枫" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼的大教室" } } }
         ]},
       { period: 3, courses: [
-          { name: "神经病学B", weeks: [4,5,7,8,9,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "神经病学B", weeks: [4,5,7,8,9,11,12,13,14,15], group: null, note: { default: "", weeks: { 7: "认知障碍性疾病，运动神经元病 - 朱衡亚" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼人才楼1楼的大教室" } } }
         ] },
       { period: 4, courses: [
-          { name: "神经病学B", weeks: [4,5,7,8,9,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "神经病学B", weeks: [4,5,7,8,9,11,12,13,14,15], group: null, note: { default: "", weeks: { 7: "认知障碍性疾病，运动神经元病 - 朱衡亚" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼人才楼1楼的大教室" } } }
         ]},
       { period: 5, courses: []},
       { period: 6, courses: [
@@ -54,38 +54,38 @@ export const scheduleData = [
           { name: "内科学见习", weeks: [15], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [16], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [5,8,11,13], group: "6班A组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 5: "8号楼805病区会议室" } } },
-          { name: "内科学见习", weeks: [7,9,12,14], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "儿科学见习", weeks: [7,9,12,14,16], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
+          { name: "内科学见习", weeks: [7,9,12,14], group: "6班B组", note: { default: "", weeks: { 7: "呼吸科见习1 - 季冬翔" } }, location: { default: "未排地点", weeks: { 7: "8号楼5楼的805病区会议室" } } },
+          { name: "儿科学见习", weeks: [7,9,12,14,16], group: "6班A组", note: { default: "", weeks: { 7: "病史采集/体格检查 - 钱凯" } }, location: { default: "未排地点", weeks: { 7: "5号楼7楼的507病区示教室" } } },
           { name: "儿科学见习", weeks: [8,11,13,15], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,14], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [9,15], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "口腔科见习", weeks: [7,11,13,16], group: "7班C、D组", note: { default: "", weeks: {} }, location: "未排地点" }
+          { name: "口腔科见习", weeks: [7,11,13,16], group: "7班C、D组", note: { default: "", weeks: { 7: "实验一 口腔颌面部检查以及病历书写 - 陈思琦" } }, location: { default: "未排地点", weeks: { 7: "门诊3楼B1区口腔科示教室" } } }
         ]},
       { period: 7, courses: [
           { name: "儿科学A", weeks: [1], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" },
           { name: "内科学见习", weeks: [15], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [16], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [5,8,11,13], group: "6班A组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 5: "8号楼805病区会议室" } } },
-          { name: "内科学见习", weeks: [7,9,12,14], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "儿科学见习", weeks: [7,9,12,14,16], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
+          { name: "内科学见习", weeks: [7,9,12,14], group: "6班B组", note: { default: "", weeks: { 7: "呼吸科见习1 - 季冬翔" } }, location: { default: "未排地点", weeks: { 7: "8号楼5楼的805病区会议室" } } },
+          { name: "儿科学见习", weeks: [7,9,12,14,16], group: "6班A组", note: { default: "", weeks: { 7: "病史采集/体格检查 - 钱凯" } }, location: { default: "未排地点", weeks: { 7: "5号楼7楼的507病区示教室" } } },
           { name: "儿科学见习", weeks: [8,11,13,15], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,14], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [9,15], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "口腔科见习", weeks: [7,11,13,16], group: "7班C、D组", note: { default: "", weeks: {} }, location: "未排地点" }
+          { name: "口腔科见习", weeks: [7,11,13,16], group: "7班C、D组", note: { default: "", weeks: { 7: "实验一 口腔颌面部检查以及病历书写 - 陈思琦" } }, location: { default: "未排地点", weeks: { 7: "门诊3楼B1区口腔科示教室" } } }
         ]},
       { period: 8, courses: [
           { name: "儿科学A", weeks: [1], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" },
           { name: "内科学见习", weeks: [5,8,11,13], group: "6班A组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 5: "8号楼805病区会议室" } } },
-          { name: "内科学见习", weeks: [7,9,12,14], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "儿科学见习", weeks: [7,9,12,14,16], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
+          { name: "内科学见习", weeks: [7,9,12,14], group: "6班B组", note: { default: "", weeks: { 7: "呼吸科见习1 - 季冬翔" } }, location: { default: "未排地点", weeks: { 7: "8号楼5楼的805病区会议室" } } },
+          { name: "儿科学见习", weeks: [7,9,12,14,16], group: "6班A组", note: { default: "", weeks: { 7: "病史采集/体格检查 - 钱凯" } }, location: { default: "未排地点", weeks: { 7: "5号楼7楼的507病区示教室" } } },
           { name: "儿科学见习", weeks: [8,11,13,15], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,14], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [9,15], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
         ]},
       { period: 9, courses: [
           { name: "内科学见习", weeks: [5,8,11,13], group: "6班A组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 5: "8号楼805病区会议室" } } },
-          { name: "内科学见习", weeks: [7,9,12,14], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "儿科学见习", weeks: [7,9,12,14,16], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
+          { name: "内科学见习", weeks: [7,9,12,14], group: "6班B组", note: { default: "", weeks: { 7: "呼吸科见习1 - 季冬翔" } }, location: { default: "未排地点", weeks: { 7: "8号楼5楼的805病区会议室" } } },
+          { name: "儿科学见习", weeks: [7,9,12,14,16], group: "6班A组", note: { default: "", weeks: { 7: "病史采集/体格检查 - 钱凯" } }, location: { default: "未排地点", weeks: { 7: "5号楼7楼的507病区示教室" } } },
           { name: "儿科学见习", weeks: [8,11,13,15], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,14], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [9,15], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
@@ -107,30 +107,30 @@ export const scheduleData = [
           { name: "内科学A(I)", weeks: [1,2,4,6,8,12,14,16], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
         ]},
       { period: 3, courses: [
-          { name: "外科学A(I)", weeks: [1,2,3,4,5,6,7,8,9,11,12,13,14,15,16], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "外科学A(I)", weeks: [1,2,3,4,5,6,7,8,9,11,12,13,14,15,16], group: null, note: { default: "", weeks: { 7: "外科微创技术 - 曹国良" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼大教室" } } }
         ]},
       { period: 4, courses: [
-          { name: "外科学A(I)", weeks: [1,2,3,4,5,6,7,8,9,11,12,13,14,15,16], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "外科学A(I)", weeks: [1,2,3,4,5,6,7,8,9,11,12,13,14,15,16], group: null, note: { default: "", weeks: { 7: "外科微创技术 - 曹国良" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼大教室" } } }
         ]},
       { period: 5, courses: [] },
       { period: 6, courses: [
-          { name: "口腔科见习", weeks: [5,7,12,13], group: "6班A、B组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 5: "门诊3楼B1区口腔科示教室" } } },
+          { name: "口腔科见习", weeks: [5,7,12,13], group: "6班A、B组", note: { default: "", weeks: { 7: "实验二 口腔常用局麻方法及拔牙术 - 赵文博" } }, location: { default: "未排地点", weeks: { 5: "门诊3楼B1区口腔科示教室", 7: "门诊3楼B1区口腔科示教室" } } },
           { name: "神经病学见习", weeks: [9], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "神经病学见习", weeks: [11], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,14], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [9,15], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "儿科学见习", weeks: [5,7,9,11,13,15], group: "7班C组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 5: "5号楼507病区示教室" } } },
+          { name: "儿科学见习", weeks: [5,7,9,11,13,15], group: "7班C组", note: { default: "", weeks: { 7: "病例讨论：新生儿疾病 - 蔡忠忠" } }, location: { default: "未排地点", weeks: { 5: "5号楼507病区示教室", 7: "5号楼7楼的507病区示教室" } } },
           { name: "儿科学见习", weeks: [6,8,12,14,16,17], group: "7班D组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 6: "5号楼7楼507病区示教室" } } },
           { name: "神经病学见习", weeks: [12], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "神经病学见习", weeks: [15], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
         ]},
       { period: 7, courses: [
-          { name: "口腔科见习", weeks: [5,7,12,13], group: "6班A、B组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 5: "门诊3楼B1区口腔科示教室" } } },
+          { name: "口腔科见习", weeks: [5,7,12,13], group: "6班A、B组", note: { default: "", weeks: { 7: "实验二 口腔常用局麻方法及拔牙术 - 赵文博" } }, location: { default: "未排地点", weeks: { 5: "门诊3楼B1区口腔科示教室", 7: "门诊3楼B1区口腔科示教室" } } },
           { name: "神经病学见习", weeks: [9], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "神经病学见习", weeks: [11], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,14], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [9,15], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "儿科学见习", weeks: [5,7,9,11,13,15], group: "7班C组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 5: "5号楼507病区示教室" } } },
+          { name: "儿科学见习", weeks: [5,7,9,11,13,15], group: "7班C组", note: { default: "", weeks: { 7: "病例讨论：新生儿疾病 - 蔡忠忠" } }, location: { default: "未排地点", weeks: { 5: "5号楼507病区示教室", 7: "5号楼7楼的507病区示教室" } } },
           { name: "儿科学见习", weeks: [6,8,12,14,16,17], group: "7班D组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 6: "5号楼7楼507病区示教室" } } },
           { name: "神经病学见习", weeks: [12], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "神经病学见习", weeks: [15], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
@@ -140,7 +140,7 @@ export const scheduleData = [
           { name: "神经病学见习", weeks: [11], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,14], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [9,15], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "儿科学见习", weeks: [5,7,9,11,13,15], group: "7班C组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 5: "5号楼507病区示教室" } } },
+          { name: "儿科学见习", weeks: [5,9,11,13,15], group: "7班C组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 5: "5号楼507病区示教室" } } },
           { name: "儿科学见习", weeks: [6,8,12,14,16,17], group: "7班D组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 6: "5号楼7楼507病区示教室" } } },
           { name: "神经病学见习", weeks: [12], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "神经病学见习", weeks: [15], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
@@ -148,7 +148,7 @@ export const scheduleData = [
       { period: 9, courses: [
           { name: "外科学见习", weeks: [8,14], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [9,15], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "儿科学见习", weeks: [5,7,9,11,13,15], group: "7班C组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 5: "5号楼507病区示教室" } } },
+          { name: "儿科学见习", weeks: [5,9,11,13,15], group: "7班C组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 5: "5号楼507病区示教室" } } },
           { name: "儿科学见习", weeks: [6,8,12,14,16,17], group: "7班D组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 6: "5号楼7楼507病区示教室" } } }
         ]},
       { period: 10, courses: [] },
@@ -162,13 +162,13 @@ export const scheduleData = [
     day: "Wednesday",
     periods: [
       { period: 1, courses: [
-          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: { 7: "新生儿疾病2：黄疸和溶血病/败血症 - 陈幸" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼大教室" } } }
         ]},
       { period: 2, courses: [
-          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: { 7: "新生儿疾病2：黄疸和溶血病/败血症 - 陈幸" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼大教室" } } }
         ]},
       { period: 3, courses: [
-          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,13,14,15], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,13,14,15], group: null, note: { default: "", weeks: { 7: "新生儿疾病2：黄疸和溶血病/败血症 - 陈幸" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼大教室" } } }
         ]},
       { period: 4, courses: [] },
       { period: 5, courses: [] },
@@ -222,12 +222,12 @@ export const scheduleData = [
           { name: "外科学见习", weeks: [8,12], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "神经病学见习", weeks: [8], group: "6班A组", note: { default: "", weeks: {} }, location: "湖州市中心医院-神经内科" },
           { name: "神经病学见习", weeks: [9], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "内科学见习", weeks: [7,9,11,13], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
+          { name: "内科学见习", weeks: [7,9,11,13], group: "7班C组", note: { default: "", weeks: { 7: "呼吸科见习1 - 高丽亮" } }, location: { default: "未排地点", weeks: { 7: "8号楼5楼的805病区会议室" } } },
           { name: "内科学见习", weeks: [15], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [6,8,12,14], group: "7班D组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 6: "8号楼5楼805病区会议室" } } },
           { name: "内科学见习", weeks: [16], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "神经病学见习", weeks: [6], group: "7班C组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 6: "7号楼8楼708病区示教室" } } },
-          { name: "神经病学见习", weeks: [7], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
+          { name: "神经病学见习", weeks: [7], group: "7班D组", note: { default: "", weeks: { 7: "神经系统病史采集，体格检查，辅助检查，头痛、眩晕，脑血管疾病 - 谈鹰" } }, location: { default: "未排地点", weeks: { 7: "7号楼5楼的708病区示教室" } } }
         ]},
       { period: 2, courses: [
           { name: "儿科学A", weeks: [5], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" },
@@ -237,12 +237,12 @@ export const scheduleData = [
           { name: "外科学见习", weeks: [8,12], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "神经病学见习", weeks: [8], group: "6班A组", note: { default: "", weeks: {} }, location: "湖州市中心医院-神经内科" },
           { name: "神经病学见习", weeks: [9], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "内科学见习", weeks: [7,9,11,13], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
+          { name: "内科学见习", weeks: [7,9,11,13], group: "7班C组", note: { default: "", weeks: { 7: "呼吸科见习1 - 高丽亮" } }, location: { default: "未排地点", weeks: { 7: "8号楼5楼的805病区会议室" } } },
           { name: "内科学见习", weeks: [15], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "内科学见习", weeks: [6,8,12,14], group: "7班D组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 6: "8号楼5楼805病区会议室" } } },
           { name: "内科学见习", weeks: [16], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "神经病学见习", weeks: [6], group: "7班C组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 6: "7号楼8楼708病区示教室" } } },
-          { name: "神经病学见习", weeks: [7], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
+          { name: "神经病学见习", weeks: [7], group: "7班D组", note: { default: "", weeks: { 7: "神经系统病史采集，体格检查，辅助检查，头痛、眩晕，脑血管疾病 - 谈鹰" } }, location: { default: "未排地点", weeks: { 7: "7号楼5楼的708病区示教室" } } }
         ]},
       { period: 3, courses: [
           { name: "儿科学A", weeks: [5], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" },
@@ -252,23 +252,23 @@ export const scheduleData = [
           { name: "外科学见习", weeks: [8,12], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "神经病学见习", weeks: [8], group: "6班A组", note: { default: "", weeks: {} }, location: "湖州市中心医院-神经内科" },
           { name: "神经病学见习", weeks: [9], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "内科学见习", weeks: [7,9,11,13], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
+          { name: "内科学见习", weeks: [7,9,11,13], group: "7班C组", note: { default: "", weeks: { 7: "呼吸科见习1 - 高丽亮" } }, location: { default: "未排地点", weeks: { 7: "8号楼5楼的805病区会议室" } } },
           { name: "内科学见习", weeks: [6,8,12,14], group: "7班D组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 6: "8号楼5楼805病区会议室" } } },
           { name: "神经病学见习", weeks: [6], group: "7班C组", note: { default: "", weeks: {} }, location: { default: "未排地点", weeks: { 6: "7号楼8楼708病区示教室" } } },
-          { name: "神经病学见习", weeks: [7], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
+          { name: "神经病学见习", weeks: [7], group: "7班D组", note: { default: "", weeks: { 7: "神经系统病史采集，体格检查，辅助检查，头痛、眩晕，脑血管疾病 - 谈鹰" } }, location: { default: "未排地点", weeks: { 7: "7号楼5楼的708病区示教室" } } }
         ]},
       { period: 4, courses: [
           { name: "儿科学见习", weeks: [15], group: "6班A组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "儿科学见习", weeks: [14,16], group: "6班B组", note: { default: "", weeks: {} }, location: "未排地点" },
-          { name: "内科学见习", weeks: [7,9,11,13], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
+          { name: "内科学见习", weeks: [7,9,11,13], group: "7班C组", note: { default: "", weeks: { 7: "呼吸科见习1 - 高丽亮" } }, location: { default: "未排地点", weeks: { 7: "8号楼5楼的805病区会议室" } } },
           { name: "内科学见习", weeks: [6,8,12,14], group: "7班D组", note: { default: "", weeks: {} }, location: "未排地点" }
         ]},
       { period: 5, courses: [] },
       { period: 6, courses: [
-          { name: "内科学A(I)", weeks: [1,3,5,7,9,11,13,15], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "内科学A(I)", weeks: [1,3,5,7,9,11,13,15], group: null, note: { default: "", weeks: { 7: "心律失常 - 叶芬" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼的大教室" } } }
         ]},
       { period: 7, courses: [
-          { name: "内科学A(I)", weeks: [1,3,5,7,9,11,13,15], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "内科学A(I)", weeks: [1,3,5,7,9,11,13,15], group: null, note: { default: "", weeks: { 7: "心律失常 - 叶芬" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼的大教室" } } }
         ]},
       { period: 8, courses: [
           { name: "外科学A(I)", weeks: [2,4,6,8,10,12,14,16], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
@@ -286,11 +286,11 @@ export const scheduleData = [
     periods: [
       { period: 1, courses: [
           { name: "神经病学B", weeks: [1,2,3], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" },
-          { name: "外科学A(I)", weeks: [5,6,7,11,13,15], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "外科学A(I)", weeks: [5,6,7,11,13,15], group: null, note: { default: "", weeks: { 7: "颅内压增高、脑疝（含慕课学习） - 苏忠周" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼大教室" } } }
         ]},
       { period: 2, courses: [
           { name: "神经病学B", weeks: [1,2,3], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" },
-          { name: "外科学A(I)", weeks: [5,6,7,11,13,15], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
+          { name: "外科学A(I)", weeks: [5,6,7,11,13,15], group: null, note: { default: "", weeks: { 7: "颅内压增高、脑疝（含慕课学习） - 苏忠周" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼大教室" } } }
         ]},
       { period: 3, courses: [
           { name: "口腔科学A", weeks: [1,10], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" },

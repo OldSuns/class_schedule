@@ -25,7 +25,7 @@ export const MAX_PERIOD = 13;
 export const DEFAULT_SEMESTER_START_DATE = "2026-03-02";
 
 // 内置课表版本（更新内置课表时递增）
-export const DEFAULT_SCHEDULE_VERSION = 1;
+export const DEFAULT_SCHEDULE_VERSION = 2;
 
 // 课程显示模式
 export const DISPLAY_MODES = {
