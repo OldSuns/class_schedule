@@ -174,28 +174,26 @@ export const scheduleData = [
       { period: 5, courses: [] },
       { period: 6, courses: [
           { name: "形势与政策A", weeks: [15], group: null, note: { default: "", weeks: { 4: "讲座", 14: "网课" } }, location: "未排地点" },
-          { name: "科创营", weeks: [7], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 7: "常见论文类型写作规范 - 施雪霏" } }, location: "11号楼1楼教室" },
+          { name: "科创营", weeks: [7], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 7: "科研绘图 - 刘鹤" } }, location: "11号楼1楼教室" },
           { name: "科创营", weeks: [9], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 9: "科研侦探社 - 从好奇到发表的奇妙旅程 - 魏云海" } }, location: "11号楼1楼教室" },
           { name: "科创营", weeks: [11], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 11: "公共数据库的应用 - 钟磊" } }, location: "11号楼1楼教室" },
           { name: "科创营", weeks: [13], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 13: "医学人工智能 - 庄敬" } }, location: "11号楼1楼教室" },
           { name: "临床技能班", weeks: [6,8,10,12,14], group: null, electives: ["clinicalSkills"], note: { default: "", weeks: { 6: "腰穿与胸穿：模拟情境下的精准穿刺实训 - 姚博炜、沈斌", 8: "SimBaby 模拟教学：新生儿复苏团队实训 - 蔡忠忠", 10: "基于真实脏器的外科基本技能训练 - 汪伟民、楼能", 12: "高仿真急救模拟：急危重症识别与处置实训 - 徐鑫、孙越晨", 14: "考查 - 姚博炜、汪伟民" } }, location: "AHA 技能培训中心" }
         ]},
       { period: 7, courses: [
-          { name: "科创营", weeks: [7], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 7: "常见论文类型写作规范 - 施雪霏" } }, location: "11号楼1楼教室" },
+          { name: "科创营", weeks: [7], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 7: "科研绘图 - 刘鹤" } }, location: "11号楼1楼教室" },
           { name: "科创营", weeks: [9], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 9: "科研侦探社 - 从好奇到发表的奇妙旅程 - 魏云海" } }, location: "11号楼1楼教室" },
           { name: "科创营", weeks: [11], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 11: "公共数据库的应用 - 钟磊" } }, location: "11号楼1楼教室" },
           { name: "科创营", weeks: [13], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 13: "医学生科创项目中的科研伦理：原则与实践 - 袁玉梅" } }, location: "11号楼1楼教室" },
           { name: "临床技能班", weeks: [6,8,10,12,14], group: null, electives: ["clinicalSkills"], note: { default: "", weeks: { 6: "腰穿与胸穿：模拟情境下的精准穿刺实训 - 姚博炜、沈斌", 8: "SimBaby 模拟教学：新生儿复苏团队实训 - 蔡忠忠", 10: "基于真实脏器的外科基本技能训练 - 汪伟民、楼能", 12: "高仿真急救模拟：急危重症识别与处置实训 - 徐鑫、孙越晨", 14: "考查 - 姚博炜、汪伟民" } }, location: "AHA 技能培训中心" }
         ]},
       { period: 8, courses: [
-          { name: "科创营", weeks: [7], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 7: "科研绘图 - 刘鹤" } }, location: "11号楼1楼教室" },
           { name: "科创营", weeks: [9], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 9: "PCR (聚合酶链式反应) 技术与原理 - 陈静" } }, location: "11号楼1楼教室" },
           { name: "科创营", weeks: [11], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 11: "PCR (聚合酶链式反应) 常见问题与相关应用介绍 - 陈静" } }, location: "11号楼1楼教室" },
           { name: "科创营", weeks: [13], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 13: "医学生科创项目中的科研伦理：原则与实践 - 袁玉梅" } }, location: "11号楼1楼教室" },
           { name: "临床技能班", weeks: [6,8,10,12,14], group: null, electives: ["clinicalSkills"], note: { default: "", weeks: { 6: "腰穿与胸穿：模拟情境下的精准穿刺实训 - 姚博炜、沈斌", 8: "SimBaby 模拟教学：新生儿复苏团队实训 - 蔡忠忠", 10: "基于真实脏器的外科基本技能训练 - 汪伟民、楼能", 12: "高仿真急救模拟：急危重症识别与处置实训 - 徐鑫、孙越晨", 14: "考查 - 姚博炜、汪伟民" } }, location: "AHA 技能培训中心" }
         ]},
       { period: 9, courses: [
-          { name: "科创营", weeks: [7], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 7: "科研绘图 - 刘鹤" } }, location: "11号楼1楼教室" },
           { name: "科创营", weeks: [9], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 9: "PCR (聚合酶链式反应) 技术与原理 - 陈静" } }, location: "11号楼1楼教室" },
           { name: "科创营", weeks: [11], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 11: "PCR (聚合酶链式反应) 常见问题与相关应用介绍 - 陈静" } }, location: "11号楼1楼教室" },
           { name: "临床技能班", weeks: [6,8,10,12,14], group: null, electives: ["clinicalSkills"], note: { default: "", weeks: { 6: "腰穿与胸穿：模拟情境下的精准穿刺实训 - 姚博炜、沈斌", 8: "SimBaby 模拟教学：新生儿复苏团队实训 - 蔡忠忠", 10: "基于真实脏器的外科基本技能训练 - 汪伟民、楼能", 12: "高仿真急救模拟：急危重症识别与处置实训 - 徐鑫、孙越晨", 14: "考查 - 姚博炜、汪伟民" } }, location: "AHA 技能培训中心" }
@@ -271,9 +269,11 @@ export const scheduleData = [
           { name: "内科学A(I)", weeks: [1,3,5,7,9,11,13,15], group: null, note: { default: "", weeks: { 7: "心律失常 - 叶芬" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼的大教室" } } }
         ]},
       { period: 8, courses: [
+          { name: "科创营", weeks: [7], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 7: "医学生创新思维与科研能力培养 - 严强" } }, location: "11号楼1楼教室" },
           { name: "外科学A(I)", weeks: [2,4,6,8,10,12,14,16], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
         ]},
       { period: 9, courses: [
+          { name: "科创营", weeks: [7], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 7: "医学生创新思维与科研能力培养 - 严强" } }, location: "11号楼1楼教室" },
           { name: "外科学A(I)", weeks: [2,4,6,8,10,12,14,16], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" }
         ] },
       { period: 10, courses: [] },

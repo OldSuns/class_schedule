@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-04-10",
+  "updatedAt": "2026-04-12",
   "schedule": [
     {
       "day": "Monday",
@@ -1524,7 +1524,7 @@
               "note": {
                 "default": "",
                 "weeks": {
-                  "7": "常见论文类型写作规范 - 施雪霏"
+                  "7": "科研绘图 - 刘鹤"
                 }
               },
               "location": "11号楼1楼教室"
@@ -1622,7 +1622,7 @@
               "note": {
                 "default": "",
                 "weeks": {
-                  "7": "常见论文类型写作规范 - 施雪霏"
+                  "7": "科研绘图 - 刘鹤"
                 }
               },
               "location": "11号楼1楼教室"
@@ -1711,23 +1711,6 @@
             {
               "name": "科创营",
               "weeks": [
-                7
-              ],
-              "group": null,
-              "electives": [
-                "innovationCamp"
-              ],
-              "note": {
-                "default": "",
-                "weeks": {
-                  "7": "科研绘图 - 刘鹤"
-                }
-              },
-              "location": "11号楼1楼教室"
-            },
-            {
-              "name": "科创营",
-              "weeks": [
                 9
               ],
               "group": null,
@@ -1806,23 +1789,6 @@
         {
           "period": 9,
           "courses": [
-            {
-              "name": "科创营",
-              "weeks": [
-                7
-              ],
-              "group": null,
-              "electives": [
-                "innovationCamp"
-              ],
-              "note": {
-                "default": "",
-                "weeks": {
-                  "7": "科研绘图 - 刘鹤"
-                }
-              },
-              "location": "11号楼1楼教室"
-            },
             {
               "name": "科创营",
               "weeks": [
@@ -2622,6 +2588,23 @@
           "period": 8,
           "courses": [
             {
+              "name": "科创营",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "",
+                "weeks": {
+                  "7": "医学生创新思维与科研能力培养 - 严强"
+                }
+              },
+              "location": "11号楼1楼教室"
+            },
+            {
               "name": "外科学A(I)",
               "weeks": [
                 2,
@@ -2645,6 +2628,23 @@
         {
           "period": 9,
           "courses": [
+            {
+              "name": "科创营",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "",
+                "weeks": {
+                  "7": "医学生创新思维与科研能力培养 - 严强"
+                }
+              },
+              "location": "11号楼1楼教室"
+            },
             {
               "name": "外科学A(I)",
               "weeks": [
