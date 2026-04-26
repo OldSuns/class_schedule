@@ -79,6 +79,7 @@ export const scheduleData = [
           { name: "内科学见习", weeks: [5,8,11,13], group: "6班A组", note: { default: "", weeks: { 8: "呼吸科见习2 - 季东翔" } }, location: { default: "未排地点", weeks: { 5: "8号楼805病区会议室", 8: "8号楼5楼的805病区会议室" } } },
           { name: "内科学见习", weeks: [7,9,12,14], group: "6班B组", note: { default: "", weeks: { 7: "呼吸科见习1 - 季冬翔", 9: "呼吸科见习2 - 季东翔" } }, location: { default: "未排地点", weeks: { 7: "8号楼5楼的805病区会议室", 9: "8号楼5楼的805病区会议室" } } },
           { name: "外科学见习", weeks: [9], group: "7班D组", note: { default: "", weeks: { 9: "麻醉、休克、重症监测治疗与复苏等疾病见习 - 王钱荣" } }, location: { default: "未排地点", weeks: { 9: "11号楼2楼急救技能培训室" } } },
+          { name: "儿科学见习", weeks: [7,12,14,16], group: "6班A组", note: { default: "", weeks: { 7: "病史采集/体格检查 - 钱凯" } }, location: { default: "未排地点", weeks: { 7: "5号楼7楼的507病区示教室" } } },
           { name: "儿科学见习", weeks: [8,11,13,15], group: "6班B组", note: { default: "", weeks: { 8: "病史采集、体格检查 - 钱凯" } }, location: { default: "未排地点", weeks: { 8: "5号楼7楼507病区示教室" } } },
           { name: "外科学见习", weeks: [8,14], group: "7班C组", note: { default: "", weeks: { 8: "麻醉、休克、重症监测治疗与复苏等疾病见习 - 王钱荣" } }, location: { default: "未排地点", weeks: { 8: "11号楼2楼的急救技能培训室" } } }
         ]},
@@ -86,6 +87,7 @@ export const scheduleData = [
           { name: "内科学见习", weeks: [5,8,11,13], group: "6班A组", note: { default: "", weeks: { 8: "呼吸科见习2 - 季东翔" } }, location: { default: "未排地点", weeks: { 5: "8号楼805病区会议室", 8: "8号楼5楼的805病区会议室" } } },
           { name: "内科学见习", weeks: [7,9,12,14], group: "6班B组", note: { default: "", weeks: { 7: "呼吸科见习1 - 季冬翔", 9: "呼吸科见习2 - 季东翔" } }, location: { default: "未排地点", weeks: { 7: "8号楼5楼的805病区会议室", 9: "8号楼5楼的805病区会议室" } } },
           { name: "外科学见习", weeks: [9], group: "7班D组", note: { default: "", weeks: { 9: "麻醉、休克、重症监测治疗与复苏等疾病见习 - 王钱荣" } }, location: { default: "未排地点", weeks: { 9: "11号楼2楼急救技能培训室" } } },
+          { name: "儿科学见习", weeks: [7,12,14,16], group: "6班A组", note: { default: "", weeks: { 7: "病史采集/体格检查 - 钱凯" } }, location: { default: "未排地点", weeks: { 7: "5号楼7楼的507病区示教室" } } },
           { name: "儿科学见习", weeks: [8,11,13,15], group: "6班B组", note: { default: "", weeks: { 8: "病史采集、体格检查 - 钱凯" } }, location: { default: "未排地点", weeks: { 8: "5号楼7楼507病区示教室" } } },
           { name: "外科学见习", weeks: [8,14], group: "7班C组", note: { default: "", weeks: { 8: "麻醉、休克、重症监测治疗与复苏等疾病见习 - 王钱荣" } }, location: { default: "未排地点", weeks: { 8: "11号楼2楼的急救技能培训室" } } }
         ]},
