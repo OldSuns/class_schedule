@@ -165,13 +165,13 @@ export const scheduleData = [
     day: "Wednesday",
     periods: [
       { period: 1, courses: [
-          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: { 7: "新生儿疾病2：黄疸和溶血病/败血症 - 陈幸", 8: "感染性疾病；麻疹/传染性单核细胞增多症/手足口病 - 熊斌", 9: "呼吸总论/肺炎 - 吴烨" } }, location: { default: "11号楼1楼大教室", weeks: { 9: "11号楼(人才楼)1楼大教室" } } }
+          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: { 7: "新生儿疾病2：黄疸和溶血病/败血症 - 陈幸", 8: "感染性疾病；麻疹/传染性单核细胞增多症/手足口病 - 熊斌", 9: "呼吸总论/肺炎 - 吴烨", 10: "腹泻病与液体疗法 教师：熊斌" } }, location: "11号楼1楼大教室"}
         ]},
       { period: 2, courses: [
-          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: { 7: "新生儿疾病2：黄疸和溶血病/败血症 - 陈幸", 8: "感染性疾病；麻疹/传染性单核细胞增多症/手足口病 - 熊斌", 9: "呼吸总论/肺炎 - 吴烨" } }, location: { default: "11号楼1楼大教室", weeks: { 9: "11号楼(人才楼)1楼大教室" } } }
+          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,12,13,14,15], group: null, note: { default: "", weeks: { 7: "新生儿疾病2：黄疸和溶血病/败血症 - 陈幸", 8: "感染性疾病；麻疹/传染性单核细胞增多症/手足口病 - 熊斌", 9: "呼吸总论/肺炎 - 吴烨", 10: "腹泻病与液体疗法 教师：熊斌" } }, location: "11号楼1楼大教室"}
         ]},
       { period: 3, courses: [
-          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,13,14,15], group: null, note: { default: "", weeks: { 7: "新生儿疾病2：黄疸和溶血病/败血症 - 陈幸", 8: "感染性疾病；麻疹/传染性单核细胞增多症/手足口病 - 熊斌", 9: "呼吸总论/肺炎 - 吴烨" } }, location: { default: "11号楼1楼大教室", weeks: { 9: "11号楼(人才楼)1楼大教室" } } }
+          { name: "儿科学A", weeks: [1,5,7,8,9,10,11,13,14,15], group: null, note: { default: "", weeks: { 7: "新生儿疾病2：黄疸和溶血病/败血症 - 陈幸", 8: "感染性疾病；麻疹/传染性单核细胞增多症/手足口病 - 熊斌", 9: "呼吸总论/肺炎 - 吴烨", 10: "腹泻病与液体疗法 教师：熊斌" } }, location: "11号楼1楼大教室"}
         ]},
       { period: 4, courses: [] },
       { period: 5, courses: [] },
@@ -270,11 +270,11 @@ export const scheduleData = [
         ]},
       { period: 8, courses: [
           { name: "科创营", weeks: [7], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 7: "医学生创新思维与科研能力培养 - 严强" } }, location: "11号楼1楼教室" },
-          { name: "外科学A(I)", weeks: [2,4,6,8,10,12,14,16], group: null, note: { default: "", weeks: { 8: "颅内和椎管内血管性疾病 - 徐杰" } }, location: "11号楼1楼大教室" }
+          { name: "外科学A(I)", weeks: [2,4,6,8,10,12,14,16], group: null, note: { default: "", weeks: { 8: "颅内和椎管内血管性疾病 - 徐杰", 10: "胸部损伤 教师：张建斌" } }, location: "11号楼1楼大教室" }
         ]},
       { period: 9, courses: [
           { name: "科创营", weeks: [7], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 7: "医学生创新思维与科研能力培养 - 严强" } }, location: "11号楼1楼教室" },
-          { name: "外科学A(I)", weeks: [2,4,6,8,10,12,14,16], group: null, note: { default: "", weeks: { 8: "颅内和椎管内血管性疾病 - 徐杰" } }, location: "11号楼1楼大教室" }
+          { name: "外科学A(I)", weeks: [2,4,6,8,10,12,14,16], group: null, note: { default: "", weeks: { 8: "颅内和椎管内血管性疾病 - 徐杰", 10: "胸部损伤 教师：张建斌" } }, location: "11号楼1楼大教室" }
         ] },
       { period: 10, courses: [] },
       { period: 11, courses: [] }
@@ -293,19 +293,19 @@ export const scheduleData = [
           { name: "外科学A(I)", weeks: [5,6,7,11,13,15], group: null, note: { default: "", weeks: { 7: "颅内压增高、脑疝（含慕课学习） - 苏忠周" } }, location: { default: "11号楼1楼大教室", weeks: { 7: "11号楼(人才楼)1楼大教室" } } }
         ]},
       { period: 3, courses: [
-          { name: "口腔科学A", weeks: [1,10], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" },
+          { name: "口腔科学A", weeks: [1,10], group: null, note: { default: "", weeks: { 10: "第七章 牙周疾病 第八章 口腔黏膜常见疾病 第十一章 错颌畸形 教师：钟春欢" } }, location: "11号楼1楼大教室" },
           { name: "外科学见习", weeks: [12,14], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,13], group: "7班D组", note: { default: "", weeks: { 8: "颅内压增高、脑疝、颅脑损伤等疾病学习 - 赵树发", 13: "第13周是理论课后再去上见习课" } }, location: { default: "未排地点", weeks: { 8: "7号楼7楼的707示教室" } } },
           { name: "科创营", weeks: [5], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 5: "医学生创新思维与科研能力培养 - 施雪霏" } }, location: "11号楼1楼教室" }
         ] },
       { period: 4, courses: [
-          { name: "口腔科学A", weeks: [1,10], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" },
+          { name: "口腔科学A", weeks: [1,10], group: null, note: { default: "", weeks: { 10: "第七章 牙周疾病 第八章 口腔黏膜常见疾病 第十一章 错颌畸形 教师：钟春欢" } }, location: "11号楼1楼大教室" },
           { name: "外科学见习", weeks: [12,14], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,13], group: "7班D组", note: { default: "", weeks: { 8: "颅内压增高、脑疝、颅脑损伤等疾病学习 - 赵树发", 13: "第13周是理论课后再去上见习课" } }, location: { default: "未排地点", weeks: { 8: "7号楼7楼的707示教室" } } },
           { name: "科创营", weeks: [5], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 5: "医学生创新思维与科研能力培养 - 施雪霏" } }, location: "11号楼1楼教室" }
         ]},
       { period: 5, courses: [
-          { name: "口腔科学A", weeks: [1,10], group: null, note: { default: "", weeks: {} }, location: "11号楼1楼大教室" },
+          { name: "口腔科学A", weeks: [1,10], group: null, note: { default: "", weeks: { 10: "第七章 牙周疾病 第八章 口腔黏膜常见疾病 第十一章 错颌畸形 教师：钟春欢" } }, location: "11号楼1楼大教室" },
           { name: "外科学见习", weeks: [12,14], group: "7班C组", note: { default: "", weeks: {} }, location: "未排地点" },
           { name: "外科学见习", weeks: [8,13], group: "7班D组", note: { default: "", weeks: { 8: "颅内压增高、脑疝、颅脑损伤等疾病学习 - 赵树发", 13: "第13周是理论课后再去上见习课" } }, location: { default: "未排地点", weeks: { 8: "7号楼7楼的707示教室" } } },
           { name: "科创营", weeks: [5], group: null, electives: ["innovationCamp"], note: { default: "", weeks: { 5: "科研诚信 - 姚冲" } }, location: "11号楼1楼教室" }
