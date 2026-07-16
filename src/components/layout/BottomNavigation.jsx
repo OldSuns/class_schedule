@@ -9,7 +9,7 @@ export const APP_TABS = {
 const NAV_ITEMS = [
   {
     value: APP_TABS.SCHEDULE,
-    label: "日程",
+    label: "课表",
     icon: CalendarDays
   },
   {
@@ -32,8 +32,9 @@ const BottomNavigation = ({ activeTab, onTabChange }) => (
     <div
       className="mx-auto flex h-16 max-w-[430px] items-center gap-1 rounded-[28px] p-1.5 pointer-events-auto"
       style={{
-        backgroundColor: "rgba(255, 251, 254, 0.95)",
-        boxShadow: "0 -2px 12px rgba(0, 0, 0, 0.08)"
+        backgroundColor: "var(--surface-primary)",
+        border: "1px solid var(--outline-variant)",
+        boxShadow: "0 -2px 12px rgba(0, 0, 0, 0.06)"
       }}
     >
       {NAV_ITEMS.map((item) => {

@@ -1,72 +1,28 @@
-import { useMemo, useEffect, useRef, useState } from "react";
-import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
-import { StatusBar, Style } from '@capacitor/status-bar';
-import { Capacitor } from '@capacitor/core';
-import { App as CapacitorApp } from "@capacitor/app";
-
-// 组件
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Capacitor } from "@capacitor/core";
+import { StatusBar, Style } from "@capacitor/status-bar";
 import Header from "../components/layout/Header.jsx";
 import BottomNavigation, { APP_TABS } from "../components/layout/BottomNavigation.jsx";
+import Toast from "../components/layout/Toast.jsx";
 import ExamPage from "../components/exams/ExamPage.jsx";
 import SettingsPage from "../components/settings/SettingsPage.jsx";
 import CourseTable from "../components/schedule/CourseTable.jsx";
 import CourseModal from "../components/schedule/CourseModal/CourseModal.jsx";
-import Toast from "../components/layout/Toast.jsx";
-
-// Hooks
 import { useSemesterDate } from "../hooks/semester/useSemesterDate.js";
 import { useWeekSelector } from "../hooks/ui/useWeekSelector.js";
 import { useNotifications } from "../hooks/notifications/useNotifications.js";
-import { useDisplayMode } from "../hooks/ui/useDisplayMode.js";
 import { useTheme } from "../hooks/ui/useTheme.js";
-import { useMobileDetect } from "../hooks/ui/useMobileDetect.js";
 import { useScheduleData } from "../hooks/schedule/useScheduleData.js";
-import { useWeekSwipe } from "../hooks/ui/useWeekSwipe.js";
+import { STORAGE_KEYS } from "../config/constants.js";
+import { getItem, setItem } from "../../storage.js";
+import { hasElapsed, isRemoteCheckSuccessful } from "../utils/schedule/dateUtils.js";
 
-// 数据和工具
-import { mergeCellsByDay } from "../utils/schedule/courseUtils.js";
-import { shouldIncludeCourseForAudience } from "../utils/schedule/electiveUtils.js";
-import {
-  applyLogicalCourseDeletion,
-  applyLogicalCourseUpdate,
-  cloneSchedule
-} from "../utils/schedule/scheduleUtils.js";
-import {
-  getCurrentPeriod,
-  getPeriodLabel,
-  getPeriodRangeMinutes
-} from "../utils/schedule/timeUtils.js";
-import { checkForUpdates } from "../services/app/updateChecker.js";
-import { APP_VERSION, STORAGE_KEYS } from "../config/constants.js";
-import { getItem, setItem } from "../../storage";
-import {
-  getTodayKey,
-  hasElapsed,
-  isRemoteCheckSuccessful
-} from "../utils/schedule/dateUtils.js";
-
-const UPDATE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
-const UPDATE_ERROR_RETRY_INTERVAL_MS = 3 * 60 * 1000;
-const REMOTE_SCHEDULE_CHECK_INTERVAL_MS = 8 * 60 * 60 * 1000;
-const REMOTE_SCHEDULE_FOREGROUND_CHECK_INTERVAL_MS = 10 * 60 * 1000;
-const REMOTE_SCHEDULE_ERROR_RETRY_INTERVAL_MS = 3 * 60 * 1000;
-const WEEK_SWITCH_OFFSET_PX = 12;
-const WEEK_SWITCH_TRANSITION = {
-  duration: 0.16,
-  ease: [0.22, 1, 0.36, 1]
-};
+const REMOTE_CHECK_INTERVAL_MS = 8 * 60 * 60 * 1000;
+const REMOTE_FOREGROUND_INTERVAL_MS = 10 * 60 * 1000;
+const REMOTE_ERROR_RETRY_INTERVAL_MS = 3 * 60 * 1000;
 
 const App = () => {
-
-  // 学期日期管理
-  const {
-    semesterStartDate,
-    todayInfo,
-    displayWeekInfo,
-    handleStartDateChange
-  } = useSemesterDate();
-
-  // 周数选择管理
+  const { semesterStartDate, todayInfo, displayWeekInfo } = useSemesterDate();
   const {
     currentWeek,
     setCurrentWeek,
@@ -74,16 +30,7 @@ const App = () => {
     handlePreviousWeek,
     handleNextWeek
   } = useWeekSelector(1);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCell, setSelectedCell] = useState(null);
-  const handleCellClick = (day, periodStart, periodEnd) => {
-    setSelectedCell({ day, periodStart, periodEnd });
-    setIsModalOpen(true);
-  };
-  const closeModal = () => setIsModalOpen(false);
-
-  // 课表数据（支持本地自定义）
+  const { theme, onThemeChange } = useTheme();
   const {
     scheduleData,
     setScheduleData,
@@ -99,643 +46,170 @@ const App = () => {
     remoteUpdatedAt,
     builtInUpdateNotice
   } = useScheduleData();
+  const {
+    notificationsEnabled,
+    userGroup,
+    leadMinutes,
+    leadMinuteOptions,
+    statusMessage,
+    onToggleNotifications,
+    onGroupChange,
+    onLeadMinutesChange,
+    onTestNotification
+  } = useNotifications(semesterStartDate, scheduleData);
 
   const [activeTab, setActiveTab] = useState(APP_TABS.SCHEDULE);
-
-  // 显示模式设置
-  const { displayMode, onDisplayModeChange } = useDisplayMode();
-  const { theme, onThemeChange } = useTheme();
-  const isMobile = useMobileDetect();
-
-  // 当前时间（用于进度条刷新）
+  const [selectedDay, setSelectedDay] = useState("Monday");
+  const [selectedEventId, setSelectedEventId] = useState(null);
   const [now, setNow] = useState(() => new Date());
-
-  const [updateToast, setUpdateToast] = useState({ isOpen: false, message: "" });
-  const [scheduleUpdateToast, setScheduleUpdateToast] = useState({
-    isOpen: false,
-    message: ""
-  });
+  const [toast, setToast] = useState({ isOpen: false, message: "" });
   const softUpdateScheduleRef = useRef(softUpdateSchedule);
-  const pendingRemoteSnapshotRef = useRef(pendingRemoteSnapshot);
-  const previousWeekRef = useRef(currentWeek);
-  const hasInitializedWeek = useRef(false);
-  const weekSwitchControls = useAnimationControls();
-  const prefersReducedMotion = useReducedMotion();
+
+  const selectedEvent = useMemo(
+    () => scheduleData.events.find((event) => event.id === selectedEventId) ?? null,
+    [scheduleData.events, selectedEventId]
+  );
+
+  useEffect(() => {
+    if (displayWeekInfo?.week) setCurrentWeek(displayWeekInfo.week);
+    if (todayInfo?.day) setSelectedDay(todayInfo.day);
+  }, [displayWeekInfo?.week, setCurrentWeek, todayInfo?.day]);
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 30 * 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!builtInUpdateNotice) return;
+    setToast({ isOpen: true, message: builtInUpdateNotice });
+  }, [builtInUpdateNotice]);
 
   useEffect(() => {
     softUpdateScheduleRef.current = softUpdateSchedule;
   }, [softUpdateSchedule]);
 
   useEffect(() => {
-    pendingRemoteSnapshotRef.current = pendingRemoteSnapshot;
-  }, [pendingRemoteSnapshot]);
-
-  useEffect(() => {
-    if (!builtInUpdateNotice) return;
-    setScheduleUpdateToast((prev) =>
-      prev.isOpen
-        ? prev
-        : { isOpen: true, message: builtInUpdateNotice }
-    );
-  }, [builtInUpdateNotice]);
-
-  // 通知设置
-  const {
-    notificationsEnabled,
-    userGroup,
-    selectedElectives,
-    leadMinutes,
-    leadMinuteOptions,
-    statusMessage,
-    onToggleNotifications,
-    onGroupChange,
-    onSelectedElectivesChange,
-    onLeadMinutesChange,
-    onTestNotification
-  } = useNotifications(semesterStartDate, scheduleData);
-
-  // 配置移动端状态栏
-  useEffect(() => {
-    const setupStatusBar = async () => {
-      // 仅原生端启用透明叠加的状态栏
-      if (Capacitor.isNativePlatform()) {
-        try {
-          await StatusBar.setStyle({ style: Style.Light });
-          await StatusBar.setOverlaysWebView({ overlay: true });
-          if (Capacitor.getPlatform() === 'android') {
-            const bgColor = theme === 'minimal' ? '#FFFFFF' : '#FFFBFE';
-            await StatusBar.setBackgroundColor({ color: bgColor });
-            const info = await StatusBar.getInfo();
-            const height = Number(info?.height);
-            if (Number.isFinite(height) && height > 0) {
-              document.documentElement.style.setProperty(
-                "--android-statusbar",
-                `${height}px`
-              );
-            } else {
-              document.documentElement.style.setProperty(
-                "--android-statusbar",
-                "0px"
-              );
-            }
-          }
-          await StatusBar.show();
-        } catch (error) {
-          console.error('状态栏配置失败:', error);
-        }
-      }
-    };
-
-    setupStatusBar();
-  }, [theme]);
-
-  // 当显示周更新时，仅在首次加载时自动设置当前周
-  useEffect(() => {
-    if (displayWeekInfo && !hasInitializedWeek.current) {
-      setCurrentWeek(displayWeekInfo.week);
-      hasInitializedWeek.current = true;
-    }
-  }, [displayWeekInfo, setCurrentWeek]);
-
-  // 前台恢复时刷新当前时间，避免后台暂停导致进度条不更新
-  useEffect(() => {
-    const refreshNow = () => {
-      setNow(new Date());
-    };
-
-    let listenerHandle = null;
-    const setupListener = async () => {
-      if (Capacitor.isNativePlatform()) {
-        listenerHandle = await CapacitorApp.addListener(
-          "appStateChange",
-          ({ isActive }) => {
-            if (isActive) {
-              refreshNow();
-            }
-          }
-        );
-      }
-    };
-
-    setupListener();
-
-    const handleVisibility = () => {
-      if (document.visibilityState === "visible") {
-        refreshNow();
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
-
-    return () => {
-      if (listenerHandle) {
-        listenerHandle.remove();
-      }
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
-  }, []);
-
-  // 每分钟刷新一次当前时间
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(new Date());
-    }, 60000);
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
+    if (!isScheduleLoaded) return undefined;
     let cancelled = false;
-    let inFlight = false;
 
-    const checkUpdates = async () => {
-      if (inFlight) return;
-      inFlight = true;
-      try {
-        const today = getTodayKey();
-        const now = Date.now();
-        const [lastCheck, lastErrorRaw] = await Promise.all([
-          getItem(STORAGE_KEYS.UPDATE_LAST_CHECK_DATE),
-          getItem(STORAGE_KEYS.UPDATE_LAST_ERROR_AT)
-        ]);
-        const lastError = Number(lastErrorRaw);
-
-        if (lastCheck === today) {
-          return;
-        }
-
-        if (!hasElapsed(lastError, UPDATE_ERROR_RETRY_INTERVAL_MS, now)) {
-          return;
-        }
-
-        const result = await checkForUpdates(APP_VERSION);
-
-        if (result?.status === "update" || result?.status === "latest") {
-          await Promise.all([
-            setItem(STORAGE_KEYS.UPDATE_LAST_CHECK_DATE, today),
-            setItem(STORAGE_KEYS.UPDATE_LAST_ERROR_AT, "")
-          ]);
-        } else if (result?.status === "error") {
-          await setItem(STORAGE_KEYS.UPDATE_LAST_ERROR_AT, String(now));
-        }
-
-        if (!cancelled && result?.status === "update") {
-          const lastToast = await getItem(STORAGE_KEYS.UPDATE_LAST_TOAST_DATE);
-          if (lastToast !== today) {
-            const versionLabel = result.latestVersion ? ` v${result.latestVersion}` : "";
-            setUpdateToast({
-              isOpen: true,
-              message: `发现新版本${versionLabel}`
-            });
-            await setItem(STORAGE_KEYS.UPDATE_LAST_TOAST_DATE, today);
-          }
-        }
-      } finally {
-        inFlight = false;
-      }
-    };
-
-    checkUpdates();
-    const timer = setInterval(checkUpdates, UPDATE_CHECK_INTERVAL_MS);
-
-    return () => {
-      cancelled = true;
-      clearInterval(timer);
-    };
-  }, []);
-
-  // 自动检测远端课表更新（仅前台可见时）
-  useEffect(() => {
-    if (!isScheduleLoaded) return;
-
-    let cancelled = false;
-    let inFlight = false;
-    let appIsActive = true;
-
-    const isVisible = () => {
-      if (Capacitor.isNativePlatform()) {
-        return appIsActive;
-      }
-      return document.visibilityState === "visible";
-    };
-
-    const shouldCheck = async (reason) => {
-      const now = Date.now();
-      const [
-        lastCheckRaw,
-        lastForegroundCheckRaw,
-        lastErrorRaw,
-        skippedUpdateRaw
-      ] = await Promise.all([
+    const checkRemote = async (trigger) => {
+      const nowMs = Date.now();
+      const [lastCheckRaw, lastForegroundRaw, lastErrorRaw] = await Promise.all([
         getItem(STORAGE_KEYS.REMOTE_LAST_CHECK_AT),
         getItem(STORAGE_KEYS.REMOTE_LAST_FOREGROUND_CHECK_AT),
-        getItem(STORAGE_KEYS.REMOTE_LAST_ERROR_AT),
-        getItem(STORAGE_KEYS.REMOTE_SKIPPED_UPDATE)
+        getItem(STORAGE_KEYS.REMOTE_LAST_ERROR_AT)
       ]);
-
-      const lastCheck = Number(lastCheckRaw);
-      const lastForegroundCheck = Number(lastForegroundCheckRaw);
-      const lastError = Number(lastErrorRaw);
-      let skippedAt = 0;
-      if (skippedUpdateRaw) {
-        try {
-          const parsedSkippedUpdate = JSON.parse(skippedUpdateRaw);
-          skippedAt = Number(parsedSkippedUpdate?.skippedAt) || 0;
-        } catch (error) {
-          skippedAt = 0;
-        }
+      if (cancelled) return;
+      if (!hasElapsed(Number(lastErrorRaw), REMOTE_ERROR_RETRY_INTERVAL_MS, nowMs)) return;
+      if (
+        trigger === "foreground" &&
+        !hasElapsed(Number(lastForegroundRaw), REMOTE_FOREGROUND_INTERVAL_MS, nowMs)
+      ) {
+        return;
       }
-      const hasSkippedUpdate = Boolean(skippedUpdateRaw);
-
-      if (!hasElapsed(lastError, REMOTE_SCHEDULE_ERROR_RETRY_INTERVAL_MS, now)) {
-        return false;
-      }
-
-      if (reason === "startup") {
-        if (!hasSkippedUpdate) {
-          return true;
-        }
-        return hasElapsed(
-          skippedAt || lastCheck,
-          REMOTE_SCHEDULE_CHECK_INTERVAL_MS,
-          now
-        );
-      }
-
-      if (reason === "foreground") {
-        return hasElapsed(
-          lastForegroundCheck,
-          REMOTE_SCHEDULE_FOREGROUND_CHECK_INTERVAL_MS,
-          now
-        );
-      }
-
-      return hasElapsed(lastCheck, REMOTE_SCHEDULE_CHECK_INTERVAL_MS, now);
-    };
-
-    const persistCheckState = async (result, reason) => {
-      const status = result?.status || "";
-      const now = String(Date.now());
-
-      if (isRemoteCheckSuccessful(status)) {
-        const writes = [
-          setItem(STORAGE_KEYS.REMOTE_LAST_CHECK_AT, now),
-          setItem(STORAGE_KEYS.REMOTE_LAST_ERROR_AT, "")
-        ];
-        if (reason === "foreground") {
-          writes.push(
-            setItem(STORAGE_KEYS.REMOTE_LAST_FOREGROUND_CHECK_AT, now)
-          );
-        }
-        await Promise.all(writes);
+      if (
+        trigger !== "foreground" &&
+        !hasElapsed(Number(lastCheckRaw), REMOTE_CHECK_INTERVAL_MS, nowMs)
+      ) {
         return;
       }
 
-      if (status === "error") {
-        await setItem(STORAGE_KEYS.REMOTE_LAST_ERROR_AT, now);
+      const result = await softUpdateScheduleRef.current({ trigger: "auto" });
+      if (cancelled) return;
+      if (isRemoteCheckSuccessful(result?.status)) {
+        await Promise.all([
+          setItem(STORAGE_KEYS.REMOTE_LAST_CHECK_AT, String(nowMs)),
+          setItem(STORAGE_KEYS.REMOTE_LAST_ERROR_AT, ""),
+          trigger === "foreground"
+            ? setItem(STORAGE_KEYS.REMOTE_LAST_FOREGROUND_CHECK_AT, String(nowMs))
+            : Promise.resolve()
+        ]);
+      } else if (result?.status === "error") {
+        await setItem(STORAGE_KEYS.REMOTE_LAST_ERROR_AT, String(nowMs));
       }
     };
 
-    const checkRemoteSchedule = async (reason = "interval") => {
-      if (cancelled || inFlight) return;
-      if (!isVisible()) return;
-      if (pendingRemoteSnapshotRef.current) return;
-
-      inFlight = true;
-      try {
-        const ok = await shouldCheck(reason);
-        if (!ok) return;
-        const result = await softUpdateScheduleRef.current({
-          trigger: "auto"
-        });
-        await persistCheckState(result, reason);
-        if (!cancelled && result?.status === "update-available") {
-          setScheduleUpdateToast({
-            isOpen: true,
-            message: "检测到远端课表更新，可在设置中应用"
-          });
-        }
-      } finally {
-        inFlight = false;
-      }
+    void checkRemote("launch");
+    const timer = setInterval(() => void checkRemote("interval"), REMOTE_CHECK_INTERVAL_MS);
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") void checkRemote("foreground");
     };
-
-    checkRemoteSchedule("startup");
-    const timer = setInterval(
-      () => checkRemoteSchedule("interval"),
-      REMOTE_SCHEDULE_CHECK_INTERVAL_MS
-    );
-
-    let listenerHandle = null;
-    const setupListener = async () => {
-      if (Capacitor.isNativePlatform()) {
-        listenerHandle = await CapacitorApp.addListener(
-          "appStateChange",
-          ({ isActive }) => {
-            appIsActive = isActive;
-            if (isActive) {
-              checkRemoteSchedule("foreground");
-            }
-          }
-        );
-      }
-    };
-
-    setupListener();
-
-    let handleVisibility = null;
-    if (!Capacitor.isNativePlatform()) {
-      handleVisibility = () => {
-        if (document.visibilityState === "visible") {
-          checkRemoteSchedule("foreground");
-        }
-      };
-      document.addEventListener("visibilitychange", handleVisibility);
-    }
-
+    document.addEventListener("visibilitychange", handleVisibility);
     return () => {
       cancelled = true;
       clearInterval(timer);
-      if (listenerHandle) {
-        listenerHandle.remove();
-      }
-      if (handleVisibility) {
-        document.removeEventListener("visibilitychange", handleVisibility);
-      }
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, [isScheduleLoaded]);
 
-  // 合并课程单元格
-  const mergedCellsByDay = useMemo(() => {
-    // 将同日连续课程合并，便于表格渲染
-    return mergeCellsByDay(
-      scheduleData,
-      currentWeek,
-      displayMode,
-      userGroup,
-      selectedElectives
-    );
-  }, [scheduleData, currentWeek, displayMode, userGroup, selectedElectives]);
-
-  const currentClassProgress = useMemo(() => {
-    if (!todayInfo) return null;
-    const period = getCurrentPeriod(now);
-    if (!period) return null;
-
-    const dayData = scheduleData.find((day) => day.day === todayInfo.day);
-    const periodData = dayData?.periods.find((item) => item.period === period);
-    const courses = (periodData?.courses ?? []).filter(
-      (course) =>
-        Array.isArray(course.weeks) &&
-        course.weeks.includes(todayInfo.week) &&
-        shouldIncludeCourseForAudience(course, userGroup, selectedElectives)
-    );
-
-    if (courses.length === 0) return null;
-
-    const range = getPeriodRangeMinutes(period);
-    if (!range) return null;
-    const nowMinutes = now.getHours() * 60 + now.getMinutes();
-    const duration = Math.max(1, range.endMin - range.startMin);
-    const elapsed = Math.min(Math.max(nowMinutes - range.startMin, 0), duration);
-    const remaining = Math.max(range.endMin - nowMinutes, 0);
-    const percent = Math.min(
-      100,
-      Math.max(0, Math.round((elapsed / duration) * 100))
-    );
-
-    const labels = courses.map((course) =>
-      course.group ? `${course.name}(${course.group})` : course.name
-    );
-    let courseLabel = labels[0];
-    if (labels.length === 2) {
-      courseLabel = `${labels[0]} / ${labels[1]}`;
-    } else if (labels.length > 2) {
-      courseLabel = `${labels[0]} 等`;
-    }
-
-    return {
-      period,
-      periodLabel: getPeriodLabel(period),
-      courseLabel,
-      elapsedMinutes: elapsed,
-      remainingMinutes: remaining,
-      percent
-    };
-  }, [now, todayInfo, userGroup, selectedElectives, scheduleData]);
-
-  const updateSchedule = (mutate) => {
-    setScheduleData((prev) => {
-      const next = cloneSchedule(prev);
-      mutate(next);
-      return next;
-    });
-  };
-
-  const normalizeNumbers = (values) =>
-    Array.from(new Set(Array.isArray(values) ? values : [])).sort((a, b) => a - b);
-
-  const handleAddCourse = (day, periods, course) => {
-    const targets = normalizeNumbers(periods);
-    if (targets.length === 0) return;
-    updateSchedule((next) => {
-      const dayEntry = next.find((entry) => entry.day === day);
-      if (!dayEntry) return;
-      for (const period of targets) {
-        const periodEntry = dayEntry.periods.find((entry) => entry.period === period);
-        if (!periodEntry) continue;
-        periodEntry.courses = [...periodEntry.courses, course];
-      }
-    });
-  };
-
-  const handleUpdateCourse = ({
-    day,
-    logicalId,
-    scopePeriods,
-    selectedWeeks,
-    selectedPeriods,
-    course,
-    preserveLocation,
-    preserveNote
-  }) => {
-    const normalizedScopePeriods = normalizeNumbers(scopePeriods);
-    const normalizedSelectedWeeks = normalizeNumbers(selectedWeeks);
-    const normalizedSelectedPeriods = normalizeNumbers(selectedPeriods);
-    if (
-      !day ||
-      !logicalId ||
-      normalizedScopePeriods.length === 0 ||
-      normalizedSelectedWeeks.length === 0 ||
-      normalizedSelectedPeriods.length === 0 ||
-      !course
-    ) {
-      return;
-    }
-    updateSchedule((next) => {
-      applyLogicalCourseUpdate(next, {
-        day,
-        logicalId,
-        scopePeriods: normalizedScopePeriods,
-        selectedWeeks: normalizedSelectedWeeks,
-        selectedPeriods: normalizedSelectedPeriods,
-        course,
-        preserveLocation,
-        preserveNote
-      });
-    });
-  };
-
-  const handleDeleteCourse = ({
-    day,
-    logicalId,
-    scopePeriods,
-    selectedWeeks,
-    selectedPeriods
-  }) => {
-    const normalizedScopePeriods = normalizeNumbers(scopePeriods);
-    const normalizedSelectedWeeks = normalizeNumbers(selectedWeeks);
-    const normalizedSelectedPeriods = normalizeNumbers(selectedPeriods);
-    if (
-      !day ||
-      !logicalId ||
-      normalizedScopePeriods.length === 0 ||
-      normalizedSelectedWeeks.length === 0 ||
-      normalizedSelectedPeriods.length === 0
-    ) {
-      return;
-    }
-    updateSchedule((next) => {
-      applyLogicalCourseDeletion(next, {
-        day,
-        logicalId,
-        scopePeriods: normalizedScopePeriods,
-        selectedWeeks: normalizedSelectedWeeks,
-        selectedPeriods: normalizedSelectedPeriods
-      });
-    });
-  };
-
-  // 处理开学日期变化
-  const handleDateChange = async (date) => {
-    const infos = await handleStartDateChange(date);
-    if (infos?.displayWeekInfo) {
-      // 手动修改开学日期后同步周次
-      setCurrentWeek(infos.displayWeekInfo.week);
-    }
-  };
-
-  const closeUpdateToast = () => {
-    setUpdateToast((prev) => (prev.isOpen ? { ...prev, isOpen: false } : prev));
-  };
-
-  const closeScheduleUpdateToast = () => {
-    setScheduleUpdateToast((prev) =>
-      prev.isOpen ? { ...prev, isOpen: false } : prev
-    );
-  };
-
-  const weekSwipeEnabled =
-    isMobile && activeTab === APP_TABS.SCHEDULE && !isModalOpen;
-  const { handlers: weekSwipeHandlers, isSwipeLocked } = useWeekSwipe({
-    enabled: weekSwipeEnabled,
-    onSwipeLeft: handleNextWeek,
-    onSwipeRight: handlePreviousWeek
-  });
-
-  const handleScheduleCellClick = (day, periodStart, periodEnd) => {
-    if (!isScheduleLoaded || isSwipeLocked()) return;
-    handleCellClick(day, periodStart, periodEnd);
-  };
-
   useEffect(() => {
-    const previousWeek = previousWeekRef.current;
-    if (previousWeek === currentWeek) {
-      weekSwitchControls.set({ opacity: 1, x: 0 });
-      return;
-    }
-
-    previousWeekRef.current = currentWeek;
-
-    if (prefersReducedMotion) {
-      weekSwitchControls.set({ opacity: 1, x: 0 });
-      return;
-    }
-
-    const direction = currentWeek > previousWeek ? 1 : -1;
-    weekSwitchControls.set({
-      opacity: 0.96,
-      x: direction > 0 ? WEEK_SWITCH_OFFSET_PX : -WEEK_SWITCH_OFFSET_PX
+    if (!Capacitor.isNativePlatform()) return undefined;
+    void StatusBar.setStyle({ style: Style.Light });
+    void StatusBar.setOverlaysWebView({ overlay: true });
+    void StatusBar.setBackgroundColor({
+      color: theme === "minimal" ? "#FFFFFF" : "#FFFBFE"
     });
+    return undefined;
+  }, [theme]);
 
-    const animationFrame = window.requestAnimationFrame(() => {
-      weekSwitchControls.start({
-        opacity: 1,
-        x: 0,
-        transition: WEEK_SWITCH_TRANSITION
-      });
-    });
+  const updateEvent = (nextEvent) => {
+    setScheduleData((current) => ({
+      ...current,
+      updatedAt: new Date().toISOString(),
+      events: current.events.map((event) =>
+        event.id === nextEvent.id ? nextEvent : event
+      )
+    }));
+  };
 
-    return () => window.cancelAnimationFrame(animationFrame);
-  }, [currentWeek, prefersReducedMotion, weekSwitchControls]);
+  const deleteEvent = (eventId) => {
+    setScheduleData((current) => ({
+      ...current,
+      updatedAt: new Date().toISOString(),
+      events: current.events.filter((event) => event.id !== eventId)
+    }));
+    setSelectedEventId(null);
+  };
 
   return (
     <div className="min-h-screen bg-surface-low pt-[var(--safe-top)]">
       <div className="mx-auto min-h-screen max-w-[430px] bg-surface-low sm:max-w-5xl">
         {activeTab === APP_TABS.SCHEDULE && (
-          <section className="min-h-screen px-2 pb-24 pt-2 sm:px-4 sm:pt-4">
+          <section className="min-h-screen px-2 pb-28 pt-2 sm:px-4 sm:pt-4">
             <Header
               todayInfo={todayInfo}
-              displayWeekInfo={displayWeekInfo}
-              currentWeek={currentWeek}
-              currentClassProgress={currentClassProgress}
-              onWeekChange={handleWeekChange}
+              userGroup={userGroup}
+              onGroupChange={onGroupChange}
             />
-
-            <div
-              {...weekSwipeHandlers}
-              className="overflow-x-hidden"
-              style={weekSwipeEnabled ? { touchAction: "pan-y" } : undefined}
-            >
-              <motion.div
-                initial={false}
-                animate={weekSwitchControls}
-                style={{ willChange: "transform, opacity" }}
-              >
-                <CourseTable
-                  mergedCellsByDay={mergedCellsByDay}
-                  semesterStartDate={semesterStartDate}
-                  todayInfo={todayInfo}
-                  currentWeek={currentWeek}
-                  onCellClick={handleScheduleCellClick}
-                  isScheduleLoaded={isScheduleLoaded}
-                  theme={theme}
-                />
-              </motion.div>
-            </div>
+            <CourseTable
+              events={scheduleData.events}
+              semesterStartDate={semesterStartDate}
+              currentWeek={currentWeek}
+              selectedDay={selectedDay}
+              userGroup={userGroup}
+              now={now}
+              onSelectDay={setSelectedDay}
+              onPreviousWeek={handlePreviousWeek}
+              onNextWeek={handleNextWeek}
+              onEventClick={(event) => setSelectedEventId(event.id)}
+              isScheduleLoaded={isScheduleLoaded}
+            />
           </section>
         )}
 
-        {activeTab === APP_TABS.EXAMS && (
-          <ExamPage currentWeek={currentWeek} now={now} />
-        )}
+        {activeTab === APP_TABS.EXAMS && <ExamPage currentWeek={currentWeek} now={now} />}
 
         {activeTab === APP_TABS.SETTINGS && (
           <SettingsPage
-            semesterStartDate={semesterStartDate}
-            onStartDateChange={handleDateChange}
-            todayInfo={todayInfo}
-            displayWeekInfo={displayWeekInfo}
             currentWeek={currentWeek}
             onSelectWeek={handleWeekChange}
-            displayMode={displayMode}
-            onDisplayModeChange={onDisplayModeChange}
             theme={theme}
             onThemeChange={onThemeChange}
             notificationsEnabled={notificationsEnabled}
             onToggleNotifications={onToggleNotifications}
             userGroup={userGroup}
             onGroupChange={onGroupChange}
-            selectedElectives={selectedElectives}
-            onSelectedElectivesChange={onSelectedElectivesChange}
             leadMinutes={leadMinutes}
             leadMinuteOptions={leadMinuteOptions}
             onLeadMinutesChange={onLeadMinutesChange}
@@ -755,30 +229,19 @@ const App = () => {
       </div>
 
       <CourseModal
-        isOpen={isModalOpen}
-        selectedCell={selectedCell}
+        isOpen={Boolean(selectedEvent)}
+        event={selectedEvent}
         currentWeek={currentWeek}
-        displayMode={displayMode}
-        userGroup={userGroup}
-        selectedElectives={selectedElectives}
-        scheduleData={scheduleData}
-        onAddCourse={handleAddCourse}
-        onUpdateCourse={handleUpdateCourse}
-        onDeleteCourse={handleDeleteCourse}
-        onClose={closeModal}
+        onUpdateEvent={updateEvent}
+        onDeleteEvent={deleteEvent}
+        onClose={() => setSelectedEventId(null)}
       />
 
       <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
-
       <Toast
-        isOpen={updateToast.isOpen}
-        message={updateToast.message}
-        onClose={closeUpdateToast}
-      />
-      <Toast
-        isOpen={scheduleUpdateToast.isOpen}
-        message={scheduleUpdateToast.message}
-        onClose={closeScheduleUpdateToast}
+        isOpen={toast.isOpen}
+        message={toast.message}
+        onClose={() => setToast({ isOpen: false, message: "" })}
       />
     </div>
   );

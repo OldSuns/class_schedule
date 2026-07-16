@@ -104,8 +104,7 @@ class TodayCoursesRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
     public long getItemId(int position) {
         if (items == null || position < 0 || position >= items.size()) return position;
         WidgetTodayCoursesCalculator.Item item = items.get(position);
-        long base = item.startMillis;
-        return base != 0 ? base : position;
+        return item.stableId != 0 ? item.stableId : position;
     }
 
     @Override

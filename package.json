@@ -9,7 +9,7 @@
   "scripts": {
     "sync-version": "node scripts/sync-version.mjs",
     "export-schedule": "node scripts/export-schedule.mjs",
-    "test:unit": "node --test tests/*.test.js",
+    "test:unit": "node --test --test-concurrency=1 tests/*.test.js",
     "dev": "vite",
     "build": "npm run export-schedule && vite build",
     "preview": "vite preview"

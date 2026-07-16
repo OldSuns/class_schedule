@@ -4,10 +4,10 @@ import { createServer } from "vite";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
-test("schedule header week input keeps a visible outline border", async () => {
+test("summer header keeps the app title and the single group selector", async () => {
   const server = await createServer({
     logLevel: "error",
-    server: { middlewareMode: true },
+    server: { middlewareMode: true, hmr: false },
     appType: "custom"
   });
 
@@ -17,19 +17,18 @@ test("schedule header week input keeps a visible outline border", async () => {
     );
     const markup = renderToStaticMarkup(
       React.createElement(Header, {
-        todayInfo: null,
-        displayWeekInfo: null,
-        currentWeek: 6,
-        currentClassProgress: null,
-        onWeekChange: () => {}
+        todayInfo: { week: 2, dayOfWeek: 2 },
+        currentWeek: 2,
+        userGroup: "1组",
+        onGroupChange: () => {}
       })
     );
 
-    const weekInput = markup.match(/<input\b[^>]*type="number"[^>]*>/)?.[0] ?? "";
-
-    assert.match(weekInput, /\bborder\b/);
-    assert.doesNotMatch(weekInput, /\bborder-0\b/);
-    assert.match(weekInput, /border-color:var\(--outline-variant\)/);
+    assert.match(markup, /WL课表（2026暑期）/);
+    assert.match(markup, /今天是第2周 星期二/);
+    assert.match(markup, />1组</);
+    assert.match(markup, /aria-label="选择分组"/);
+    assert.doesNotMatch(markup, /已过|剩余|type="number"/);
   } finally {
     await server.close();
   }

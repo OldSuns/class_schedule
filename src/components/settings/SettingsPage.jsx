@@ -3,13 +3,10 @@ import { Browser } from "@capacitor/browser";
 import { Capacitor } from "@capacitor/core";
 import {
   APP_VERSION,
-  DISPLAY_MODES,
   GITHUB_RELEASES_URL
 } from "../../config/constants";
-import { GROUP_TYPES } from "../../utils/schedule/groupUtils";
 import { checkForUpdates } from "../../services/app/updateChecker";
 import QuickWeekSection from "./SettingsMenu/QuickWeekSection.jsx";
-import DisplayModeSection from "./SettingsMenu/DisplayModeSection.jsx";
 import ThemeSection from "./SettingsMenu/ThemeSection.jsx";
 import ReminderSection from "./SettingsMenu/ReminderSection.jsx";
 import UpdateSection from "./SettingsMenu/UpdateSection.jsx";
@@ -17,22 +14,14 @@ import ScheduleManagementSection from "./SettingsMenu/ScheduleManagementSection.
 import RemoteUpdateConfirmDialog from "./SettingsMenu/RemoteUpdateConfirmDialog.jsx";
 
 const SettingsPage = ({
-  semesterStartDate,
-  onStartDateChange,
-  todayInfo,
-  displayWeekInfo,
   currentWeek,
   onSelectWeek,
-  displayMode = DISPLAY_MODES.ALL,
-  onDisplayModeChange,
   theme,
   onThemeChange,
   notificationsEnabled = false,
   onToggleNotifications,
-  userGroup = GROUP_TYPES.G6A,
+  userGroup = "1组",
   onGroupChange,
-  selectedElectives = [],
-  onSelectedElectivesChange,
   leadMinutes = 15,
   leadMinuteOptions = [10, 15, 20, 30],
   onLeadMinutesChange,
@@ -59,7 +48,7 @@ const SettingsPage = ({
   const [softUpdateStatus, setSoftUpdateStatus] = useState("");
   const [showRemoteConfirm, setShowRemoteConfirm] = useState(false);
   const [showAdvancedReminder, setShowAdvancedReminder] = useState(false);
-  const [showGroupElectiveSection, setShowGroupElectiveSection] = useState(false);
+  const [showGroupSection, setShowGroupSection] = useState(false);
   const [showUpdateSection, setShowUpdateSection] = useState(false);
   const [showScheduleManagement, setShowScheduleManagement] = useState(false);
 
@@ -86,16 +75,6 @@ const SettingsPage = ({
 
   const currentScheduleSourceLabel =
     scheduleSourceLabelMap[scheduleSource] || "未知来源";
-
-  const weekStatusText = todayInfo
-    ? `今天是第${todayInfo.week}周 星期${["一", "二", "三", "四", "五"][todayInfo.dayOfWeek - 1]}`
-    : displayWeekInfo?.isWeekendPreview
-    ? `今天是周末，默认显示第${displayWeekInfo.week}周课表`
-    : "";
-
-  const weekStatusStyle = displayWeekInfo?.isWeekendPreview
-    ? { backgroundColor: "var(--secondary-container)", color: "var(--on-secondary-container)" }
-    : { backgroundColor: "var(--primary-container)", color: "var(--on-primary-container)" };
 
   const formatReleasePublishedAt = (value) => {
     if (!value) return "";
@@ -244,11 +223,6 @@ const SettingsPage = ({
           }}
         />
 
-        <DisplayModeSection
-          displayMode={displayMode}
-          onDisplayModeChange={onDisplayModeChange}
-        />
-
         <ThemeSection theme={theme} onThemeChange={onThemeChange} />
 
         <ReminderSection
@@ -256,16 +230,14 @@ const SettingsPage = ({
           onToggleNotifications={onToggleNotifications}
           userGroup={userGroup}
           onGroupChange={onGroupChange}
-          selectedElectives={selectedElectives}
-          onSelectedElectivesChange={onSelectedElectivesChange}
           leadMinutes={leadMinutes}
           leadMinuteOptions={leadMinuteOptions}
           onLeadMinutesChange={onLeadMinutesChange}
           onTestNotification={onTestNotification}
           notificationStatus={notificationStatus}
-          showGroupElectiveSection={showGroupElectiveSection}
-          onToggleGroupElectiveSection={() =>
-            setShowGroupElectiveSection((prev) => !prev)
+          showGroupSection={showGroupSection}
+          onToggleGroupSection={() =>
+            setShowGroupSection((prev) => !prev)
           }
           showAdvancedReminder={showAdvancedReminder}
           onToggleAdvancedReminder={() => setShowAdvancedReminder((prev) => !prev)}
@@ -294,10 +266,6 @@ const SettingsPage = ({
           onToggleScheduleManagement={() =>
             setShowScheduleManagement((prev) => !prev)
           }
-          semesterStartDate={semesterStartDate}
-          onStartDateChange={onStartDateChange}
-          weekStatusText={weekStatusText}
-          weekStatusStyle={weekStatusStyle}
           currentScheduleSourceLabel={currentScheduleSourceLabel}
           hasManualScheduleChanges={hasManualScheduleChanges}
           onResetSchedule={handleResetSchedule}
