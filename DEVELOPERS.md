@@ -5,7 +5,7 @@
 ## 入口与整体结构
 
 - `src/main.jsx`：React 入口与全局样式加载。
-- `src/app/App.jsx`：应用根组件，负责串联 Header、SettingsMenu、CourseTable、CourseModal、Toast，以及周次切换、软更新、版本检查、状态栏适配等逻辑。
+- `src/app/App.jsx`：应用根组件，负责串联 Header、SettingsPage、CourseTable、CourseModal、Toast，以及周次切换、软更新、版本检查、状态栏适配等逻辑。
 - 当前项目没有路由，属于单页面课表应用，主要通过 Hook 状态、弹窗和设置面板驱动交互。
 
 ## 主要目录
@@ -22,7 +22,6 @@
 - `src/hooks/semester/useSemesterDate.js`：开学日期读取/保存，计算当前周次与日期信息。
 - `src/hooks/ui/useWeekSelector.js`：周次选择与切换逻辑。
 - `src/hooks/ui/useWeekSwipe.js`：移动端左右滑动切周。
-- `src/hooks/ui/useCourseModal.js`：课程弹窗状态。
 - `src/hooks/ui/useDisplayMode.js`：课表显示模式。
 - `src/hooks/schedule/useScheduleData.js`：内置课表、远端课表、自定义课表的加载、持久化与切换。
 - `src/hooks/notifications/useNotifications.js`：通知设置、权限检查与排程协调。
@@ -93,5 +92,5 @@ git push
 
 ## 测试现状
 
-- 当前未接入前端测试框架。
-- `android/app/src/test/` 与 `android/app/src/androidTest/` 仍是 Capacitor 默认示例测试，包名仍为旧的 `com.getcapacitor.myapp`。
+- JS 单元测试使用 Node.js 内置的 `node:test`，通过 `npm run test:unit` 执行。
+- Android 应用模块当前没有自动化测试。

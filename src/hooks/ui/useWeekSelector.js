@@ -6,7 +6,6 @@ import { MIN_WEEK, MAX_WEEK } from "../../config/constants";
  */
 export const useWeekSelector = (initialWeek = 1) => {
   const [currentWeek, setCurrentWeek] = useState(initialWeek);
-  const [showWeekSelector, setShowWeekSelector] = useState(false);
 
   // 处理周数变化
   const handleWeekChange = useCallback((week) => {
@@ -14,12 +13,6 @@ export const useWeekSelector = (initialWeek = 1) => {
     if (weekNum >= MIN_WEEK && weekNum <= MAX_WEEK) {
       setCurrentWeek(weekNum);
     }
-  }, []);
-
-  // 快速选择周数
-  const handleQuickSelectWeek = useCallback((week) => {
-    setCurrentWeek(week);
-    setShowWeekSelector(false);
   }, []);
 
   // 上一周
@@ -36,20 +29,11 @@ export const useWeekSelector = (initialWeek = 1) => {
     );
   }, []);
 
-  // 切换周数选择器显示
-  const toggleWeekSelector = useCallback(() => {
-    setShowWeekSelector(prev => !prev);
-  }, []);
-
   return {
     currentWeek,
-    showWeekSelector,
     setCurrentWeek,
     handleWeekChange,
-    handleQuickSelectWeek,
     handlePreviousWeek,
-    handleNextWeek,
-    toggleWeekSelector,
-    setShowWeekSelector
+    handleNextWeek
   };
 };

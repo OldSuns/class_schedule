@@ -9,15 +9,6 @@
   --safe-top: max(env(safe-area-inset-top), var(--android-statusbar));
   --safe-bottom: env(safe-area-inset-bottom);
 
-  /* M3 state layer opacities */
-  --state-hover: 0.08;
-  --state-pressed: 0.12;
-  --state-focused: 0.12;
-  --state-dragged: 0.16;
-
-  /* Apple minimalist surface tokens */
-  --surface-header: #F7F4FA;
-  --surface-separator: rgba(0,0,0,0.03);
 }
 
 html,

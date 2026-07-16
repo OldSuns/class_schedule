@@ -218,25 +218,6 @@ const collectCourseFragmentsForPeriods = (dayEntry, targetPeriods) => {
     );
 };
 
-export const collectCoursesForRange = (
-  scheduleData,
-  day,
-  periodStart,
-  periodEnd
-) => {
-  const dayEntry = getDayEntry(scheduleData, day);
-  if (!dayEntry) return [];
-  const periods = normalizePeriods(
-    Array.from(
-      { length: Math.abs(periodEnd - periodStart) + 1 },
-      (_, index) => Math.min(periodStart, periodEnd) + index
-    )
-  );
-  return collectCourseFragmentsForPeriods(dayEntry, periods).map(
-    (fragment) => fragment.course
-  );
-};
-
 const expandFragmentsByOverlap = (fragments, seedPeriods) => {
   const selected = [];
   const selectedIds = new Set();

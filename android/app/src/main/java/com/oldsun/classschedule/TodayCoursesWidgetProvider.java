@@ -32,14 +32,9 @@ public class TodayCoursesWidgetProvider extends AppWidgetProvider {
             updateAppWidget(context, manager, id, result, nowMillis);
         }
 
-        // On Android 12+ we use RemoteCollectionItems which doesn't need this notify call.
-        // For legacy RemoteViewsService-based lists, keep behavior without referencing deprecated APIs.
+        // Android 12+ uses RemoteCollectionItems; legacy adapters need an explicit refresh.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            WidgetAppWidgetManagerCompat.notifyAppWidgetViewDataChanged(
-                manager,
-                ids,
-                R.id.widget_list
-            );
+            manager.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
         }
         WidgetUpdateScheduler.scheduleNext(
             context,
@@ -90,7 +85,7 @@ public class TodayCoursesWidgetProvider extends AppWidgetProvider {
             Intent serviceIntent = new Intent(context, TodayCoursesWidgetService.class);
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
-            WidgetRemoteAdapterCompat.setRemoteAdapter(views, R.id.widget_list, serviceIntent);
+            views.setRemoteAdapter(R.id.widget_list, serviceIntent);
         }
         views.setEmptyView(R.id.widget_list, R.id.widget_empty);
 

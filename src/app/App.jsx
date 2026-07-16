@@ -16,7 +16,6 @@ import Toast from "../components/layout/Toast.jsx";
 // Hooks
 import { useSemesterDate } from "../hooks/semester/useSemesterDate.js";
 import { useWeekSelector } from "../hooks/ui/useWeekSelector.js";
-import { useCourseModal } from "../hooks/ui/useCourseModal.js";
 import { useNotifications } from "../hooks/notifications/useNotifications.js";
 import { useDisplayMode } from "../hooks/ui/useDisplayMode.js";
 import { useTheme } from "../hooks/ui/useTheme.js";
@@ -72,13 +71,17 @@ const App = () => {
     currentWeek,
     setCurrentWeek,
     handleWeekChange,
-    handleQuickSelectWeek,
     handlePreviousWeek,
     handleNextWeek
   } = useWeekSelector(1);
 
-  // 课程模态框管理
-  const { isModalOpen, selectedCell, handleCellClick, closeModal } = useCourseModal();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCell, setSelectedCell] = useState(null);
+  const handleCellClick = (day, periodStart, periodEnd) => {
+    setSelectedCell({ day, periodStart, periodEnd });
+    setIsModalOpen(true);
+  };
+  const closeModal = () => setIsModalOpen(false);
 
   // 课表数据（支持本地自定义）
   const {
@@ -722,7 +725,7 @@ const App = () => {
             todayInfo={todayInfo}
             displayWeekInfo={displayWeekInfo}
             currentWeek={currentWeek}
-            onSelectWeek={handleQuickSelectWeek}
+            onSelectWeek={handleWeekChange}
             displayMode={displayMode}
             onDisplayModeChange={onDisplayModeChange}
             theme={theme}

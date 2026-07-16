@@ -79,12 +79,6 @@ export const getPeriodRangeMinutes = (period) => {
   return { startMin, endMin };
 };
 
-export const getPeriodDurationMinutes = (period) => {
-  const range = getPeriodRangeMinutes(period);
-  if (!range) return 0;
-  return Math.max(0, range.endMin - range.startMin);
-};
-
 export const getCurrentPeriod = (now = new Date()) => {
   const current = now instanceof Date ? now : new Date(now);
   const nowMinutes = current.getHours() * 60 + current.getMinutes();

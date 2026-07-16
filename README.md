@@ -57,7 +57,7 @@ npm run preview
 - `npm run export-schedule`：将 `src/data/scheduleData.js` 导出为根目录 `schedule.json`
 - `npm run sync-version`：将 `package.json` 中的版本号同步到 Web 常量与 Android Gradle 配置
 
-目前仓库未配置前端 ESLint 脚本，也未接入 JS 测试运行器。
+目前仓库未配置前端 ESLint 脚本；JS 单元测试使用 Node.js 内置测试运行器。
 
 ## 项目结构
 
@@ -122,11 +122,10 @@ cd android; .\gradlew.bat assembleDebug; cd ..
 
 ## 测试
 
-当前仓库仅保留 Capacitor 默认 Android 示例测试：
+运行 JS 单元测试：
 
 ```bash
-cd android
-./gradlew testDebugUnitTest
-./gradlew connectedDebugAndroidTest
-cd ..
+npm run test:unit
 ```
+
+Android 应用模块当前没有自动化测试。

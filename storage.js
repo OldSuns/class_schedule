@@ -11,13 +11,6 @@ const isCapacitor = () => {
   return Capacitor.isNativePlatform();
 };
 
-const STORAGE_DEBUG = false;
-
-const debugLog = (...args) => {
-  if (!STORAGE_DEBUG) return;
-  console.log(...args);
-};
-
 /**
  * 保存数据到存储
  * @param {string} key - 存储键名
@@ -28,11 +21,9 @@ export const setItem = async (key, value) => {
     if (isCapacitor()) {
       // Android/iOS: 使用 Capacitor Preferences
       await Preferences.set({ key, value });
-      debugLog(`移动端保存数据: ${key} = ${value}`);
     } else {
       // Web: 使用 localStorage
       localStorage.setItem(key, value);
-      debugLog(`Web端保存数据: ${key} = ${value}`);
     }
   } catch (error) {
     console.error('存储数据失败:', error);
@@ -49,12 +40,10 @@ export const getItem = async (key) => {
     if (isCapacitor()) {
       // Android/iOS: 使用 Capacitor Preferences
       const { value } = await Preferences.get({ key });
-      debugLog(`移动端读取数据: ${key} = ${value}`);
       return value;
     } else {
       // Web: 使用 localStorage
       const value = localStorage.getItem(key);
-      debugLog(`Web端读取数据: ${key} = ${value}`);
       return value;
     }
   } catch (error) {
