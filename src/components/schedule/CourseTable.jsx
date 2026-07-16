@@ -1,11 +1,15 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DAYS, DAY_NAMES } from "../../config/constants";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { DAYS, DAY_NAMES, MAX_WEEK, MIN_WEEK } from "../../config/constants";
 import {
   filterScheduleEvents,
   getCurrentEvents,
   getEventProgress
 } from "../../utils/schedule/eventUtils";
-import { getScheduleDate, parseTimeToMinutes } from "../../utils/schedule/timeUtils";
+import {
+  getScheduleDate,
+  parseTimeToMinutes
+} from "../../utils/schedule/timeUtils";
 
 const getTime = (date) =>
   `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
@@ -17,6 +21,11 @@ const isSameLocalDate = (left, right) =>
   left.getMonth() === right.getMonth() &&
   left.getDate() === right.getDate();
 
+const WEEK_OPTIONS = Array.from(
+  { length: MAX_WEEK - MIN_WEEK + 1 },
+  (_, index) => MIN_WEEK + index
+);
+
 const CourseTable = ({
   events = [],
   semesterStartDate,
@@ -25,11 +34,13 @@ const CourseTable = ({
   userGroup = "1组",
   now = new Date(),
   onSelectDay,
-  onPreviousWeek,
-  onNextWeek,
+  onSelectWeek,
   onEventClick,
   isScheduleLoaded = true
 }) => {
+  const [isWeekOpen, setIsWeekOpen] = useState(false);
+  const weekRootRef = useRef(null);
+  const weekTriggerRef = useRef(null);
   const selectedDate = getScheduleDate(semesterStartDate, currentWeek, selectedDay);
   const dayEvents = filterScheduleEvents(events, {
     week: currentWeek,
@@ -47,22 +58,113 @@ const CourseTable = ({
       : [];
   const currentIds = new Set(currentEvents.map((event) => event.id));
 
+  useEffect(() => {
+    if (!isWeekOpen) return undefined;
+    const closeOnOutsidePress = (event) => {
+      if (!weekRootRef.current?.contains(event.target)) setIsWeekOpen(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key !== "Escape") return;
+      setIsWeekOpen(false);
+      weekTriggerRef.current?.focus();
+    };
+    document.addEventListener("pointerdown", closeOnOutsidePress);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsidePress);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isWeekOpen]);
+
+  const selectWeek = (week) => {
+    onSelectWeek?.(week);
+    setIsWeekOpen(false);
+    weekTriggerRef.current?.focus();
+  };
+
   return (
     <div className="space-y-3">
       <div
-        className="flex h-12 items-center justify-between rounded-xl border px-3"
+        ref={weekRootRef}
+        className="relative grid h-12 grid-cols-[44px_minmax(0,1fr)_44px] items-center rounded-xl border px-1"
         style={{
           backgroundColor: "var(--surface-primary)",
           borderColor: "var(--outline-variant)"
         }}
       >
-        <button type="button" aria-label="上一周" onClick={onPreviousWeek}>
+        <button
+          type="button"
+          aria-label="上一周"
+          disabled={currentWeek <= MIN_WEEK}
+          onClick={() => onSelectWeek?.(currentWeek - 1)}
+          className="flex h-10 items-center justify-center rounded-lg disabled:opacity-30"
+        >
           <ChevronLeft size={20} />
         </button>
-        <span className="text-sm font-bold text-on-surface">第 {currentWeek} 周</span>
-        <button type="button" aria-label="下一周" onClick={onNextWeek}>
+        <button
+          ref={weekTriggerRef}
+          type="button"
+          aria-label="快速选择周数"
+          aria-haspopup="listbox"
+          aria-expanded={isWeekOpen}
+          aria-controls="schedule-week-listbox"
+          onClick={() => setIsWeekOpen((open) => !open)}
+          className="flex h-10 items-center justify-center gap-1 rounded-lg text-sm font-bold text-on-surface transition-colors"
+        >
+          第 {currentWeek} 周
+          <ChevronDown
+            aria-hidden="true"
+            size={14}
+            className={`transition-transform ${isWeekOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+        <button
+          type="button"
+          aria-label="下一周"
+          disabled={currentWeek >= MAX_WEEK}
+          onClick={() => onSelectWeek?.(currentWeek + 1)}
+          className="flex h-10 items-center justify-center rounded-lg disabled:opacity-30"
+        >
           <ChevronRight size={20} />
         </button>
+
+        <div
+          id="schedule-week-listbox"
+          role="listbox"
+          aria-label="选择周数"
+          hidden={!isWeekOpen}
+          className="absolute left-1/2 top-full z-40 mt-2 w-[248px] -translate-x-1/2 rounded-2xl border p-2 shadow-[0_16px_40px_rgba(15,23,42,0.14)]"
+          style={{
+            backgroundColor: "var(--surface-primary)",
+            borderColor: "var(--outline-variant)"
+          }}
+        >
+          <div className="grid grid-cols-4 gap-1.5">
+            {WEEK_OPTIONS.map((week) => {
+              const selected = week === currentWeek;
+              return (
+                <button
+                  key={week}
+                  type="button"
+                  role="option"
+                  data-week-option={week}
+                  aria-selected={selected}
+                  onClick={() => selectWeek(week)}
+                  className="h-10 rounded-xl border text-xs font-bold transition-colors"
+                  style={{
+                    backgroundColor: selected
+                      ? "var(--primary-container)"
+                      : "var(--surface-primary)",
+                    borderColor: selected ? "var(--primary)" : "var(--outline-variant)",
+                    color: selected ? "var(--primary)" : "var(--on-surface)"
+                  }}
+                >
+                  第 {week} 周
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-5 gap-1.5">
@@ -88,10 +190,10 @@ const CourseTable = ({
       </div>
 
       <h2 className="px-1 text-lg font-bold text-on-surface">
-        {DAY_NAMES[selectedDay]?.short} · {selectedDate ? `${selectedDate.getMonth() + 1} 月 ${selectedDate.getDate()} 日` : ""}
-      </h2>
+          {DAY_NAMES[selectedDay]?.short} · {selectedDate ? `${selectedDate.getMonth() + 1} 月 ${selectedDate.getDate()} 日` : ""}
+        </h2>
 
-      <section className="space-y-2" aria-label="当前课程">
+        <section className="space-y-2" aria-label="当前课程">
         {currentEvents.length > 0 ? (
           currentEvents.map((event) => {
             const progress = getEventProgress(event, getTime(now));
@@ -137,9 +239,9 @@ const CourseTable = ({
             <p className="mt-1 text-sm font-semibold text-on-surface-variant">当前无课程</p>
           </div>
         )}
-      </section>
+        </section>
 
-      <section aria-label="当天全部课程">
+        <section aria-label="当天全部课程">
         <div className="mb-2 flex items-center justify-between px-1">
           <h3 className="text-sm font-bold text-on-surface">当天全部课程</h3>
           <span className="text-[10px] text-on-surface-variant">
@@ -198,7 +300,7 @@ const CourseTable = ({
             })
           )}
         </div>
-      </section>
+        </section>
     </div>
   );
 };

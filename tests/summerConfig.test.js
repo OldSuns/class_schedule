@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 import {
   DEFAULT_SEMESTER_START_DATE,
@@ -62,4 +63,14 @@ test("schedule reset clears every summer schedule storage key", () => {
 test("minimal blue remains a supported theme and is the summer default", () => {
   assert.equal(THEMES.MINIMAL, "minimal");
   assert.equal(THEMES.DEFAULT, THEMES.MINIMAL);
+  assert.equal(STORAGE_KEYS.THEME, "summerTheme");
+});
+
+test("minimal theme uses one calmer blue across all primary accents", () => {
+  const themeCss = readFileSync(
+    new URL("../src/styles/theme.css", import.meta.url),
+    "utf8"
+  );
+  assert.match(themeCss, /--primary:\s*#3976D2;/);
+  assert.doesNotMatch(themeCss, /#0066FF/i);
 });

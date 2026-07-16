@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 import { StatusBar, Style } from "@capacitor/status-bar";
+import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
 import Header from "../components/layout/Header.jsx";
 import BottomNavigation, { APP_TABS } from "../components/layout/BottomNavigation.jsx";
 import Toast from "../components/layout/Toast.jsx";
@@ -12,23 +13,28 @@ import { useSemesterDate } from "../hooks/semester/useSemesterDate.js";
 import { useWeekSelector } from "../hooks/ui/useWeekSelector.js";
 import { useNotifications } from "../hooks/notifications/useNotifications.js";
 import { useTheme } from "../hooks/ui/useTheme.js";
+import { useWeekSwipe } from "../hooks/ui/useWeekSwipe.js";
 import { useScheduleData } from "../hooks/schedule/useScheduleData.js";
 import { STORAGE_KEYS } from "../config/constants.js";
 import { getItem, setItem } from "../../storage.js";
 import { hasElapsed, isRemoteCheckSuccessful } from "../utils/schedule/dateUtils.js";
+import {
+  getAdjacentWorkday,
+  getScheduleSelectionDirection,
+  getWeekStartSelection
+} from "../utils/schedule/timeUtils.js";
 
 const REMOTE_CHECK_INTERVAL_MS = 8 * 60 * 60 * 1000;
 const REMOTE_FOREGROUND_INTERVAL_MS = 10 * 60 * 1000;
 const REMOTE_ERROR_RETRY_INTERVAL_MS = 3 * 60 * 1000;
+const DAY_SWITCH_OFFSET_PX = 28;
+const DAY_SWITCH_TRANSITION = { duration: 0.18, ease: [0.22, 1, 0.36, 1] };
 
 const App = () => {
   const { semesterStartDate, todayInfo, displayWeekInfo } = useSemesterDate();
   const {
     currentWeek,
-    setCurrentWeek,
-    handleWeekChange,
-    handlePreviousWeek,
-    handleNextWeek
+    setCurrentWeek
   } = useWeekSelector(1);
   const { theme, onThemeChange } = useTheme();
   const {
@@ -64,11 +70,46 @@ const App = () => {
   const [now, setNow] = useState(() => new Date());
   const [toast, setToast] = useState({ isOpen: false, message: "" });
   const softUpdateScheduleRef = useRef(softUpdateSchedule);
+  const previousSelectionRef = useRef({ week: currentWeek, day: selectedDay });
+  const daySwitchControls = useAnimationControls();
+  const prefersReducedMotion = useReducedMotion();
 
   const selectedEvent = useMemo(
     () => scheduleData.events.find((event) => event.id === selectedEventId) ?? null,
     [scheduleData.events, selectedEventId]
   );
+
+  const handleNavigateDay = useCallback(
+    (direction) => {
+      const next = getAdjacentWorkday(
+        { week: currentWeek, day: selectedDay },
+        direction
+      );
+      if (!next) return;
+      setCurrentWeek(next.week);
+      setSelectedDay(next.day);
+    },
+    [currentWeek, selectedDay, setCurrentWeek]
+  );
+  const handleReturnToday = useCallback(() => {
+    if (!todayInfo?.day || !todayInfo?.week) return;
+    setCurrentWeek(todayInfo.week);
+    setSelectedDay(todayInfo.day);
+  }, [setCurrentWeek, todayInfo?.day, todayInfo?.week]);
+  const handleSelectWeek = useCallback(
+    (week) => {
+      const next = getWeekStartSelection(week);
+      if (!next) return;
+      setCurrentWeek(next.week);
+      setSelectedDay(next.day);
+    },
+    [setCurrentWeek]
+  );
+  const daySwipeHandlers = useWeekSwipe({
+    enabled: activeTab === APP_TABS.SCHEDULE && !selectedEvent,
+    onSwipeLeft: () => handleNavigateDay("next"),
+    onSwipeRight: () => handleNavigateDay("previous")
+  });
 
   useEffect(() => {
     if (displayWeekInfo?.week) setCurrentWeek(displayWeekInfo.week);
@@ -79,6 +120,32 @@ const App = () => {
     const timer = setInterval(() => setNow(new Date()), 30 * 1000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const nextSelection = { week: currentWeek, day: selectedDay };
+    const direction = getScheduleSelectionDirection(
+      previousSelectionRef.current,
+      nextSelection
+    );
+    previousSelectionRef.current = nextSelection;
+    if (direction === 0 || prefersReducedMotion) {
+      daySwitchControls.set({ opacity: 1, x: 0 });
+      return undefined;
+    }
+
+    daySwitchControls.set({
+      opacity: 0.94,
+      x: direction > 0 ? DAY_SWITCH_OFFSET_PX : -DAY_SWITCH_OFFSET_PX
+    });
+    const animationFrame = window.requestAnimationFrame(() => {
+      void daySwitchControls.start({
+        opacity: 1,
+        x: 0,
+        transition: DAY_SWITCH_TRANSITION
+      });
+    });
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [currentWeek, daySwitchControls, prefersReducedMotion, selectedDay]);
 
   useEffect(() => {
     if (!builtInUpdateNotice) return;
@@ -176,25 +243,42 @@ const App = () => {
     <div className="min-h-screen bg-surface-low pt-[var(--safe-top)]">
       <div className="mx-auto min-h-screen max-w-[430px] bg-surface-low sm:max-w-5xl">
         {activeTab === APP_TABS.SCHEDULE && (
-          <section className="min-h-screen px-2 pb-28 pt-2 sm:px-4 sm:pt-4">
+          <section
+            {...daySwipeHandlers}
+            aria-label="左右滑动切换日期"
+            data-swipe-surface="schedule-page"
+            data-swipe-enabled={Boolean(daySwipeHandlers.onTouchMove)}
+            className="min-h-screen touch-pan-y px-2 pb-28 pt-2 sm:px-4 sm:pt-4"
+            style={{ touchAction: "pan-y" }}
+          >
             <Header
               todayInfo={todayInfo}
+              isViewingToday={
+                todayInfo?.week === currentWeek && todayInfo?.day === selectedDay
+              }
               userGroup={userGroup}
               onGroupChange={onGroupChange}
+              onReturnToday={handleReturnToday}
             />
-            <CourseTable
-              events={scheduleData.events}
-              semesterStartDate={semesterStartDate}
-              currentWeek={currentWeek}
-              selectedDay={selectedDay}
-              userGroup={userGroup}
-              now={now}
-              onSelectDay={setSelectedDay}
-              onPreviousWeek={handlePreviousWeek}
-              onNextWeek={handleNextWeek}
-              onEventClick={(event) => setSelectedEventId(event.id)}
-              isScheduleLoaded={isScheduleLoaded}
-            />
+            <motion.div
+              data-day-transition="schedule"
+              initial={false}
+              animate={daySwitchControls}
+              style={{ willChange: "transform, opacity" }}
+            >
+              <CourseTable
+                events={scheduleData.events}
+                semesterStartDate={semesterStartDate}
+                currentWeek={currentWeek}
+                selectedDay={selectedDay}
+                userGroup={userGroup}
+                now={now}
+                onSelectDay={setSelectedDay}
+                onSelectWeek={handleSelectWeek}
+                onEventClick={(event) => setSelectedEventId(event.id)}
+                isScheduleLoaded={isScheduleLoaded}
+              />
+            </motion.div>
           </section>
         )}
 
@@ -203,7 +287,7 @@ const App = () => {
         {activeTab === APP_TABS.SETTINGS && (
           <SettingsPage
             currentWeek={currentWeek}
-            onSelectWeek={handleWeekChange}
+            onSelectWeek={handleSelectWeek}
             theme={theme}
             onThemeChange={onThemeChange}
             notificationsEnabled={notificationsEnabled}

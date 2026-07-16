@@ -2,7 +2,11 @@
  * 时间相关工具函数
  */
 
-import { DAYS, MAX_WEEK } from "../../config/constants.js";
+import { DAYS, MAX_WEEK, MIN_WEEK } from "../../config/constants.js";
+
+const SWIPE_DISTANCE_THRESHOLD = 56;
+const SWIPE_VELOCITY_THRESHOLD = 500;
+const HORIZONTAL_SWIPE_RATIO = 1.15;
 
 const createDateAtMidnight = (year, month, day) => {
   const date = new Date(year, month, day);
@@ -105,6 +109,80 @@ export const getScheduleDate = (startDate, week, day) => {
     semesterStart.getMonth(),
     semesterStart.getDate() + (weekNum - 1) * 7 + dayIndex
   );
+};
+
+export const getAdjacentWorkday = ({ week, day }, direction) => {
+  const weekNumber = Number(week);
+  const dayIndex = DAYS.indexOf(day);
+  if (
+    !Number.isInteger(weekNumber) ||
+    weekNumber < MIN_WEEK ||
+    weekNumber > MAX_WEEK ||
+    dayIndex === -1 ||
+    (direction !== "previous" && direction !== "next")
+  ) {
+    return null;
+  }
+
+  if (direction === "previous") {
+    if (dayIndex > 0) return { week: weekNumber, day: DAYS[dayIndex - 1] };
+    return weekNumber > MIN_WEEK
+      ? { week: weekNumber - 1, day: DAYS.at(-1) }
+      : { week: weekNumber, day };
+  }
+
+  if (dayIndex < DAYS.length - 1) {
+    return { week: weekNumber, day: DAYS[dayIndex + 1] };
+  }
+  return weekNumber < MAX_WEEK
+    ? { week: weekNumber + 1, day: DAYS[0] }
+    : { week: weekNumber, day };
+};
+
+export const getWeekStartSelection = (week) => {
+  const weekNumber = Number(week);
+  if (!Number.isInteger(weekNumber) || weekNumber < MIN_WEEK || weekNumber > MAX_WEEK) {
+    return null;
+  }
+  return { week: weekNumber, day: DAYS[0] };
+};
+
+export const getScheduleSelectionDirection = (previous, next) => {
+  const getIndex = (selection) => {
+    const week = Number(selection?.week);
+    const dayIndex = DAYS.indexOf(selection?.day);
+    if (!Number.isInteger(week) || week < MIN_WEEK || week > MAX_WEEK || dayIndex < 0) {
+      return null;
+    }
+    return (week - 1) * DAYS.length + dayIndex;
+  };
+  const previousIndex = getIndex(previous);
+  const nextIndex = getIndex(next);
+  if (previousIndex == null || nextIndex == null) return 0;
+  return Math.sign(nextIndex - previousIndex);
+};
+
+export const getSwipeDayDirection = ({ offsetX, offsetY, velocityX }) => {
+  const horizontal = Number(offsetX);
+  const vertical = Number(offsetY);
+  const velocity = Number(velocityX);
+  if (![horizontal, vertical, velocity].every(Number.isFinite)) return null;
+  if (Math.abs(horizontal) <= Math.abs(vertical) * HORIZONTAL_SWIPE_RATIO) {
+    return null;
+  }
+  if (
+    horizontal >= SWIPE_DISTANCE_THRESHOLD ||
+    velocity >= SWIPE_VELOCITY_THRESHOLD
+  ) {
+    return "previous";
+  }
+  if (
+    horizontal <= -SWIPE_DISTANCE_THRESHOLD ||
+    velocity <= -SWIPE_VELOCITY_THRESHOLD
+  ) {
+    return "next";
+  }
+  return null;
 };
 
 export const formatMonthDay = (date) => {

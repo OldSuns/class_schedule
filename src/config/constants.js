@@ -31,7 +31,7 @@ export const THEMES = {
 };
 
 // 当前应用版本（用于更新检查）
-export const APP_VERSION = "2.0.8";
+export const APP_VERSION = "2.1.0";
 
 // Gitee Releases
 export const GITHUB_RELEASES_URL =
@@ -75,7 +75,7 @@ export const STORAGE_KEYS = {
   UPDATE_LAST_CHECK_DATE: "updateLastCheckDate",
   UPDATE_LAST_ERROR_AT: "updateLastErrorAt",
   UPDATE_LAST_TOAST_DATE: "updateLastToastDate",
-  THEME: "theme",
+  THEME: "summerTheme",
   USER_EXAMS: "userExams"
 };
 
