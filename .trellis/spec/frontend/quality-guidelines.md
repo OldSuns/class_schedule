@@ -9,6 +9,7 @@
 - Remote sources must target `@summer-schedule`; no request or fallback may target `main`.
 - Notifications merge visible events with the same start time, keep different start times separate, and use stable positive 32-bit IDs for the Android bridge.
 - Widget snapshot v4 contains validated events with `startMin`/`endMin`; native code must not reinterpret fixed periods.
+- Android `WindowInsets` values are physical pixels. Convert them by display density before injecting CSS safe-area variables; never write raw inset pixels as CSS pixels.
 
 ## Validation order
 

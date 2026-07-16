@@ -16,8 +16,14 @@
 - Never keep a second day/period representation in React state, storage, remote payloads, notifications, or widget snapshots.
 - Every manual mutation returns a new root object, updates `updatedAt`, and passes through `normalizeSchedulePayload` before entering state.
 - Invalid custom or remote data is rejected as one payload. Do not drop bad events, accept legacy arrays, or silently fall back to old schedule keys.
-- Schedule storage uses the `summerSchedule*` namespace. Theme and notification preferences may remain shared, but schedule snapshots, notification plans, and widget snapshots are summer-specific.
+- Schedule storage uses the `summerSchedule*` namespace. Theme uses the independent `summerTheme` key so the summer build starts in Minimal Blue instead of inheriting an old M3 choice. Notification plans and widget snapshots are also summer-specific; notification permission and lead-time preferences may remain shared.
 - The semester start date is a fixed business constant, not user-editable state.
+
+## Date navigation state
+
+- Keep only `currentWeek` and `selectedDay`; do not add a parallel absolute-date state.
+- Adjacent-day gestures resolve through one pure helper that returns the next `{ week, day }`, and `App` applies both values in the same interaction.
+- Week selectors change only `currentWeek` and preserve the selected weekday.
 
 ## Audience state
 

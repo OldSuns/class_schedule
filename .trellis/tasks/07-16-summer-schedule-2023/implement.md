@@ -33,6 +33,17 @@
 
 验证顺序：`npm run test:unit` → `npm run build` → Android 相关构建/静态检查 → 人工确认 Pencil 对照的移动端主流程。
 
+## 5. 日期手势、组别选择器与主题隔离
+
+1. 先为 `getAdjacentWorkday({ week, day }, direction)` 写失败测试，覆盖右滑前一天、左滑后一天、周一/周五连续跨周和第 1/8 周停止；再实现纯函数，并由 `App` 的单一 handler 在同一事件中更新周次和日期。周切换箭头与设置页快速选周继续保留当前日期。
+2. 先扩展 SSR 测试，要求组别触发器不再渲染原生 `select`，具有稳定胶囊按钮、listbox 展开语义和 4+3 组选项；再用现有 React/Tailwind 实现无头浮层，补齐外部点击与 Escape 关闭。
+3. 恢复旧版已验证的 `useWeekSwipe` move-phase 手势处理，将左右回调改为前后工作日；保留横纵轴锁定、阈值、`preventDefault()`、点击抑制与 `touch-action: pan-y`。保留现有日期按钮及周切换按钮作为可访问的非手势入口。
+4. 使用 Motion animation controls 为日期变化增加约 180ms 的方向性位移淡入；动画方向由完整周次和工作日顺序计算，并尊重 reduced-motion。
+5. 先更新主题契约测试，要求暑期独立存储键与简约蓝默认值；再修改主题持久化，旧通用主题键不迁移。
+6. 功能与构建验证通过后，先为版本同步脚本补失败测试，要求它同步 `package-lock.json` 根版本与 `packages[""]`；再将 `package.json` 更新为 `2.1.0`，运行同步流程并检查 Web、lockfile 与 Android 元数据一致。
+
+验证：目标单测红—绿 → `npm run test:unit` → `npm run build` → 版本一致性检查 → `git diff --check`。
+
 ## Review gates
 
 - 每一阶段后检查是否重新引入固定节次作为时间来源、ABCD 组别、旧课表缓存或联系人电话号码。
