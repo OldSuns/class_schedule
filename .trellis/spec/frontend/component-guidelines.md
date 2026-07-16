@@ -1,59 +1,15 @@
 # Component Guidelines
 
-> How components are built in this project.
+## Schedule composition
 
----
+- Keep the existing `App -> Header / CourseTable / SettingsPage / CourseModal` composition. Do not create a parallel schedule page hierarchy.
+- `Header` owns only the product title, current-day status, and the single 1–7 group selector. Current-course progress belongs in the main schedule content.
+- `CourseTable` is the real-time daily view despite its historical filename. It renders week navigation, weekday navigation, current events, and one unified `time / course / location` list.
+- Morning rotations and shared afternoon events must use the same row component. Do not branch the layout by course type or invent section labels such as “special lecture”.
+- `CourseModal` receives one normalized event. Editing uses native time inputs and must preserve the event root contract.
 
-## Overview
+## Styling and accessibility
 
-<!--
-Document your project's component conventions here.
-
-Questions to answer:
-- What component patterns do you use?
-- How are props defined?
-- How do you handle composition?
-- What accessibility standards apply?
--->
-
-(To be filled by the team)
-
----
-
-## Component Structure
-
-<!-- Standard structure of a component file -->
-
-(To be filled by the team)
-
----
-
-## Props Conventions
-
-<!-- How props should be defined and typed -->
-
-(To be filled by the team)
-
----
-
-## Styling Patterns
-
-<!-- How styles are applied (CSS modules, styled-components, Tailwind, etc.) -->
-
-(To be filled by the team)
-
----
-
-## Accessibility
-
-<!-- A11y requirements and patterns -->
-
-(To be filled by the team)
-
----
-
-## Common Mistakes
-
-<!-- Component-related mistakes your team has made -->
-
-(To be filled by the team)
+- Use the existing theme variables and Tailwind mappings. Minimal Blue is the default; M3 remains selectable.
+- Keep primary vertical gaps in the 12–16px range. Current-course cards may use slightly larger vertical padding than ordinary rows.
+- Interactive rows, week/day controls, group selection, modal controls, and edit/delete actions require semantic buttons or native controls and accessible labels.

@@ -14,26 +14,21 @@
 
 - `src/components/layout/`：顶部栏与 Toast。
 - `src/components/settings/SettingsMenu/`：设置菜单及各功能分区。
-- `src/components/schedule/`：课表表格与课程详情/编辑弹窗。
-- `src/components/shared/`：周次多选等复用组件。
+- `src/components/schedule/`：真实时间日表与课程详情/编辑弹窗。
 
 ### Hooks（状态与行为）
 
-- `src/hooks/semester/useSemesterDate.js`：开学日期读取/保存，计算当前周次与日期信息。
+- `src/hooks/semester/useSemesterDate.js`：读取固定暑期起点，计算当前周次与日期信息。
 - `src/hooks/ui/useWeekSelector.js`：周次选择与切换逻辑。
-- `src/hooks/ui/useWeekSwipe.js`：移动端左右滑动切周。
-- `src/hooks/ui/useDisplayMode.js`：课表显示模式。
 - `src/hooks/schedule/useScheduleData.js`：内置课表、远端课表、自定义课表的加载、持久化与切换。
 - `src/hooks/notifications/useNotifications.js`：通知设置、权限检查与排程协调。
 
 ### 数据、服务与工具
 
 - `src/data/scheduleData.js`：内置课表数据源。
-- `src/utils/schedule/courseUtils.js`：课程展示与单元格合并辅助。
-- `src/utils/schedule/scheduleUtils.js`：课表规范化、逻辑增删改。
-- `src/utils/schedule/timeUtils.js`：节次时间、日期与当前课程计算。
-- `src/utils/schedule/groupUtils.js`：分组解析与过滤。
-- `src/utils/schedule/electiveUtils.js`：选修项过滤逻辑。
+- `src/utils/schedule/eventUtils.js`：严格事件 schema、日表筛选、当前课程、进度和小组件快照。
+- `src/utils/schedule/timeUtils.js`：严格 `HH:mm` 解析、日期与周次计算。
+- `src/utils/schedule/groupUtils.js`：1组至7组及共同课程过滤。
 - `src/config/constants.js`：周次范围、默认开学日期、版本号、远端课表地址、存储键名。
 - `src/services/schedule/remoteSchedule.js`：远端 `schedule.json` 拉取与缓存校验。
 - `src/services/app/updateChecker.js`：版本检查。常量名保留 `GITHUB_*`，实际请求的是 Gitee Releases API。
@@ -44,8 +39,8 @@
 ## 常见修改位置
 
 - 修改课程内容：编辑 `src/data/scheduleData.js`
-- 调整课表编辑行为：查看 `src/components/schedule/CourseModal/` 与 `src/utils/schedule/scheduleUtils.js`
-- 调整节次时间、当前节次计算：编辑 `src/utils/schedule/timeUtils.js`
+- 调整课表编辑行为：查看 `src/components/schedule/CourseModal/CourseModal.jsx`
+- 调整事件校验、当前课程或小组件快照：编辑 `src/utils/schedule/eventUtils.js`
 - 修改周次范围、默认开学日期、版本号、远端地址或存储键：编辑 `src/config/constants.js`
 - 调整通知排程、提醒文案或权限逻辑：编辑 `src/hooks/notifications/useNotifications.js` 与 `src/services/notifications/notificationScheduler.js`
 - 调整远端课表拉取与软更新逻辑：编辑 `src/hooks/schedule/useScheduleData.js` 与 `src/services/schedule/remoteSchedule.js`
@@ -57,9 +52,9 @@
 软更新使用仓库根目录 `schedule.json` 作为远端数据源。该文件由 `src/data/scheduleData.js` 生成。
 
 当前线上地址：
-- `https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json`
-- `https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json`
-- `https://gcore.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json`
+- `https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
+- `https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
+- `https://gcore.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
 
 发布课表更新时需要：
 
@@ -73,10 +68,10 @@ git push
 ## 刷新 jsDelivr 缓存
 
 - 工具页：[jsDelivr purge](https://www.jsdelivr.com/tools/purge)
-- Purge URL：`https://purge.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json`
+- Purge URL：`https://purge.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
 - 测试地址：
-  - `https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json`
-  - `https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@main/schedule.json`
+  - `https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
+  - `https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
 
 ## Android 注意事项
 

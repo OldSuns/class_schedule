@@ -1,51 +1,28 @@
 # Quality Guidelines
 
-> Code quality standards for frontend development.
+## Required invariants
 
----
+- `startTime` and `endTime` are the only course-time source. Fixed periods and `periodRanges` are forbidden as schedule logic.
+- Event times use strict `HH:mm`; `endTime` must be later than `startTime`.
+- Event IDs are unique, weeks are within 1–8, weekdays are Monday–Friday, and groups are `null` or `1组`–`7组`.
+- Contacts and phone numbers from rotation spreadsheets must never enter schedule data. Teaching staff may be stored in `note`.
+- Remote sources must target `@summer-schedule`; no request or fallback may target `main`.
+- Notifications merge visible events with the same start time, keep different start times separate, and use stable positive 32-bit IDs for the Android bridge.
+- Widget snapshot v4 contains validated events with `startMin`/`endMin`; native code must not reinterpret fixed periods.
 
-## Overview
+## Validation order
 
-<!--
-Document your project's quality standards here.
+1. Add or update a failing `node:test` case for behavior changes.
+2. Run the targeted test and confirm the expected failure.
+3. Implement the minimum root-cause change and rerun the targeted test.
+4. Run `npm run test:unit`.
+5. Run `npm run build`.
+6. For Android changes, run `android\\gradlew.bat :app:compileDebugJavaWithJavac --rerun-tasks --no-daemon`.
+7. Run Trellis validation and `git diff --check`.
 
-Questions to answer:
-- What patterns are forbidden?
-- What linting rules do you enforce?
-- What are your testing requirements?
-- What code review standards apply?
--->
+## Forbidden patterns
 
-(To be filled by the team)
-
----
-
-## Forbidden Patterns
-
-<!-- Patterns that should never be used and why -->
-
-(To be filled by the team)
-
----
-
-## Required Patterns
-
-<!-- Patterns that must always be used -->
-
-(To be filled by the team)
-
----
-
-## Testing Requirements
-
-<!-- What level of testing is expected -->
-
-(To be filled by the team)
-
----
-
-## Code Review Checklist
-
-<!-- What reviewers should check -->
-
-(To be filled by the team)
+- Legacy day/period schedule arrays or compatibility branches.
+- A–D, class-combination, or elective audience logic in the summer schedule.
+- Duplicate audience/time filtering in UI, notifications, and widgets when a shared event utility can be used.
+- Silent payload repair, partial-event fallback, or broad exception handling that hides invalid schedule data.
