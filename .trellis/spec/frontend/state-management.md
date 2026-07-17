@@ -18,6 +18,7 @@
 - `normalizeSchedulePayload` may accept strict v1 events only for the explicit one-way migration `note → teacher`; normalized state is always v2. Remote publishing keeps `schedule.json` as the generated v1 compatibility projection and uses `schedule-v2.json` for current clients.
 - Every manual mutation returns a new root object, updates `updatedAt`, and passes through `normalizeSchedulePayload` before entering state.
 - Invalid custom or remote data is rejected as one payload. Do not drop bad events, accept legacy arrays, or silently fall back to old schedule keys.
+- A persisted remote snapshot is restored only when its validated `updatedAt` is strictly later than the packaged built-in schedule by absolute timestamp. Equal or older remote state is cleared so an overwrite install cannot replace newer built-in data.
 - Schedule storage uses the `summerSchedule*` namespace. Theme uses the independent `summerTheme` key so the summer build starts in Minimal Blue instead of inheriting an old M3 choice. Notification plans and widget snapshots are also summer-specific; notification permission and lead-time preferences may remain shared.
 - The semester start date is a fixed business constant, not user-editable state.
 

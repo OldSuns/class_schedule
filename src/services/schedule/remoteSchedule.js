@@ -7,6 +7,9 @@ const REMOTE_SCHEDULE_REQUEST_TIMEOUT_MS = 10000;
 export const buildScheduleSignature = (schedule) =>
   JSON.stringify(normalizeSchedulePayload(schedule));
 
+export const isScheduleNewer = (candidate, current) =>
+  Date.parse(candidate?.updatedAt) > Date.parse(current?.updatedAt);
+
 export const normalizeRemotePayload = normalizeSchedulePayload;
 
 export const fetchRemoteSchedule = async ({ meta } = {}) => {

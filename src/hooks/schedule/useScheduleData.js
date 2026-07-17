@@ -12,7 +12,8 @@ import {
 } from "../../utils/schedule/eventUtils";
 import {
   buildScheduleSignature,
-  fetchRemoteSchedule
+  fetchRemoteSchedule,
+  isScheduleNewer
 } from "../../services/schedule/remoteSchedule";
 import { refreshWidget } from "../../services/platform/widgetBridge";
 
@@ -27,6 +28,29 @@ const SCHEDULE_SOURCES = {
 const isValidScheduleSource = (value) => Object.values(SCHEDULE_SOURCES).includes(value);
 const createDefaultSchedule = () => normalizeSchedulePayload(defaultScheduleData);
 const DEFAULT_SCHEDULE_SIGNATURE = buildScheduleSignature(createDefaultSchedule());
+
+export const resolveStoredSchedule = ({ custom, remote, source, builtIn }) => {
+  const remoteIsNewer = Boolean(
+    remote && isScheduleNewer(remote.payload, builtIn)
+  );
+  const shouldClearRemoteState =
+    Boolean(remote && !remoteIsNewer) ||
+    (source === SCHEDULE_SOURCES.REMOTE && !remote);
+
+  if (custom) {
+    return {
+      payload: custom,
+      source: SCHEDULE_SOURCES.MANUAL,
+      shouldClearRemoteState
+    };
+  }
+  const useRemote = source === SCHEDULE_SOURCES.REMOTE && remoteIsNewer;
+  return {
+    payload: useRemote ? remote.payload : builtIn,
+    source: useRemote ? SCHEDULE_SOURCES.REMOTE : SCHEDULE_SOURCES.BUILTIN,
+    shouldClearRemoteState
+  };
+};
 
 const parseJson = (raw) => {
   if (!raw) return null;
@@ -135,28 +159,34 @@ export const useScheduleData = () => {
       const meta = parseRemoteMeta(metaRaw);
       const skipped = parseSkippedRemoteUpdate(skippedRaw);
       const source = isValidScheduleSource(sourceRaw) ? sourceRaw : SCHEDULE_SOURCES.BUILTIN;
+      const builtIn = createDefaultSchedule();
+      const resolved = resolveStoredSchedule({ custom, remote, source, builtIn });
       const defaultChanged =
         versionRaw != null &&
         (versionRaw !== String(DEFAULT_SCHEDULE_VERSION) ||
           signatureRaw !== DEFAULT_SCHEDULE_SIGNATURE);
 
-      setRemoteSnapshot(remote);
-      setRemoteMeta(meta);
-      setSkippedRemoteUpdate(skipped);
+      setRemoteSnapshot(resolved.shouldClearRemoteState ? null : remote);
+      setRemoteMeta(resolved.shouldClearRemoteState ? null : meta);
+      setSkippedRemoteUpdate(resolved.shouldClearRemoteState ? null : skipped);
 
-      await Promise.all([
+      const writes = [
         storage.setItem(STORAGE_KEYS.DEFAULT_SCHEDULE_VERSION, String(DEFAULT_SCHEDULE_VERSION)),
         storage.setItem(STORAGE_KEYS.DEFAULT_SCHEDULE_SIGNATURE, DEFAULT_SCHEDULE_SIGNATURE)
-      ]);
+      ];
+      if (resolved.shouldClearRemoteState) {
+        writes.push(
+          storage.removeItem(STORAGE_KEYS.REMOTE_SCHEDULE_SNAPSHOT),
+          storage.removeItem(STORAGE_KEYS.REMOTE_SCHEDULE_META),
+          storage.removeItem(STORAGE_KEYS.REMOTE_SKIPPED_UPDATE)
+        );
+      }
+      await Promise.all(writes);
       if (cancelled) return;
 
-      if (custom) {
-        applySchedule(custom, SCHEDULE_SOURCES.MANUAL);
-        if (defaultChanged) setBuiltInUpdateNotice("内置课表已更新，可在设置中重置");
-      } else if (source === SCHEDULE_SOURCES.REMOTE && remote) {
-        applySchedule(remote.payload, SCHEDULE_SOURCES.REMOTE);
-      } else {
-        applyBuiltInSchedule();
+      applySchedule(resolved.payload, resolved.source);
+      if (custom && defaultChanged) {
+        setBuiltInUpdateNotice("内置课表已更新，可在设置中重置");
       }
       setIsScheduleLoaded(true);
     };
@@ -164,7 +194,7 @@ export const useScheduleData = () => {
     return () => {
       cancelled = true;
     };
-  }, [applyBuiltInSchedule, applySchedule]);
+  }, [applySchedule]);
 
   const setScheduleData = useCallback((updater) => {
     setBuiltInUpdateNotice("");
