@@ -49,3 +49,8 @@ Questions to answer:
 <!-- State management mistakes your team has made -->
 
 (To be filled by the team)
+
+## Application update checks
+
+- On startup, check the latest application Release at most once per local calendar day. Recording a displayed prompt suppresses duplicate prompts for that day.
+- Failed checks stay silent and may retry after three minutes. The Settings page remains the explicit manual-check path.

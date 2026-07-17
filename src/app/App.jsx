@@ -12,6 +12,7 @@ import SettingsPage from "../components/settings/SettingsPage.jsx";
 import CourseTable from "../components/schedule/CourseTable.jsx";
 import CourseModal from "../components/schedule/CourseModal/CourseModal.jsx";
 import Toast from "../components/layout/Toast.jsx";
+import AppUpdateDialog from "../components/layout/AppUpdateDialog.jsx";
 
 // Hooks
 import { useSemesterDate } from "../hooks/semester/useSemesterDate.js";
@@ -36,17 +37,15 @@ import {
   getPeriodLabel,
   getPeriodRangeMinutes
 } from "../utils/schedule/timeUtils.js";
-import { checkForUpdates } from "../services/app/updateChecker.js";
 import { APP_VERSION, STORAGE_KEYS } from "../config/constants.js";
-import { getItem, setItem } from "../../storage";
+import { getItem, setItem } from "../../storage.js";
+import { checkForStartupUpdate } from "../services/app/startupUpdate.js";
+import { openUpdateTarget } from "../services/app/updateOpener.js";
 import {
-  getTodayKey,
   hasElapsed,
   isRemoteCheckSuccessful
 } from "../utils/schedule/dateUtils.js";
 
-const UPDATE_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
-const UPDATE_ERROR_RETRY_INTERVAL_MS = 3 * 60 * 1000;
 const REMOTE_SCHEDULE_CHECK_INTERVAL_MS = 8 * 60 * 60 * 1000;
 const REMOTE_SCHEDULE_FOREGROUND_CHECK_INTERVAL_MS = 10 * 60 * 1000;
 const REMOTE_SCHEDULE_ERROR_RETRY_INTERVAL_MS = 3 * 60 * 1000;
@@ -110,7 +109,7 @@ const App = () => {
   // 当前时间（用于进度条刷新）
   const [now, setNow] = useState(() => new Date());
 
-  const [updateToast, setUpdateToast] = useState({ isOpen: false, message: "" });
+  const [appUpdate, setAppUpdate] = useState(null);
   const [scheduleUpdateToast, setScheduleUpdateToast] = useState({
     isOpen: false,
     message: ""
@@ -244,61 +243,11 @@ const App = () => {
 
   useEffect(() => {
     let cancelled = false;
-    let inFlight = false;
-
-    const checkUpdates = async () => {
-      if (inFlight) return;
-      inFlight = true;
-      try {
-        const today = getTodayKey();
-        const now = Date.now();
-        const [lastCheck, lastErrorRaw] = await Promise.all([
-          getItem(STORAGE_KEYS.UPDATE_LAST_CHECK_DATE),
-          getItem(STORAGE_KEYS.UPDATE_LAST_ERROR_AT)
-        ]);
-        const lastError = Number(lastErrorRaw);
-
-        if (lastCheck === today) {
-          return;
-        }
-
-        if (!hasElapsed(lastError, UPDATE_ERROR_RETRY_INTERVAL_MS, now)) {
-          return;
-        }
-
-        const result = await checkForUpdates(APP_VERSION);
-
-        if (result?.status === "update" || result?.status === "latest") {
-          await Promise.all([
-            setItem(STORAGE_KEYS.UPDATE_LAST_CHECK_DATE, today),
-            setItem(STORAGE_KEYS.UPDATE_LAST_ERROR_AT, "")
-          ]);
-        } else if (result?.status === "error") {
-          await setItem(STORAGE_KEYS.UPDATE_LAST_ERROR_AT, String(now));
-        }
-
-        if (!cancelled && result?.status === "update") {
-          const lastToast = await getItem(STORAGE_KEYS.UPDATE_LAST_TOAST_DATE);
-          if (lastToast !== today) {
-            const versionLabel = result.latestVersion ? ` v${result.latestVersion}` : "";
-            setUpdateToast({
-              isOpen: true,
-              message: `发现新版本${versionLabel}`
-            });
-            await setItem(STORAGE_KEYS.UPDATE_LAST_TOAST_DATE, today);
-          }
-        }
-      } finally {
-        inFlight = false;
-      }
-    };
-
-    checkUpdates();
-    const timer = setInterval(checkUpdates, UPDATE_CHECK_INTERVAL_MS);
-
+    void checkForStartupUpdate({ currentVersion: APP_VERSION }).then((result) => {
+      if (!cancelled && result?.shouldPrompt) setAppUpdate(result);
+    });
     return () => {
       cancelled = true;
-      clearInterval(timer);
     };
   }, []);
 
@@ -623,10 +572,6 @@ const App = () => {
     }
   };
 
-  const closeUpdateToast = () => {
-    setUpdateToast((prev) => (prev.isOpen ? { ...prev, isOpen: false } : prev));
-  };
-
   const closeScheduleUpdateToast = () => {
     setScheduleUpdateToast((prev) =>
       prev.isOpen ? { ...prev, isOpen: false } : prev
@@ -768,13 +713,23 @@ const App = () => {
         onClose={closeModal}
       />
 
+      <AppUpdateDialog
+        isOpen={Boolean(appUpdate)}
+        version={appUpdate?.latestVersion}
+        notes={appUpdate?.releaseNotes}
+        onLater={() => setAppUpdate(null)}
+        onUpdate={() => {
+          const target = appUpdate;
+          setAppUpdate(null);
+          void openUpdateTarget({
+            apkUrl: target?.apkUrl,
+            releaseUrl: target?.url
+          });
+        }}
+      />
+
       <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <Toast
-        isOpen={updateToast.isOpen}
-        message={updateToast.message}
-        onClose={closeUpdateToast}
-      />
       <Toast
         isOpen={scheduleUpdateToast.isOpen}
         message={scheduleUpdateToast.message}

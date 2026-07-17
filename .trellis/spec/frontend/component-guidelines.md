@@ -57,3 +57,7 @@ Questions to answer:
 <!-- Component-related mistakes your team has made -->
 
 (To be filled by the team)
+
+## Application update prompt
+
+- `AppUpdateDialog` is the single global prompt for application Releases. It shows the new version and Release notes, and routes the update action through the shared platform-aware opener used by Settings.
