@@ -20,7 +20,8 @@ const findProjectRoot = (startDir) => {
 
 const root = findProjectRoot(process.cwd());
 const sourcePath = path.join(root, "src", "data", "scheduleData.js");
-const outputPath = path.join(root, "schedule.json");
+const currentOutputPath = path.join(root, "schedule-v2.json");
+const legacyOutputPath = path.join(root, "schedule.json");
 
 const loadScheduleData = async () => {
   const moduleUrl = pathToFileURL(sourcePath).href;
@@ -34,5 +35,17 @@ if (!scheduleData || !Array.isArray(scheduleData.events)) {
   process.exit(1);
 }
 
-fs.writeFileSync(outputPath, JSON.stringify(scheduleData, null, 2), "utf8");
-console.log(`已生成 schedule.json (${outputPath})`);
+const legacyScheduleData = {
+  version: 1,
+  semesterStartDate: scheduleData.semesterStartDate,
+  updatedAt: scheduleData.updatedAt,
+  events: scheduleData.events.map(({ teacher, note: _note, ...event }) => ({
+    ...event,
+    note: teacher
+  }))
+};
+
+fs.writeFileSync(currentOutputPath, JSON.stringify(scheduleData, null, 2), "utf8");
+fs.writeFileSync(legacyOutputPath, JSON.stringify(legacyScheduleData, null, 2), "utf8");
+console.log(`已生成 schedule-v2.json (${currentOutputPath})`);
+console.log(`已生成兼容版 schedule.json (${legacyOutputPath})`);

@@ -19,7 +19,7 @@ test("summer build uses the eight-week 2026 practice calendar", () => {
 test("summer schedule remote sources never request the main branch", () => {
   assert.equal(SCHEDULE_REMOTE_URLS.length, 3);
   for (const url of SCHEDULE_REMOTE_URLS) {
-    assert.match(url, /@summer-schedule\/schedule\.json$/);
+    assert.match(url, /@summer-schedule\/schedule-v2\.json$/);
     assert.doesNotMatch(url, /@main\//);
   }
 });

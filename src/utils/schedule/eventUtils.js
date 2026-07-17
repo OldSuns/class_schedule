@@ -3,6 +3,17 @@ import { parseTimeToMinutes } from "./timeUtils.js";
 
 const ERROR_MESSAGE = "课表数据格式不兼容";
 const ROOT_KEYS = ["events", "semesterStartDate", "updatedAt", "version"];
+const LEGACY_EVENT_KEYS = [
+  "day",
+  "endTime",
+  "group",
+  "id",
+  "location",
+  "name",
+  "note",
+  "startTime",
+  "weeks"
+];
 const EVENT_KEYS = [
   "day",
   "endTime",
@@ -12,6 +23,7 @@ const EVENT_KEYS = [
   "name",
   "note",
   "startTime",
+  "teacher",
   "weeks"
 ];
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -68,6 +80,7 @@ export const normalizeEvent = (event) => {
     end <= start ||
     (group !== null && !SELECTABLE_GROUP_TYPES.includes(group)) ||
     typeof event.location !== "string" ||
+    typeof event.teacher !== "string" ||
     typeof event.note !== "string"
   ) {
     incompatible();
@@ -82,15 +95,28 @@ export const normalizeEvent = (event) => {
     endTime: event.endTime,
     group,
     location: event.location.trim(),
+    teacher: event.teacher.trim(),
     note: event.note.trim()
   };
+};
+
+const normalizeLegacyEvent = (event) => {
+  if (!event || typeof event !== "object" || Array.isArray(event)) incompatible();
+  if (!hasExactKeys(event, LEGACY_EVENT_KEYS) || typeof event.note !== "string") {
+    incompatible();
+  }
+  return normalizeEvent({
+    ...event,
+    teacher: event.note,
+    note: ""
+  });
 };
 
 export const normalizeSchedulePayload = (payload) => {
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) incompatible();
   if (!hasExactKeys(payload, ROOT_KEYS)) incompatible();
   if (
-    payload.version !== 1 ||
+    ![1, 2].includes(payload.version) ||
     payload.semesterStartDate !== "2026-07-13" ||
     typeof payload.updatedAt !== "string" ||
     !isValidIsoTimestamp(payload.updatedAt) ||
@@ -99,11 +125,12 @@ export const normalizeSchedulePayload = (payload) => {
     incompatible();
   }
 
-  const events = payload.events.map(normalizeEvent);
+  const normalize = payload.version === 1 ? normalizeLegacyEvent : normalizeEvent;
+  const events = payload.events.map(normalize);
   if (new Set(events.map((event) => event.id)).size !== events.length) incompatible();
 
   return {
-    version: 1,
+    version: 2,
     semesterStartDate: "2026-07-13",
     updatedAt: payload.updatedAt,
     events

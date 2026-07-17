@@ -14,7 +14,7 @@ const {
 } = await server.ssrLoadModule("/src/services/schedule/remoteSchedule.js");
 
 const payload = {
-  version: 1,
+  version: 2,
   semesterStartDate: "2026-07-13",
   updatedAt: "2026-07-16T00:00:00+08:00",
   events: [
@@ -27,7 +27,8 @@ const payload = {
       endTime: "14:25",
       group: null,
       location: "11号楼1楼教室",
-      note: "魏湘"
+      teacher: "魏湘",
+      note: ""
     }
   ]
 };
@@ -36,9 +37,22 @@ test("remote schedule accepts only the authoritative summer root", () => {
   assert.equal(typeof normalizeRemotePayload, "function");
   assert.deepEqual(normalizeRemotePayload(payload), payload);
   assert.throws(
-    () => normalizeRemotePayload({ version: 1, schedule: payload.events }),
+    () => normalizeRemotePayload({ version: 2, schedule: payload.events }),
     /课表数据格式不兼容/
   );
+});
+
+test("remote schedule migrates legacy v1 payloads without losing teachers", () => {
+  const legacyPayload = {
+    ...payload,
+    version: 1,
+    events: payload.events.map(({ teacher, note: _note, ...event }) => ({
+      ...event,
+      note: teacher
+    }))
+  };
+
+  assert.deepEqual(normalizeRemotePayload(legacyPayload), payload);
 });
 
 test("schedule signature covers the complete normalized root", () => {

@@ -54,10 +54,7 @@ const parseRemoteSnapshot = (raw) => {
     const payload = normalizeSchedulePayload(parsed.payload);
     return {
       payload,
-      signature:
-        typeof parsed.signature === "string"
-          ? parsed.signature
-          : buildScheduleSignature(payload)
+      signature: buildScheduleSignature(payload)
     };
   } catch {
     return null;

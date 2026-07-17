@@ -10,7 +10,7 @@
 
 ```js
 {
-  version: 1,
+  version: 2,
   semesterStartDate: "2026-07-13",
   updatedAt: "2026-07-16T00:00:00+08:00",
   events: [
@@ -23,17 +23,18 @@
       endTime: "12:00",
       group: "1组",
       location: "708A病区",
+      teacher: "",
       note: ""
     }
   ]
 }
 ```
 
-- 根对象必须精确满足 `{ version: 1, semesterStartDate: "2026-07-13", updatedAt: ISO-8601, events: Event[] }`；缺少字段、额外的结构替代字段、`version !== 1`、无效 `updatedAt` 或不同学期起点均显式拒绝。
+- 当前根对象必须精确满足 `{ version: 2, semesterStartDate: "2026-07-13", updatedAt: ISO-8601, events: Event[] }`。兼容入口只额外接受严格的 v1 事件形状，并将旧 `note` 显式迁移为 `teacher`、把新 `note` 置空；除此之外的缺少字段、额外结构字段、未知版本、无效 `updatedAt` 或不同学期起点均显式拒绝。
 - `day` 与 `weeks` 表示重复规则；不为每个日期复制同一事件。
 - `startTime` 和 `endTime` 是唯一时间来源；时间解析统一由调度工具提供。
 - `group: null` 表示共同课程，`group: "1组"` 至 `"7组"` 表示轮转课程。
-- 输入规范化严格要求：唯一非空 `id`、非空 `name`、`day ∈ Monday…Friday`、去重后的 `weeks ⊆ 1…8`、严格 `HH:mm`、`endTime > startTime`、以及 `group ∈ {null, "1组"…"7组"}`。远端、内置和手动输入任一事件不合法或 ID 重复时，整份载荷以“课表数据格式不兼容”显式失败；不得丢弃事件、接受 ABCD/旧组别或静默回退。
+- 输入规范化严格要求：唯一非空 `id`、非空 `name`、`day ∈ Monday…Friday`、去重后的 `weeks ⊆ 1…8`、严格 `HH:mm`、`endTime > startTime`、`group ∈ {null, "1组"…"7组"}`，以及字符串类型的 `location`、`teacher`、`note`。`teacher` 只存授课教师，`note` 只存课程备注和操作说明。远端、内置和手动输入任一事件不合法或 ID 重复时，整份载荷以“课表数据格式不兼容”显式失败；不得丢弃事件、接受 ABCD/旧组别或静默回退。
 
 ## Data construction
 
@@ -51,11 +52,13 @@
 
 课表专属存储键改用夏季命名空间：`summerScheduleCustom`、`summerScheduleSource`、`summerScheduleDefaultVersion`、`summerScheduleDefaultSignature`、`summerScheduleRemoteSnapshot`、`summerScheduleRemoteMeta`、`summerScheduleRemoteSkippedUpdate`、`summerScheduleRemoteLastCheckAt`、`summerScheduleRemoteLastForegroundCheckAt`、`summerScheduleRemoteLastErrorAt`。旧键保持不读、不删；新版本只从夏季键加载。
 
-远端端点按下列顺序配置并发请求，所有地址均固定 `@summer-schedule` 分支：
+当前客户端按下列顺序并发请求 v2 端点，所有地址均固定 `@summer-schedule` 分支：
 
-1. `https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
-2. `https://gcore.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
-3. `https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
+1. `https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule-v2.json`
+2. `https://gcore.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule-v2.json`
+3. `https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule-v2.json`
+
+导出脚本从同一个 v2 内置数据源生成两个远端产物：`schedule-v2.json` 保留独立 `teacher` / `note`，供当前客户端使用；旧地址 `schedule.json` 生成严格 v1 投影，把 `teacher` 写回旧 `note` 并舍弃旧 UI 无法展示的独立课程备注。已安装旧版因此仍能热更新轮转、时间和教师修复；升级后的客户端同时能迁移旧本地自定义课表及旧远端快照。
 
 多个根 schema 有效响应按载荷中的最新 `updatedAt` 选择；相同时按上述顺序优先。远端快照必须通过完整根对象与事件规范化，签名覆盖 `version`、`semesterStartDate`、`updatedAt` 与规范化后的完整 `events`；旧数组/节次载荷拒绝缓存。网络失败或格式失败不得请求/回退 `main`、旧键或旧格式：保留已验证的夏季快照；若不存在该快照则保持内置暑期课表，并暴露本次检查失败状态。重置操作清除所有夏季课表键与远端快照，再加载内置事件；旧键不能重新进入加载路径。主题、通知开关和非课表设置不迁移，以避免无关数据丢失。
 
@@ -70,7 +73,7 @@
 - 主内容区先显示当前课程卡，包含课程名、真实时间、地点和进度；卡片上下留白高于普通日表行。演示时间固定为 14:15，对应 `13:45–14:25` 的“肺炎的诊断及治疗”，进度为 75%。
 - 当前课程卡下方是一张当天全部课程的统一日表，列为“时间 / 课程 / 地点”。上午轮转见习和下午共同课程使用完全相同的行结构；长课程名允许居中换行，正在进行的课程行使用简约蓝浅色背景和左侧焦点条。
 - 日表内容直接使用 Excel 课程名和合并单元格展开后的地点，不按上午/下午或课程类型凭空添加分区标题。真实时间文本本身已足够表达时段，不再显示“精确时段”徽标。
-- 点击日表行打开底部详情弹层，展示名称、真实时间、地点、教师、适用对象，以及编辑/删除操作；弹层遮罩后的背景复用同一时间轴页面，而不是单独伪造一套课程背景。
+- 点击日表行打开底部详情弹层，展示名称、真实时间、地点、教师、适用对象和备注，以及编辑/删除操作；教师与备注使用独立字段和同级信息层级，空备注不渲染。弹层遮罩后的背景复用同一时间轴页面，而不是单独伪造一套课程背景。
 - 课程编辑器改用原生 `input type="time"`，保留周次、地点、备注、组别和删除能力。
 - 设置页复用当前 `SettingsPage` / `SettingsMenu` 的连续圆角卡片与折叠入口，移除选修课、A–D 与显示模式菜单；“分组”演示态展开为 4 列 × 2 行的 1–7 组按钮。暑期版本固定使用时间轴，主题作为直接的 M3/简约蓝双选项，默认选中简约蓝，另保留快速选周、提醒、更新和重置。
 
@@ -100,7 +103,7 @@ Pencil 已确认三个画板：`暑期课表 · 时间轴视图`（`o2h8NJ`）�
 
 ## Release version
 
-日期滑动、无头组别选择器和暑期主题隔离全部完成并通过验证后，将 `package.json` 更新为 `2.1.0`，并扩展仓库现有版本同步脚本，使其同时同步 `package-lock.json` 根版本与 `packages[""]` 版本、`src/config/constants.js` 的 `APP_VERSION`、Android `versionName` 和当天 `versionCode`。不手工维护第二套版本清单；最终验证所有项目元数据均为 `2.1.0`，不存在历史版本漂移。
+课表修复、v1/v2 热更新兼容、日期滑动、无头组别选择器和暑期主题隔离全部完成并通过验证后，将 `package.json` 更新为 `2.1.1`，并使用仓库现有版本同步脚本同步 `package-lock.json` 根版本与 `packages[""]` 版本、`src/config/constants.js` 的 `APP_VERSION`、Android `versionName` 和当天 `versionCode`。不手工维护第二套版本清单；最终验证所有项目元数据均为 `2.1.1`，不存在历史版本漂移。
 
 ## Android safe area
 

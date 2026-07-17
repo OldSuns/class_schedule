@@ -11,7 +11,7 @@
 - 1组至7组轮转过滤，共同课程对所有组可见
 - Android 桌面小组件：显示今日课程
 - Android 端本地通知：支持 10 / 15 / 20 / 30 分钟提前量与 30 天滚动排程
-- 远端 `schedule.json` 软更新
+- 远端课表软更新（当前 `schedule-v2.json`，兼容旧版 `schedule.json`）
 - Gitee Releases 更新检查
 
 ## 技术栈
@@ -47,14 +47,14 @@ npm run build
 npm run preview
 ```
 
-说明：`npm run build` 会先执行 `npm run export-schedule`，同步生成根目录 `schedule.json`。
+说明：`npm run build` 会先执行 `npm run export-schedule`，同步生成根目录 `schedule-v2.json` 和旧版兼容的 `schedule.json`。
 
 ## 可用脚本
 
 - `npm run dev`：启动 Vite 开发服务器
-- `npm run build`：生成生产构建，并先导出 `schedule.json`
+- `npm run build`：生成生产构建，并先导出当前及旧版兼容课表
 - `npm run preview`：本地预览构建产物
-- `npm run export-schedule`：将 `src/data/scheduleData.js` 导出为根目录 `schedule.json`
+- `npm run export-schedule`：从 `src/data/scheduleData.js` 生成当前 `schedule-v2.json` 和旧版兼容 `schedule.json`
 - `npm run sync-version`：将 `package.json` 中的版本号同步到 Web 常量与 Android Gradle 配置
 
 目前仓库未配置前端 ESLint 脚本；JS 单元测试使用 Node.js 内置测试运行器。
@@ -76,7 +76,7 @@ npm run preview
 ## 数据与更新
 
 - 内置课表数据维护在 `src/data/scheduleData.js`
-- 远端软更新使用仓库根目录 `schedule.json` 作为发布产物
+- 当前客户端使用根目录 `schedule-v2.json`；已安装旧版继续使用由同一数据源生成的 `schedule.json`
 - 修改内置课表后，请执行：
 
 ```bash
