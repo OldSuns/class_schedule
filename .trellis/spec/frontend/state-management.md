@@ -32,3 +32,8 @@
 - `userGroup` is exactly one of `1组` through `7组`.
 - `group: null` means a shared event; a non-null event group matches only the same user group.
 - Old A–D/class group values are invalid and normalize to the default user selection, never to “show all”.
+
+## Application update checks
+
+- On startup, check the latest application Release at most once per local calendar day. Recording a displayed prompt suppresses duplicate prompts for that day.
+- Failed checks stay silent and may retry after three minutes. The Settings page remains the explicit manual-check path.

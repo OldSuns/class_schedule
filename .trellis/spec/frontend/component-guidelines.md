@@ -8,6 +8,7 @@
 - Daily swipe navigation reuses the proven move-phase swipe hook, routes left/right callbacks through the shared adjacent-workday helper, crosses Monday/Friday week boundaries, and keeps vertical scrolling available with `touch-action: pan-y`.
 - Morning rotations and shared afternoon events must use the same row component. Do not branch the layout by course type or invent section labels such as “special lecture”.
 - `CourseModal` receives one normalized event. Editing uses native time inputs and must preserve the event root contract.
+- `AppUpdateDialog` is the single global prompt for application Releases. It shows the new version and Release notes, and routes the update action through the shared platform-aware opener used by Settings.
 
 ## Styling and accessibility
 

@@ -5,6 +5,7 @@ import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
 import Header from "../components/layout/Header.jsx";
 import BottomNavigation, { APP_TABS } from "../components/layout/BottomNavigation.jsx";
 import Toast from "../components/layout/Toast.jsx";
+import AppUpdateDialog from "../components/layout/AppUpdateDialog.jsx";
 import ExamPage from "../components/exams/ExamPage.jsx";
 import SettingsPage from "../components/settings/SettingsPage.jsx";
 import CourseTable from "../components/schedule/CourseTable.jsx";
@@ -15,8 +16,10 @@ import { useNotifications } from "../hooks/notifications/useNotifications.js";
 import { useTheme } from "../hooks/ui/useTheme.js";
 import { useWeekSwipe } from "../hooks/ui/useWeekSwipe.js";
 import { useScheduleData } from "../hooks/schedule/useScheduleData.js";
-import { STORAGE_KEYS } from "../config/constants.js";
+import { APP_VERSION, STORAGE_KEYS } from "../config/constants.js";
 import { getItem, setItem } from "../../storage.js";
+import { checkForStartupUpdate } from "../services/app/startupUpdate.js";
+import { openUpdateTarget } from "../services/app/updateOpener.js";
 import { hasElapsed, isRemoteCheckSuccessful } from "../utils/schedule/dateUtils.js";
 import {
   getAdjacentWorkday,
@@ -69,6 +72,7 @@ const App = () => {
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [now, setNow] = useState(() => new Date());
   const [toast, setToast] = useState({ isOpen: false, message: "" });
+  const [appUpdate, setAppUpdate] = useState(null);
   const softUpdateScheduleRef = useRef(softUpdateSchedule);
   const previousSelectionRef = useRef({ week: currentWeek, day: selectedDay });
   const daySwitchControls = useAnimationControls();
@@ -119,6 +123,16 @@ const App = () => {
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 30 * 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void checkForStartupUpdate({ currentVersion: APP_VERSION }).then((result) => {
+      if (!cancelled && result?.shouldPrompt) setAppUpdate(result);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -319,6 +333,21 @@ const App = () => {
         onUpdateEvent={updateEvent}
         onDeleteEvent={deleteEvent}
         onClose={() => setSelectedEventId(null)}
+      />
+
+      <AppUpdateDialog
+        isOpen={Boolean(appUpdate)}
+        version={appUpdate?.latestVersion}
+        notes={appUpdate?.releaseNotes}
+        onLater={() => setAppUpdate(null)}
+        onUpdate={() => {
+          const target = appUpdate;
+          setAppUpdate(null);
+          void openUpdateTarget({
+            apkUrl: target?.apkUrl,
+            releaseUrl: target?.url
+          });
+        }}
       />
 
       <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />

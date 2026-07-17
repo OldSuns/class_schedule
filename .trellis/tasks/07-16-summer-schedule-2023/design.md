@@ -101,9 +101,13 @@ Pencil 已确认三个画板：`暑期课表 · 时间轴视图`（`o2h8NJ`）�
 
 这是一条独立分支，不与旧课表数据格式兼容。课表专属新键与远端分支隔离意味着回到 `main` 时旧版仍读取自己的缓存；回滚暑期版本只需回到 `main` 或移除暑期应用构建。
 
+## Application update prompt
+
+启动检查复用现有 Release API 与设置页手动检查能力。单一服务读取现有检查日期、错误时间和提示日期键：成功检查后记录当天日期，有更新时立即记录当天已提示；网络错误只记录错误时间并在 3 分钟冷却后允许重试。全局弹窗展示版本和 Release 说明，Android 优先打开 Release 中的 APK，其他平台打开 Release 页面。React 启动 effect 只负责生命周期取消，服务用单次进行中的 Promise 合并 Strict Mode 的重复启动调用。
+
 ## Release version
 
-课表修复、v1/v2 热更新兼容、日期滑动、无头组别选择器和暑期主题隔离全部完成并通过验证后，将 `package.json` 更新为 `2.1.1`，并使用仓库现有版本同步脚本同步 `package-lock.json` 根版本与 `packages[""]` 版本、`src/config/constants.js` 的 `APP_VERSION`、Android `versionName` 和当天 `versionCode`。不手工维护第二套版本清单；最终验证所有项目元数据均为 `2.1.1`，不存在历史版本漂移。
+启动更新检查作为 `2.1.1` 的补充功能，不提高版本号。使用仓库现有版本同步脚本确认 `package-lock.json` 根版本与 `packages[""]` 版本、`src/config/constants.js` 的 `APP_VERSION`、Android `versionName` 和当天 `versionCode` 保持一致；不手工维护第二套版本清单。
 
 ## Android safe area
 
