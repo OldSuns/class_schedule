@@ -1,4 +1,0 @@
-{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend guideline entry point for review context."}
-{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Component convention context for reviewing React UI changes."}
-{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Quality expectations for review and validation."}
-{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Type and data-shape review context for new exam data utilities."}
