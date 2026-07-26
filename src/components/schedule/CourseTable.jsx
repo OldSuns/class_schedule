@@ -6,7 +6,7 @@ import {
   getPeriodTime,
   getScheduleDate
 } from "../../utils/schedule/timeUtils";
-import { DAYS, DAY_NAMES, MAX_PERIOD, THEMES } from "../../config/constants";
+import { DAYS, DAY_NAMES, MAX_PERIOD, SECTION_LAST_PERIODS, THEMES } from "../../config/constants";
 
 const HOVER_CAPABLE_MEDIA_QUERY = "(hover: hover) and (pointer: fine)";
 
@@ -326,7 +326,7 @@ const CourseTable = ({
                   </tr>
 
                   {/* 午休 / 晚休 separator — barely-visible borders */}
-                  {period === 5 || period === 10 ? (
+                  {SECTION_LAST_PERIODS.includes(period) ? (
                     <tr aria-hidden="true">
                       <td
                         colSpan={DAYS.length + 1}

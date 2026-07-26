@@ -21,6 +21,9 @@ export const MAX_WEEK = 17;
 export const MIN_PERIOD = 1;
 export const MAX_PERIOD = 13;
 
+// 时段末节次（第5节后午休、第10节后晚休），跨时段课程在此断开显示
+export const SECTION_LAST_PERIODS = [5, 10];
+
 // 默认开学日期
 export const DEFAULT_SEMESTER_START_DATE = "2026-09-07";
 
