@@ -201,7 +201,7 @@ const App = () => {
   const weekSwitchControls = useWeekSwitchAnimation(currentWeek);
 
   return (
-    <div className="min-h-screen bg-surface-low pt-[var(--safe-top)]">
+    <div className="min-h-screen bg-surface-low">
       <div className="mx-auto min-h-screen max-w-[430px] bg-surface-low sm:max-w-5xl">
         {activeTab === APP_TABS.SCHEDULE && (
           <section className="min-h-screen px-2 pb-24 pt-2 sm:px-4 sm:pt-4">
