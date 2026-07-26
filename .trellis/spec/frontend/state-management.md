@@ -19,6 +19,7 @@ The application uses React state and focused custom hooks. It has no global stat
 ## Sources of Truth
 
 - `src/data/scheduleData.js` is the canonical built-in schedule. Root `schedule.json` is generated output.
+- Keep `scheduleData.js` as explicit `{ day, periods, courses }` literals rather than block/expansion helpers; every course record keeps editable `note.default` / `note.weeks` and `location.default` / `location.weeks` fields.
 - `useScheduleData.js` is the runtime owner of built-in, remote, and manually edited schedule selection and persistence.
 - `src/config/constants.js` owns shared ranges, mode values, URLs, versions, and `STORAGE_KEYS`.
 - `storage.js` is the only Web/Capacitor persistence adapter.

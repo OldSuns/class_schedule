@@ -70,7 +70,7 @@ const Header = ({
           ) : (
             <h1 className="text-[15px] font-semibold leading-tight truncate"
                 style={{ color: "var(--foreground-primary)" }}>
-              WL课表（2026-1）
+              WL课表（2026-2）
             </h1>
           )}
         </div>

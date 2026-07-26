@@ -34,6 +34,19 @@ Persisted hooks use the root `storage.js` adapter so the same code works with br
 
 `src/hooks/schedule/useScheduleData.js` applies the same ideas to built-in, remote, and manual schedule sources. Reuse it instead of adding parallel schedule persistence.
 
+### Migrating Persisted Defaults
+
+Changing a default constant does not update an already-persisted value. When a semester or similar built-in default changes, resolve the saved value through a narrow migration:
+
+```js
+const resolveDefault = (savedValue) =>
+  savedValue === PREVIOUS_DEFAULT ? CURRENT_DEFAULT : savedValue || CURRENT_DEFAULT;
+```
+
+- Migrate only the exact previous built-in default and persist the resolved value during async initialization.
+- Preserve every other saved value because it may be a user customization.
+- Test the previous default, missing storage, and a custom value. Do not add a general migration framework for a single known transition.
+
 ## Effects and Cleanup
 
 - Effects that register timers, DOM listeners, or Capacitor listeners return cleanup functions. See `useSemesterDate.js`, `useWeekSwipe.js`, and `useNotifications.js`.

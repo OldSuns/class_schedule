@@ -22,7 +22,7 @@ export const MIN_PERIOD = 1;
 export const MAX_PERIOD = 13;
 
 // 默认开学日期
-export const DEFAULT_SEMESTER_START_DATE = "2026-03-02";
+export const DEFAULT_SEMESTER_START_DATE = "2026-09-07";
 
 // 内置课表版本（更新内置课表时递增）
 export const DEFAULT_SCHEDULE_VERSION = 2;
@@ -50,7 +50,7 @@ export const ELECTIVE_OPTIONS = [
 ];
 
 // 当前应用版本（用于更新检查）
-export const APP_VERSION = "2.0.8";
+export const APP_VERSION = "2.2.0";
 
 // Gitee Releases
 export const GITHUB_RELEASES_URL =
