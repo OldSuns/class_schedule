@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend guideline entry point for implementation context."}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Component convention context for React UI changes."}
+{"file": ".trellis/spec/frontend/directory-structure.md", "reason": "Directory placement context for new exam components and utilities."}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "State management context for App tab state and derived exam state."}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Quality expectations for implementation and validation."}

@@ -1,0 +1,187 @@
+/**
+ * 主题样式定义
+ * M3主题：Material You设计（来自当前 Pencil 设计稿）
+ * 简约主题：Minimal Blue 备用主题
+ */
+
+/* M3主题 - Material You设计 */
+:root.theme-m3 {
+  /* Surface hierarchy */
+  --surface: #FFFBFE;
+  --surface-primary: #FFFBFE;
+  --surface-elevated: #F7F2FA;
+  --surface-low: #F7F2FA;
+  --surface-mid: #F3EDF7;
+  --surface-high: #ECE6F0;
+  --surface-highest: #E6E0E9;
+
+  /* Foreground */
+  --foreground-primary: #1C1B1F;
+  --foreground-secondary: #49454F;
+  --on-surface: #1C1B1F;
+  --on-surface-variant: #49454F;
+
+  /* Primary palette */
+  --primary: #6750A4;
+  --primary-container: #EADDFF;
+  --on-primary: #FFFFFF;
+  --on-primary-container: #21005D;
+
+  /* Secondary palette */
+  --secondary: #625B71;
+  --secondary-container: #E8DEF8;
+  --on-secondary-container: #1D192B;
+
+  /* Tertiary palette */
+  --tertiary: #7D5260;
+  --tertiary-container: #FFD8E4;
+
+  /* Error states */
+  --error: #BA1A1A;
+  --error-container: #F9DEDC;
+  --on-error-container: #410E0B;
+
+  /* Inverse (toasts) */
+  --inverse-surface: #313033;
+  --inverse-on-surface: #F4EFF4;
+
+  /* Borders */
+  --border-subtle: #CAC4D0;
+  --outline: #79747E;
+  --outline-variant: #CAC4D0;
+
+  /* Course colors - ultra-light pastels for non-current week */
+  --course-purple-bg: #F2EFF7;
+  --course-purple-text: #4A2D70;
+  --course-blue-bg: #F1F3F7;
+  --course-blue-text: #2E4D6B;
+  --course-green-bg: #F1F6F3;
+  --course-green-text: #274A30;
+  --course-orange-bg: #F7F4F0;
+  --course-orange-text: #553A1A;
+  --course-pink-bg: #F8F4F5;
+  --course-pink-text: #55303E;
+  --course-yellow-bg: #F7F5F0;
+  --course-yellow-text: #554218;
+  --course-teal-bg: #F1F4F6;
+  --course-teal-text: #2E4850;
+  --course-lavender-bg: #F6F3F8;
+  --course-lavender-text: #4B2A65;
+
+  /* Today's course colors - lightly enhanced saturation */
+  --course-today-purple-bg: #EDE3FF;
+  --course-today-purple-text: #21005D;
+  --course-today-blue-bg: #DBE9FB;
+  --course-today-blue-text: #001D36;
+  --course-today-green-bg: #DDF0EB;
+  --course-today-green-text: #002110;
+  --course-today-orange-bg: #FFECCE;
+  --course-today-orange-text: #2A1800;
+  --course-today-pink-bg: #FFE1E9;
+  --course-today-pink-text: #31111D;
+  --course-today-yellow-bg: #FFF3D2;
+  --course-today-yellow-text: #1F1B00;
+  --course-today-teal-bg: #DFF1F5;
+  --course-today-teal-text: #001F24;
+  --course-today-lavender-bg: #EFE7FE;
+  --course-today-lavender-text: #1D192B;
+}
+
+/* 简约主题 - Minimal Blue */
+:root.theme-minimal {
+  /* Surface hierarchy */
+  --surface: #FFFFFF;
+  --surface-primary: #FFFFFF;
+  --surface-elevated: #F8F8F8;
+  --surface-low: #F8F8F8;
+  --surface-mid: #F0F0F0;
+  --surface-high: #EAEAEA;
+  --surface-highest: #E2E2E2;
+
+  /* Foreground */
+  --foreground-primary: #1A1A1A;
+  --foreground-secondary: #666666;
+  --on-surface: #1A1A1A;
+  --on-surface-variant: #666666;
+
+  /* Primary palette */
+  --primary: #0066FF;
+  --primary-container: #E6F0FF;
+  --on-primary: #FFFFFF;
+  --on-primary-container: #001D3D;
+
+  /* Secondary palette */
+  --secondary: #625B71;
+  --secondary-container: #CCE0FF;
+  --on-secondary-container: #001D3D;
+
+  /* Tertiary palette */
+  --tertiary: #7D5260;
+  --tertiary-container: #FFD8E4;
+
+  /* Error states */
+  --error: #DC2626;
+  --error-container: #FEE2E2;
+  --on-error-container: #7F1D1D;
+
+  /* Inverse (toasts) */
+  --inverse-surface: #2B2B2B;
+  --inverse-on-surface: #F5F5F5;
+
+  /* Borders */
+  --border-subtle: #E5E5E5;
+  --outline: #999999;
+  --outline-variant: #E5E5E5;
+
+  /* Course colors - non-current week (gray with subtle border) */
+  --course-purple-bg: #F5F5F5;
+  --course-purple-text: #1A1A1A;
+  --course-purple-border: #E5E5E5;
+  --course-blue-bg: #F5F5F5;
+  --course-blue-text: #1A1A1A;
+  --course-blue-border: #E5E5E5;
+  --course-green-bg: #F5F5F5;
+  --course-green-text: #1A1A1A;
+  --course-green-border: #E5E5E5;
+  --course-orange-bg: #F5F5F5;
+  --course-orange-text: #1A1A1A;
+  --course-orange-border: #E5E5E5;
+  --course-pink-bg: #F5F5F5;
+  --course-pink-text: #1A1A1A;
+  --course-pink-border: #E5E5E5;
+  --course-yellow-bg: #F5F5F5;
+  --course-yellow-text: #1A1A1A;
+  --course-yellow-border: #E5E5E5;
+  --course-teal-bg: #F5F5F5;
+  --course-teal-text: #1A1A1A;
+  --course-teal-border: #E5E5E5;
+  --course-lavender-bg: #F5F5F5;
+  --course-lavender-text: #1A1A1A;
+  --course-lavender-border: #E5E5E5;
+
+  /* Today's course colors - blue theme with prominent border */
+  --course-today-purple-bg: #E6F0FF;
+  --course-today-purple-text: #001D3D;
+  --course-today-purple-border: #0066FF;
+  --course-today-blue-bg: #E6F0FF;
+  --course-today-blue-text: #001D3D;
+  --course-today-blue-border: #0066FF;
+  --course-today-green-bg: #E6F0FF;
+  --course-today-green-text: #001D3D;
+  --course-today-green-border: #0066FF;
+  --course-today-orange-bg: #E6F0FF;
+  --course-today-orange-text: #001D3D;
+  --course-today-orange-border: #0066FF;
+  --course-today-pink-bg: #E6F0FF;
+  --course-today-pink-text: #001D3D;
+  --course-today-pink-border: #0066FF;
+  --course-today-yellow-bg: #E6F0FF;
+  --course-today-yellow-text: #001D3D;
+  --course-today-yellow-border: #0066FF;
+  --course-today-teal-bg: #E6F0FF;
+  --course-today-teal-text: #001D3D;
+  --course-today-teal-border: #0066FF;
+  --course-today-lavender-bg: #E6F0FF;
+  --course-today-lavender-text: #001D3D;
+  --course-today-lavender-border: #0066FF;
+}

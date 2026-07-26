@@ -1,0 +1,4434 @@
+{
+  "version": "2.13",
+  "children": [
+    {
+      "type": "frame",
+      "id": "L27xF",
+      "x": 0,
+      "y": 0,
+      "name": "Schedule — Mobile",
+      "clip": true,
+      "width": 393,
+      "height": 1008,
+      "fill": "$surface",
+      "layout": "vertical",
+      "gap": 10,
+      "padding": [
+        16,
+        8,
+        12,
+        8
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "qFaUo",
+          "name": "Header",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 4,
+          "padding": [
+            0,
+            4
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "UCCha",
+              "name": "Title Row",
+              "width": "fill_container",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "JIEMc",
+                  "name": "Title",
+                  "fill": "$on-surface",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "WL课表（2026-1）",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "p1yuhZ",
+                  "name": "Right Col",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "CchrV",
+                      "name": "Week Input",
+                      "width": 64,
+                      "fill": "$surface-low",
+                      "cornerRadius": 12,
+                      "padding": [
+                        5,
+                        8
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "z5zFSA",
+                          "name": "Week Value",
+                          "fill": "$on-surface",
+                          "content": "13",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 16,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KVoXy",
+                      "name": "Status Chip",
+                      "fill": "$primary-container",
+                      "cornerRadius": 9999,
+                      "padding": [
+                        2,
+                        8
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "klHWY",
+                          "name": "Status Text",
+                          "fill": "$on-primary-container",
+                          "content": "今天是第13周 星期一",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 10,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "VxVBe",
+          "name": "Course Table",
+          "clip": true,
+          "width": "fill_container",
+          "fill": "$surface-low",
+          "cornerRadius": 20,
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "EauLu",
+              "name": "Table Header",
+              "width": "fill_container",
+              "fill": "$surface-low",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "j84DWe",
+                  "name": "Period Head",
+                  "width": 42,
+                  "padding": [
+                    12,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "JjHhW",
+                      "name": "Period Head Text",
+                      "fill": "$on-surface",
+                      "content": "节次",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Fn6Bf",
+                  "name": "Head 周一",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": [
+                    10,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "v1BrSq",
+                      "name": "Day Chip",
+                      "fill": "$primary-container",
+                      "cornerRadius": 9999,
+                      "padding": [
+                        2,
+                        7
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "QXgsq",
+                          "name": "Day",
+                          "fill": "$on-primary-container",
+                          "content": "周一",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "v65oP",
+                      "name": "Date",
+                      "fill": "$on-primary-container",
+                      "content": "5/25",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "QGSsn",
+                  "name": "Head 周二",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": [
+                    10,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "lGMUT",
+                      "name": "Day",
+                      "fill": "$on-surface",
+                      "content": "周二",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Z9VjaX",
+                      "name": "Date",
+                      "fill": "$on-surface-variant",
+                      "content": "5/26",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "MnU74",
+                  "name": "Head 周三",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": [
+                    10,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "P9ikg",
+                      "name": "Day",
+                      "fill": "$on-surface",
+                      "content": "周三",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "y16VJj",
+                      "name": "Date",
+                      "fill": "$on-surface-variant",
+                      "content": "5/27",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "W06jHz",
+                  "name": "Head 周四",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": [
+                    10,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "HCD2d",
+                      "name": "Day",
+                      "fill": "$on-surface",
+                      "content": "周四",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "eTveu",
+                      "name": "Date",
+                      "fill": "$on-surface-variant",
+                      "content": "5/28",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "s41y1",
+                  "name": "Head 周五",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": [
+                    10,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "IV5vJ",
+                      "name": "Day",
+                      "fill": "$on-surface",
+                      "content": "周五",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "BIBmR",
+                      "name": "Date",
+                      "fill": "$on-surface-variant",
+                      "content": "5/29",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "erGpU",
+              "name": "Morning",
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "i64WS",
+                  "name": "Period Col M",
+                  "width": 42,
+                  "fill": "$surface-low",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "r1yUn",
+                      "name": "PL 1节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "MKtmd",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "1节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "FIWvD",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "8:15-8:55",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ptzwx",
+                      "name": "PL 2节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wuNyL",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "2节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "u9k5W",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "9:00-9:40",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Lm95I",
+                      "name": "PL 3节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "uKlEz",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "3节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "WL9t5",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "9:55-10:35",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "PEGpV",
+                      "name": "PL 4节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "H4Ixr",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "4节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "T6Jq2x",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "10:40-11:20",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "X2BYn",
+                      "name": "PL 5节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "zLz0N",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "5节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "mOlGx",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "11:25-12:05",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "k36YV7",
+                  "name": "Col 周一 M",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "yvhxK",
+                      "name": "内科学A(I) Cell",
+                      "width": "fill_container",
+                      "height": 112,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "padding": [
+                        5,
+                        4
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "syHax",
+                          "name": "内科学A(I)",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#DCEEFB",
+                          "cornerRadius": 14,
+                          "stroke": "#6750A426",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner",
+                          "layout": "vertical",
+                          "gap": 3,
+                          "padding": [
+                            6,
+                            5
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "fm89k",
+                              "name": "Name",
+                              "fill": "#0B3B66",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "内科学A(I)",
+                              "lineHeight": 1.15,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "UChOJ",
+                              "name": "Loc",
+                              "width": "fill_container",
+                              "gap": 2,
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "P7Gli4",
+                                  "name": "Pin",
+                                  "opacity": 0.7,
+                                  "width": 9,
+                                  "height": 9,
+                                  "icon": "map-pin",
+                                  "library": "lucide",
+                                  "fill": "#0B3B66"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "C9IDgO",
+                                  "name": "Loc Text",
+                                  "opacity": 0.72,
+                                  "fill": "#0B3B66",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "11号楼1楼大教室",
+                                  "lineHeight": 1.2,
+                                  "textAlign": "center",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 9,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "v64LIH",
+                      "name": "神经病学B Cell",
+                      "width": "fill_container",
+                      "height": 112,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "padding": [
+                        5,
+                        4
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "xdNMh",
+                          "name": "神经病学B",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#F0E4FF",
+                          "cornerRadius": 14,
+                          "stroke": "#6750A426",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner",
+                          "layout": "vertical",
+                          "gap": 3,
+                          "padding": [
+                            6,
+                            5
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "O8kkQ",
+                              "name": "Name",
+                              "fill": "#3B1F7A",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "神经病学B",
+                              "lineHeight": 1.15,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "OCfgZ",
+                              "name": "Loc",
+                              "width": "fill_container",
+                              "gap": 2,
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "a1k2q",
+                                  "name": "Pin",
+                                  "opacity": 0.7,
+                                  "width": 9,
+                                  "height": 9,
+                                  "icon": "map-pin",
+                                  "library": "lucide",
+                                  "fill": "#3B1F7A"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "eVJ7b",
+                                  "name": "Loc Text",
+                                  "opacity": 0.72,
+                                  "fill": "#3B1F7A",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "11号楼1楼大教室",
+                                  "lineHeight": 1.2,
+                                  "textAlign": "center",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 9,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Z1d5S",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "WfNOo",
+                  "name": "Col 周二 M",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "EPWzd",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TaWT0",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Dysg7",
+                      "name": "外科学A(I) Cell",
+                      "width": "fill_container",
+                      "height": 112,
+                      "fill": "$surface",
+                      "layout": "vertical",
+                      "padding": [
+                        5,
+                        4
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "M8aIGT",
+                          "name": "外科学A(I)",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#F1F6F3",
+                          "cornerRadius": 14,
+                          "layout": "vertical",
+                          "gap": 3,
+                          "padding": [
+                            6,
+                            5
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Yu3u3",
+                              "name": "Name",
+                              "fill": "#274A30",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "外科学A(I)",
+                              "lineHeight": 1.15,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "F6OUs",
+                              "name": "Loc",
+                              "width": "fill_container",
+                              "gap": 2,
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "cOmAU",
+                                  "name": "Pin",
+                                  "opacity": 0.7,
+                                  "width": 9,
+                                  "height": 9,
+                                  "icon": "map-pin",
+                                  "library": "lucide",
+                                  "fill": "#274A30"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "CJE0A",
+                                  "name": "Loc Text",
+                                  "opacity": 0.72,
+                                  "fill": "#274A30",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "11号楼1楼大教室",
+                                  "lineHeight": 1.2,
+                                  "textAlign": "center",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 9,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "z0CSqe",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "p7NY5g",
+                  "name": "Col 周三 M",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "O1GBj",
+                      "name": "儿科学A Cell",
+                      "width": "fill_container",
+                      "height": 168,
+                      "fill": "$surface",
+                      "layout": "vertical",
+                      "padding": [
+                        5,
+                        4
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "XFj3t",
+                          "name": "儿科学A",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#F7F5F0",
+                          "cornerRadius": 14,
+                          "layout": "vertical",
+                          "gap": 3,
+                          "padding": [
+                            6,
+                            5
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "QuWUQ",
+                              "name": "Name",
+                              "fill": "#554218",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "儿科学A",
+                              "lineHeight": 1.15,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "EAC1M",
+                              "name": "Loc",
+                              "width": "fill_container",
+                              "gap": 2,
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "G4CFV",
+                                  "name": "Pin",
+                                  "opacity": 0.7,
+                                  "width": 9,
+                                  "height": 9,
+                                  "icon": "map-pin",
+                                  "library": "lucide",
+                                  "fill": "#554218"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "XF3f6",
+                                  "name": "Loc Text",
+                                  "opacity": 0.72,
+                                  "fill": "#554218",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "11号楼1楼大教室",
+                                  "lineHeight": 1.2,
+                                  "textAlign": "center",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 9,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "PK4Fm",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "UPCLC",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "JM0c1",
+                  "name": "Col 周四 M",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ZwJQF",
+                      "name": "外科学见习 Cell",
+                      "width": "fill_container",
+                      "height": 168,
+                      "fill": "$surface",
+                      "layout": "vertical",
+                      "padding": [
+                        5,
+                        4
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "suCPv",
+                          "name": "外科学见习",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#F1F6F3",
+                          "cornerRadius": 14,
+                          "layout": "vertical",
+                          "gap": 3,
+                          "padding": [
+                            6,
+                            5
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ZUwJq",
+                              "name": "Name",
+                              "fill": "#274A30",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "外科学见习",
+                              "lineHeight": 1.15,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "LZPhw",
+                              "name": "Group",
+                              "opacity": 0.78,
+                              "fill": "#274A30",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "6班A组",
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 9,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "Q5O40U",
+                              "name": "Loc",
+                              "width": "fill_container",
+                              "gap": 2,
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "Rs8Hd",
+                                  "name": "Pin",
+                                  "opacity": 0.7,
+                                  "width": 9,
+                                  "height": 9,
+                                  "icon": "map-pin",
+                                  "library": "lucide",
+                                  "fill": "#274A30"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "BxFF1",
+                                  "name": "Loc Text",
+                                  "opacity": 0.72,
+                                  "fill": "#274A30",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "5号楼11楼的511病区示教室",
+                                  "lineHeight": 1.2,
+                                  "textAlign": "center",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 9,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "CiraI",
+                              "name": "Extra",
+                              "opacity": 0.7,
+                              "fill": "$primary",
+                              "content": "+2 处地点",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 9,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "AKoPk",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "OrdDI",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "kiFDJ",
+                  "name": "Col 周五 M",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "K37Z8",
+                      "name": "外科学A(I) Cell",
+                      "width": "fill_container",
+                      "height": 112,
+                      "fill": "$surface",
+                      "layout": "vertical",
+                      "padding": [
+                        5,
+                        4
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "qcyEc",
+                          "name": "外科学A(I)",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#F1F6F3",
+                          "cornerRadius": 14,
+                          "layout": "vertical",
+                          "gap": 3,
+                          "padding": [
+                            6,
+                            5
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "C6c3RN",
+                              "name": "Name",
+                              "fill": "#274A30",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "外科学A(I)",
+                              "lineHeight": 1.15,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "P6pJoM",
+                              "name": "Loc",
+                              "width": "fill_container",
+                              "gap": 2,
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "x2X22q",
+                                  "name": "Pin",
+                                  "opacity": 0.7,
+                                  "width": 9,
+                                  "height": 9,
+                                  "icon": "map-pin",
+                                  "library": "lucide",
+                                  "fill": "#274A30"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "lvLL6",
+                                  "name": "Loc Text",
+                                  "opacity": 0.72,
+                                  "fill": "#274A30",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "11号楼1楼大教室",
+                                  "lineHeight": 1.2,
+                                  "textAlign": "center",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 9,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "plbSl",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "OER3e",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "vmNxB",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "HCnnl",
+              "name": "Lunch Break",
+              "width": "fill_container",
+              "height": 28,
+              "fill": "$surface-low",
+              "stroke": "#0000000D",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "strokeAlignment": "inner",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "lfAW1",
+                  "name": "Lunch Text",
+                  "fill": "$on-surface-variant",
+                  "content": "午休",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ho8Ir",
+              "name": "Afternoon",
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "FfmuY",
+                  "name": "Period Col A",
+                  "width": 42,
+                  "fill": "$surface-low",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "BqTeY",
+                      "name": "PL 6节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "MfNzk",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "6节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "W4iuz",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "13:45-14:25",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "QaoGo",
+                      "name": "PL 7节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "MAi9J",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "7节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "NIbLc",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "14:30-15:10",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "FOPGx",
+                      "name": "PL 8节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "MrYY8",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "8节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "uU1z0",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "15:20-16:00",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "SQK77",
+                      "name": "PL 9节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "EorMa",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "9节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Ae2GN",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "16:05-16:45",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "q4V8t",
+                      "name": "PL 10节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WouVr",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "10节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "IyQ41",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "16:45-17:55",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "X64ZBK",
+                  "name": "Col 周一 A",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "x7pvIZ",
+                      "name": "内科学见习 Cell",
+                      "width": "fill_container",
+                      "height": 224,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "padding": [
+                        5,
+                        4
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "e3bgI4",
+                          "name": "内科学见习",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#DCEEFB",
+                          "cornerRadius": 14,
+                          "stroke": "#6750A426",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner",
+                          "layout": "vertical",
+                          "gap": 3,
+                          "padding": [
+                            6,
+                            5
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "bzQTV",
+                              "name": "Name",
+                              "fill": "#0B3B66",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "内科学见习",
+                              "lineHeight": 1.15,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "fFbZu",
+                              "name": "Group",
+                              "opacity": 0.78,
+                              "fill": "#0B3B66",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "6班A组",
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 9,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "R4FGJ",
+                              "name": "Loc",
+                              "width": "fill_container",
+                              "gap": 2,
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "D5aOCa",
+                                  "name": "Pin",
+                                  "opacity": 0.7,
+                                  "width": 9,
+                                  "height": 9,
+                                  "icon": "map-pin",
+                                  "library": "lucide",
+                                  "fill": "#0B3B66"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "T8NuVY",
+                                  "name": "Loc Text",
+                                  "opacity": 0.72,
+                                  "fill": "#0B3B66",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "6号楼6楼606A病区内的示教室",
+                                  "lineHeight": 1.2,
+                                  "textAlign": "center",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 9,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "h3m3Me",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ybleT",
+                  "name": "Col 周二 A",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "fEckt",
+                      "name": "口腔科见习 Cell",
+                      "width": "fill_container",
+                      "height": 112,
+                      "fill": "$surface",
+                      "layout": "vertical",
+                      "padding": [
+                        5,
+                        4
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "tDdA4",
+                          "name": "口腔科见习",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#F6F3F8",
+                          "cornerRadius": 14,
+                          "layout": "vertical",
+                          "gap": 3,
+                          "padding": [
+                            6,
+                            5
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Y84bNS",
+                              "name": "Name",
+                              "fill": "#4B2A65",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "口腔科见习",
+                              "lineHeight": 1.15,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "T8LO6I",
+                              "name": "Group",
+                              "opacity": 0.78,
+                              "fill": "#4B2A65",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "6班A、B组",
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 9,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "lim8b",
+                              "name": "Loc",
+                              "width": "fill_container",
+                              "gap": 2,
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "bj6eK",
+                                  "name": "Pin",
+                                  "opacity": 0.7,
+                                  "width": 9,
+                                  "height": 9,
+                                  "icon": "map-pin",
+                                  "library": "lucide",
+                                  "fill": "#4B2A65"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "yZU2x",
+                                  "name": "Loc Text",
+                                  "opacity": 0.72,
+                                  "fill": "#4B2A65",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "门诊3楼B1区口腔科示教室",
+                                  "lineHeight": 1.2,
+                                  "textAlign": "center",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 9,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Eaymx",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "c07sE",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "tV7gn",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gpNbT",
+                  "name": "Col 周三 A",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "aDnRa",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 280,
+                      "fill": "$surface"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "rKm7o",
+                  "name": "Col 周四 A",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "q5qcUV",
+                      "name": "内科学A(I) Cell",
+                      "width": "fill_container",
+                      "height": 112,
+                      "fill": "$surface",
+                      "layout": "vertical",
+                      "padding": [
+                        5,
+                        4
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "g9ydiH",
+                          "name": "内科学A(I)",
+                          "width": "fill_container",
+                          "height": "fill_container",
+                          "fill": "#F1F3F7",
+                          "cornerRadius": 14,
+                          "layout": "vertical",
+                          "gap": 3,
+                          "padding": [
+                            6,
+                            5
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "J6bPNR",
+                              "name": "Name",
+                              "fill": "#2E4D6B",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "内科学A(I)",
+                              "lineHeight": 1.15,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "oJg49",
+                              "name": "Loc",
+                              "width": "fill_container",
+                              "gap": 2,
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "btKCQ",
+                                  "name": "Pin",
+                                  "opacity": 0.7,
+                                  "width": 9,
+                                  "height": 9,
+                                  "icon": "map-pin",
+                                  "library": "lucide",
+                                  "fill": "#2E4D6B"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "qV0s3",
+                                  "name": "Loc Text",
+                                  "opacity": 0.72,
+                                  "fill": "#2E4D6B",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "11号楼1楼大教室",
+                                  "lineHeight": 1.2,
+                                  "textAlign": "center",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 9,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "CaXXP",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 168,
+                      "fill": "$surface"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "PzfJc",
+                  "name": "Col 周五 A",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "DtJa7",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 280,
+                      "fill": "$surface"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sfCa6",
+              "name": "Evening Break",
+              "width": "fill_container",
+              "height": 28,
+              "fill": "$surface-low",
+              "stroke": "#0000000D",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "strokeAlignment": "inner",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ceQxG",
+                  "name": "Evening Text",
+                  "fill": "$on-surface-variant",
+                  "content": "晚休",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "W0mtpg",
+              "name": "Evening",
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "EKfyW",
+                  "name": "Period Col E",
+                  "width": 42,
+                  "fill": "$surface-low",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "f8ICHp",
+                      "name": "PL 晚1节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "M5hfU",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "晚1节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "fGpiV",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "18:00-18:40",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "gEozF",
+                      "name": "PL 晚2节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "U6tWYi",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "晚2节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "YzsFN",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "18:45-19:25",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "r0prb",
+                      "name": "PL 晚3节",
+                      "width": "fill_container",
+                      "height": 56,
+                      "fill": "$surface-low",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "svBiB",
+                          "name": "PLabel",
+                          "fill": "$on-surface",
+                          "content": "晚3节",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "V31Dt",
+                          "name": "PTime",
+                          "fill": "$on-surface-variant",
+                          "content": "19:30-20:10",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 8,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Y7cyW",
+                  "name": "Col 周一 E",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "XzXGV",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 168,
+                      "fill": "$surface-low"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zHp1x",
+                  "name": "Col 周二 E",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "O9WIl",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 168,
+                      "fill": "$surface"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "YFWLU",
+                  "name": "Col 周三 E",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "idxIQ",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 168,
+                      "fill": "$surface"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "t9xWs",
+                  "name": "Col 周四 E",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "vHY25",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 168,
+                      "fill": "$surface"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "LGiqf",
+                  "name": "Col 周五 E",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FmrtT",
+                      "name": "Empty",
+                      "width": "fill_container",
+                      "height": 168,
+                      "fill": "$surface"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "B2tjbI",
+          "name": "Bottom Menu - Schedule Active",
+          "width": "fill_container",
+          "height": 64,
+          "fill": "#FFFBFEE6",
+          "cornerRadius": 28,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000014",
+            "offset": {
+              "x": 0,
+              "y": -2
+            },
+            "blur": 12
+          },
+          "gap": 4,
+          "padding": 6,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "G2qka",
+              "name": "Tab 日程",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$primary-container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                6,
+                0
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "F3yhE",
+                  "name": "日程 Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "calendar-days",
+                  "library": "lucide",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "p4ndOu",
+                  "name": "日程 Label",
+                  "fill": "$primary",
+                  "content": "日程",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 10,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Ek5bU",
+              "name": "Tab 考试",
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                6,
+                0
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "O5ecF",
+                  "name": "考试 Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "file-text",
+                  "library": "lucide",
+                  "fill": "$on-surface-variant"
+                },
+                {
+                  "type": "text",
+                  "id": "G2dw8",
+                  "name": "考试 Label",
+                  "fill": "$on-surface-variant",
+                  "content": "考试",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "k96sb",
+              "name": "Tab 设置",
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                6,
+                0
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "J22wyC",
+                  "name": "设置 Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "settings",
+                  "library": "lucide",
+                  "fill": "$on-surface-variant"
+                },
+                {
+                  "type": "text",
+                  "id": "Pdfw6",
+                  "name": "设置 Label",
+                  "fill": "$on-surface-variant",
+                  "content": "设置",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "N4gns",
+      "x": 473,
+      "y": 0,
+      "name": "Exam — Mobile",
+      "clip": true,
+      "width": 393,
+      "height": 934,
+      "fill": "$surface-low",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "AmHLN",
+          "x": 0,
+          "y": 0,
+          "name": "Exam Content",
+          "clip": true,
+          "width": 393,
+          "height": 846,
+          "fill": "$surface-low",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "frame",
+              "id": "P6KAC",
+              "name": "Exam Header",
+              "width": "fill_container",
+              "fill": "$surface-low",
+              "layout": "vertical",
+              "gap": 10,
+              "padding": [
+                22,
+                16,
+                4,
+                16
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "l8Z8J",
+                  "name": "Exam Header Row",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cjZvC",
+                      "name": "Exam Title Group",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "GpCEn",
+                          "name": "Exam Page Title",
+                          "fill": "$on-surface",
+                          "content": "考试",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 24,
+                          "fontWeight": "800"
+                        },
+                        {
+                          "type": "text",
+                          "id": "dwJHk",
+                          "name": "Exam Page Subtitle",
+                          "fill": "$on-surface-variant",
+                          "content": "第13周 · 4场待完成",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "lrEmo",
+                      "name": "Exam Calendar Button",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "$surface",
+                      "cornerRadius": 20,
+                      "stroke": "$outline-variant",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "f4Fjz",
+                          "name": "Exam Calendar Icon",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "calendar-clock",
+                          "library": "lucide",
+                          "fill": "$primary"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "r4VJi",
+              "name": "Next Exam Hero Section",
+              "width": "fill_container",
+              "layout": "vertical",
+              "padding": [
+                0,
+                16
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "U2huKE",
+                  "name": "Next Exam Hero",
+                  "width": "fill_container",
+                  "fill": "$primary",
+                  "cornerRadius": 26,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#6750A426",
+                    "offset": {
+                      "x": 0,
+                      "y": 8
+                    },
+                    "blur": 18
+                  },
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "W9Q1dn",
+                      "name": "Next Exam Hero Top",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Rf4rt",
+                          "name": "Next Exam Label",
+                          "fill": "$on-primary",
+                          "content": "下一场考试",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "d6PApY",
+                          "name": "Next Exam Countdown",
+                          "fill": "#FFFFFF26",
+                          "cornerRadius": 9999,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wbaU4",
+                              "name": "Countdown Text",
+                              "fill": "$on-primary",
+                              "content": "3天后",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "a9sG0",
+                      "name": "Next Exam Name",
+                      "fill": "$on-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "内科学A(I)",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 22,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "U9dMH",
+                      "name": "Next Exam Info",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "nljxl",
+                          "name": "Next Exam Clock",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "alarm-clock",
+                          "library": "lucide",
+                          "fill": "#FFFFFFCC"
+                        },
+                        {
+                          "type": "text",
+                          "id": "qn8zx",
+                          "name": "Next Exam Time",
+                          "fill": "#FFFFFFD9",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "6月8日 周一 09:00 · 教学楼 A302",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "t9TMz",
+              "name": "Exam Metrics",
+              "width": "fill_container",
+              "gap": 8,
+              "padding": [
+                0,
+                16
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "b8KEP5",
+                  "name": "Metric 待考试",
+                  "width": "fill_container",
+                  "height": 62,
+                  "fill": "$surface",
+                  "cornerRadius": 18,
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": [
+                    10,
+                    12
+                  ],
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "N2I5E",
+                      "name": "待考试 Value",
+                      "fill": "$on-surface",
+                      "content": "4",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 20,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "zSxAa",
+                      "name": "待考试 Label",
+                      "fill": "$on-surface-variant",
+                      "content": "待考试",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cN2Hw",
+                  "name": "Metric 两周内",
+                  "width": "fill_container",
+                  "height": 62,
+                  "fill": "$primary-container",
+                  "cornerRadius": 18,
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": [
+                    10,
+                    12
+                  ],
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "a1napE",
+                      "name": "两周内 Value",
+                      "fill": "$on-surface",
+                      "content": "3",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 20,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "V6oVd",
+                      "name": "两周内 Label",
+                      "fill": "$on-surface-variant",
+                      "content": "两周内",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "wglcs",
+                  "name": "Metric 已完成",
+                  "width": "fill_container",
+                  "height": 62,
+                  "fill": "$surface",
+                  "cornerRadius": 18,
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": [
+                    10,
+                    12
+                  ],
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "cwKEI",
+                      "name": "已完成 Value",
+                      "fill": "$on-surface",
+                      "content": "1",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 20,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "EBeGf",
+                      "name": "已完成 Label",
+                      "fill": "$on-surface-variant",
+                      "content": "已完成",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "hR6Ox",
+              "name": "Exam Segment",
+              "width": "fill_container",
+              "gap": 6,
+              "padding": [
+                0,
+                16
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "gpBa9",
+                  "name": "Segment 全部",
+                  "width": "fill_container",
+                  "height": 38,
+                  "fill": "$primary-container",
+                  "cornerRadius": 16,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ns3Ou",
+                      "name": "Segment 全部 Label",
+                      "fill": "$primary",
+                      "content": "全部",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "c06pLs",
+                  "name": "Segment 待考试",
+                  "width": "fill_container",
+                  "height": 38,
+                  "fill": "$surface",
+                  "cornerRadius": 16,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "VscbR",
+                      "name": "Segment 待考试 Label",
+                      "fill": "$on-surface-variant",
+                      "content": "待考试",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ewJSz",
+                  "name": "Segment 已结束",
+                  "width": "fill_container",
+                  "height": 38,
+                  "fill": "$surface",
+                  "cornerRadius": 16,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Fu6Eo",
+                      "name": "Segment 已结束 Label",
+                      "fill": "$on-surface-variant",
+                      "content": "已结束",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Mq2IN",
+              "name": "Exam Timeline",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "padding": [
+                0,
+                12,
+                16,
+                12
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "wWlS4",
+                  "name": "Timeline Header",
+                  "width": "fill_container",
+                  "padding": [
+                    0,
+                    4
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "qE9bE",
+                      "name": "Timeline Title",
+                      "fill": "$on-surface",
+                      "content": "近期考试",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "S98mgb",
+                      "name": "Timeline Hint",
+                      "fill": "$on-surface-variant",
+                      "content": "按时间排序",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Buvxo",
+                  "name": "Exam Card 内科学A(I)",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 20,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "UuSCP",
+                      "name": "内科学A(I) Top Row",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "b6R8A",
+                          "name": "内科学A(I) Title Group",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 3,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "pwStY",
+                              "name": "内科学A(I) Title",
+                              "fill": "$on-surface",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "内科学A(I)",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 15,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Gyb94",
+                              "name": "内科学A(I) Date",
+                              "fill": "$primary",
+                              "content": "6月8日 周一 09:00",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "GwrFp",
+                          "name": "内科学A(I) Badge",
+                          "fill": "$primary",
+                          "cornerRadius": 9999,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "f56Rm",
+                              "name": "内科学A(I) Badge Text",
+                              "fill": "$on-primary",
+                              "content": "下一场",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "q95H4",
+                      "name": "内科学A(I) Detail",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "UYFeL",
+                          "name": "内科学A(I) Location Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "map-pin",
+                          "library": "lucide",
+                          "fill": "$on-surface-variant"
+                        },
+                        {
+                          "type": "text",
+                          "id": "p4kPlv",
+                          "name": "内科学A(I) Meta",
+                          "fill": "$on-surface-variant",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "教学楼 A302 · 闭卷 · 120分钟",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "NSWAC",
+                  "name": "Exam Card 外科学A(I)",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 20,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "GG6NO",
+                      "name": "外科学A(I) Top Row",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "D1TVf4",
+                          "name": "外科学A(I) Title Group",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 3,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Z99Yz7",
+                              "name": "外科学A(I) Title",
+                              "fill": "$on-surface",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "外科学A(I)",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 15,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Z2Grh",
+                              "name": "外科学A(I) Date",
+                              "fill": "$secondary",
+                              "content": "6月10日 周三 14:30",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "LGyXz",
+                          "name": "外科学A(I) Badge",
+                          "fill": "$secondary",
+                          "cornerRadius": 9999,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "VHsiG",
+                              "name": "外科学A(I) Badge Text",
+                              "fill": "$on-primary",
+                              "content": "待排",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BNiX6",
+                      "name": "外科学A(I) Detail",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "dgjuZ",
+                          "name": "外科学A(I) Location Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "map-pin",
+                          "library": "lucide",
+                          "fill": "$on-surface-variant"
+                        },
+                        {
+                          "type": "text",
+                          "id": "OjDyD",
+                          "name": "外科学A(I) Meta",
+                          "fill": "$on-surface-variant",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "教学楼 B201 · 病例分析 · 90分钟",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "TydxS",
+                  "name": "Exam Card 神经病学B",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 20,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "L7OJk",
+                      "name": "神经病学B Top Row",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Q7HWrf",
+                          "name": "神经病学B Title Group",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 3,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "JDy58",
+                              "name": "神经病学B Title",
+                              "fill": "$on-surface",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "神经病学B",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 15,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "rT2Ex",
+                              "name": "神经病学B Date",
+                              "fill": "$secondary",
+                              "content": "6月15日 周一 10:00",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "dCeuW",
+                          "name": "神经病学B Badge",
+                          "fill": "$secondary",
+                          "cornerRadius": 9999,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "J3OaI",
+                              "name": "神经病学B Badge Text",
+                              "fill": "$on-primary",
+                              "content": "待排",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 11,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "FEaDS",
+                      "name": "神经病学B Detail",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "lraTs",
+                          "name": "神经病学B Location Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "map-pin",
+                          "library": "lucide",
+                          "fill": "$on-surface-variant"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ZC2g3",
+                          "name": "神经病学B Meta",
+                          "fill": "$on-surface-variant",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "实验楼 304 · 理论考试 · 100分钟",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "UI2uA",
+          "x": 16,
+          "y": 858,
+          "name": "Bottom Menu - Exam Active",
+          "width": 361,
+          "height": 64,
+          "fill": "#FFFBFEF2",
+          "cornerRadius": 28,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000014",
+            "offset": {
+              "x": 0,
+              "y": -2
+            },
+            "blur": 12
+          },
+          "gap": 4,
+          "padding": 6,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "o3wXyy",
+              "name": "Tab 日程",
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                6,
+                0
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "u3HoE",
+                  "name": "日程 Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "calendar-days",
+                  "library": "lucide",
+                  "fill": "$on-surface-variant"
+                },
+                {
+                  "type": "text",
+                  "id": "cH20z",
+                  "name": "日程 Label",
+                  "fill": "$on-surface-variant",
+                  "content": "日程",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "qT4fB",
+              "name": "Tab 考试",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$primary-container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                6,
+                0
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "G2NhJ",
+                  "name": "考试 Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "file-text",
+                  "library": "lucide",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "J2r3C4",
+                  "name": "考试 Label",
+                  "fill": "$primary",
+                  "content": "考试",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 10,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cP0Kx",
+              "name": "Tab 设置",
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                6,
+                0
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "CxCoC",
+                  "name": "设置 Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "settings",
+                  "library": "lucide",
+                  "fill": "$on-surface-variant"
+                },
+                {
+                  "type": "text",
+                  "id": "Hk7EY",
+                  "name": "设置 Label",
+                  "fill": "$on-surface-variant",
+                  "content": "设置",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "S0gtrx",
+      "x": 946,
+      "y": 0,
+      "name": "Settings — Mobile",
+      "clip": true,
+      "width": 393,
+      "height": 934,
+      "fill": "$surface-low",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "CKriz",
+          "x": 0,
+          "y": 0,
+          "name": "Settings Content",
+          "clip": true,
+          "width": 393,
+          "height": 846,
+          "fill": "$surface-low",
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "enabled": false,
+            "color": "#000000"
+          },
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "bhw2k",
+              "name": "Settings Header",
+              "width": "fill_container",
+              "fill": "$surface-low",
+              "padding": [
+                22,
+                16,
+                14,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "IZg9b",
+                  "name": "Title",
+                  "fill": "$on-surface",
+                  "content": "设置",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 20,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "NVFtL",
+              "name": "Settings Body",
+              "width": "fill_container",
+              "fill": "$surface-low",
+              "layout": "vertical",
+              "gap": 14,
+              "padding": [
+                8,
+                12,
+                16,
+                12
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "C2sjv",
+                  "name": "快速选择周数",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 18,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "i3Vq3X",
+                      "name": "Label",
+                      "fill": "$on-secondary-container",
+                      "content": "快速选择周数",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "E0yYX",
+                      "name": "Chevron",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-down",
+                      "library": "lucide",
+                      "fill": "$on-secondary-container"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ZTLMp",
+                  "name": "Display Mode",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 18,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "JnQbJ",
+                      "name": "Label",
+                      "fill": "$on-surface",
+                      "content": "显示模式",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "a5W2Pe",
+                      "name": "Mode Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "N5NZM",
+                          "name": "仅本周",
+                          "width": "fill_container",
+                          "fill": "$primary",
+                          "cornerRadius": 12,
+                          "padding": [
+                            8,
+                            0
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "U2tHn",
+                              "name": "T",
+                              "fill": "$on-primary",
+                              "content": "仅本周",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "p8UvT",
+                          "name": "显示全部",
+                          "width": "fill_container",
+                          "fill": "$secondary-container",
+                          "cornerRadius": 12,
+                          "padding": [
+                            8,
+                            0
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "dAD7b",
+                              "name": "T",
+                              "fill": "$on-secondary-container",
+                              "content": "显示全部",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "r7P2I",
+                      "name": "Hint",
+                      "fill": "$on-surface-variant",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "显示全部时，非本周课程将以灰色显示。",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "yLmqZ",
+                  "name": "Theme Block",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 18,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "dvtaI",
+                      "name": "Theme Row",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "E3sTgu",
+                          "name": "Label",
+                          "fill": "$on-surface",
+                          "content": "主题",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "tQ9K9",
+                          "name": "Theme Buttons",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "uu5Y0",
+                              "name": "M3 Button",
+                              "fill": "$primary",
+                              "cornerRadius": 12,
+                              "padding": [
+                                8,
+                                16
+                              ],
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Ebt01",
+                                  "name": "M3 Label",
+                                  "fill": "$on-primary",
+                                  "content": "M3",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "IBVs0",
+                              "name": "Minimal Button",
+                              "fill": "$secondary-container",
+                              "cornerRadius": 12,
+                              "padding": [
+                                8,
+                                16
+                              ],
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "MFCsd",
+                                  "name": "Minimal Label",
+                                  "fill": "$on-secondary-container",
+                                  "content": "简约蓝",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "v9L2xy",
+                      "name": "Hint",
+                      "fill": "$on-surface-variant",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "切换应用的主题样式。",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "K5FzOu",
+                  "name": "Notify Block",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 18,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "p3gxSb",
+                      "name": "Notify Row",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "LfRrY",
+                          "name": "Label",
+                          "fill": "$on-surface",
+                          "content": "课程提醒",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "iPsAG",
+                          "name": "Toggle",
+                          "width": 44,
+                          "height": 24,
+                          "fill": "$outline-variant",
+                          "cornerRadius": 9999,
+                          "padding": [
+                            0,
+                            4
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "IcW1M",
+                              "name": "Knob",
+                              "width": 16,
+                              "height": 16,
+                              "fill": "#FFFFFF",
+                              "cornerRadius": 9999
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "HX1ys",
+                      "name": "Hint",
+                      "fill": "$on-surface-variant",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "每节课开始前 15 分钟提醒（仅 Android）",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "u1krfs",
+                  "name": "分组与选修",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 18,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "jQuMc",
+                      "name": "Label",
+                      "fill": "$on-secondary-container",
+                      "content": "分组与选修",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "kPLqx",
+                      "name": "Chevron",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-down",
+                      "library": "lucide",
+                      "fill": "$on-secondary-container"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gSaUI",
+                  "name": "提醒高级",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 18,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "RdFXj",
+                      "name": "Label",
+                      "fill": "$on-secondary-container",
+                      "content": "提醒高级",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "nmM3V",
+                      "name": "Chevron",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-down",
+                      "library": "lucide",
+                      "fill": "$on-secondary-container"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "SlqYe",
+                  "name": "Update Block",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 18,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "V6hzDQ",
+                      "name": "Update Row",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "OoSKh",
+                          "name": "Label",
+                          "fill": "$on-surface",
+                          "content": "检查更新",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "lq0YO",
+                          "name": "Ver",
+                          "fill": "$on-surface-variant",
+                          "content": "v2.0.6",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HxInn",
+                      "name": "Check Button",
+                      "width": "fill_container",
+                      "fill": "$primary-container",
+                      "cornerRadius": 14,
+                      "padding": [
+                        10,
+                        0
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "d792hy",
+                          "name": "T",
+                          "fill": "$on-secondary-container",
+                          "content": "检查更新",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "DNAUB",
+                  "name": "更新与发布",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 18,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "o058r",
+                      "name": "Label",
+                      "fill": "$on-secondary-container",
+                      "content": "更新与发布",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "osA4t",
+                      "name": "Chevron",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-down",
+                      "library": "lucide",
+                      "fill": "$on-secondary-container"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "D6jGxn",
+                  "name": "课表管理",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 18,
+                  "stroke": "$outline-variant",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    14,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "a2JhN",
+                      "name": "Label",
+                      "fill": "$on-secondary-container",
+                      "content": "课表管理",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "U1YvB",
+                      "name": "Chevron",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "chevron-down",
+                      "library": "lucide",
+                      "fill": "$on-secondary-container"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "sDL48",
+          "x": 16,
+          "y": 858,
+          "name": "Bottom Menu - Settings Active",
+          "width": 361,
+          "height": 64,
+          "fill": "#FFFBFEF2",
+          "cornerRadius": 28,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000014",
+            "offset": {
+              "x": 0,
+              "y": -2
+            },
+            "blur": 12
+          },
+          "gap": 4,
+          "padding": 6,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "iINAz",
+              "name": "Tab 日程",
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                6,
+                0
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "nbUie",
+                  "name": "日程 Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "calendar-days",
+                  "library": "lucide",
+                  "fill": "$on-surface-variant"
+                },
+                {
+                  "type": "text",
+                  "id": "K7cdl",
+                  "name": "日程 Label",
+                  "fill": "$on-surface-variant",
+                  "content": "日程",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "L5DjWe",
+              "name": "Tab 考试",
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                6,
+                0
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "LeSZW",
+                  "name": "考试 Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "file-text",
+                  "library": "lucide",
+                  "fill": "$on-surface-variant"
+                },
+                {
+                  "type": "text",
+                  "id": "FwIPd",
+                  "name": "考试 Label",
+                  "fill": "$on-surface-variant",
+                  "content": "考试",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "o04es",
+              "name": "Tab 设置",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$primary-container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "padding": [
+                6,
+                0
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "D4GliN",
+                  "name": "设置 Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "settings",
+                  "library": "lucide",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "yXJxk",
+                  "name": "设置 Label",
+                  "fill": "$primary",
+                  "content": "设置",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 10,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "gC9dN",
+      "x": 1419,
+      "y": 0,
+      "name": "Course Modal — Mobile",
+      "clip": true,
+      "width": 393,
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "e51Pyx",
+          "name": "Scrim Strip",
+          "width": "fill_container",
+          "height": 130,
+          "fill": "#00000040"
+        },
+        {
+          "type": "frame",
+          "id": "h2qP36",
+          "name": "Modal Sheet",
+          "clip": true,
+          "width": "fill_container",
+          "fill": "$surface",
+          "cornerRadius": [
+            28,
+            28,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "eabIQ",
+              "name": "Modal Header",
+              "width": "fill_container",
+              "fill": "$surface-low",
+              "padding": 16,
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "fnpAy",
+                  "name": "Header Left",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "VYBIz",
+                      "name": "Clock",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "clock",
+                      "library": "phosphor",
+                      "fill": "$on-surface"
+                    },
+                    {
+                      "type": "text",
+                      "id": "FH4sH",
+                      "name": "Title",
+                      "fill": "$on-surface",
+                      "content": "星期一 · 1节～2节",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "MNcIq",
+                  "name": "Header Right",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Vs8Q4",
+                      "name": "Edit Group",
+                      "gap": 6,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ZKPyx",
+                          "name": "Edit",
+                          "fill": "$on-surface-variant",
+                          "content": "编辑",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "W9owwK",
+                          "name": "Edit Toggle",
+                          "width": 36,
+                          "height": 20,
+                          "fill": "#00000014",
+                          "cornerRadius": 9999,
+                          "padding": [
+                            0,
+                            4
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "MSmaV",
+                              "name": "Knob",
+                              "width": 12,
+                              "height": 12,
+                              "fill": "#FFFFFF",
+                              "cornerRadius": 9999
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon",
+                      "id": "WexJu",
+                      "name": "Close",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "x",
+                      "library": "lucide",
+                      "fill": "$on-surface-variant"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "LOG4d",
+              "name": "Modal Body",
+              "width": "fill_container",
+              "fill": "$surface",
+              "layout": "vertical",
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "z5BDos",
+                  "name": "Course Card",
+                  "width": "fill_container",
+                  "fill": "$primary-container",
+                  "cornerRadius": 16,
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "gVBOt",
+                      "name": "Card Top",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "xcZq9",
+                          "name": "Course Name",
+                          "fill": "$on-primary-container",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "内科学A(I)",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 18,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "l8gdie",
+                          "name": "Badge",
+                          "fill": "$primary",
+                          "cornerRadius": 9999,
+                          "padding": [
+                            3,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "RGTC5",
+                              "name": "T",
+                              "fill": "$on-primary",
+                              "content": "本周课程",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fGcL8",
+                      "name": "上课周次",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Wt8kq",
+                          "name": "L",
+                          "fill": "$on-surface-variant",
+                          "content": "上课周次",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "i7ZbIW",
+                          "name": "V",
+                          "fill": "$on-surface",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "1-5、7-9、11-16周",
+                          "lineHeight": 1.4,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "WD1IV",
+                      "name": "节次安排",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "NqvCk",
+                          "name": "L",
+                          "fill": "$on-surface-variant",
+                          "content": "节次安排",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "w12zq",
+                          "name": "V",
+                          "fill": "$on-surface",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "1节～2节",
+                          "lineHeight": 1.4,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "i0Quq9",
+                      "name": "上课地点",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "A5Ibo",
+                          "name": "LabelRow",
+                          "gap": 4,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "R8kFeP",
+                              "name": "Pin",
+                              "width": 12,
+                              "height": 12,
+                              "icon": "map-pin",
+                              "library": "lucide",
+                              "fill": "$on-surface-variant"
+                            },
+                            {
+                              "type": "text",
+                              "id": "ii6At",
+                              "name": "L",
+                              "fill": "$on-surface-variant",
+                              "content": "上课地点",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "MqcoZ",
+                          "name": "V",
+                          "fill": "$on-surface",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "11号楼1楼大教室",
+                          "lineHeight": 1.4,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "d9QZx9",
+              "name": "Modal Footer",
+              "width": "fill_container",
+              "fill": "$surface-low",
+              "padding": [
+                12,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "n9Rzv",
+                  "name": "Hint",
+                  "fill": "$outline",
+                  "content": "开启编辑模式以修改课程",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "w4WJb",
+                  "name": "Close Button",
+                  "fill": "$primary",
+                  "cornerRadius": 9999,
+                  "padding": [
+                    8,
+                    20
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "oedIQ",
+                      "name": "T",
+                      "fill": "$on-primary",
+                      "content": "关闭",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "error": {
+      "type": "color",
+      "value": "#B3261E"
+    },
+    "error-container": {
+      "type": "color",
+      "value": "#F9DEDC"
+    },
+    "font-sans": {
+      "type": "string",
+      "value": "Noto Sans SC"
+    },
+    "inverse-on-surface": {
+      "type": "color",
+      "value": "#F4EFF4"
+    },
+    "inverse-surface": {
+      "type": "color",
+      "value": "#313033"
+    },
+    "on-error-container": {
+      "type": "color",
+      "value": "#410E0B"
+    },
+    "on-primary": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "on-primary-container": {
+      "type": "color",
+      "value": "#21005D"
+    },
+    "on-secondary-container": {
+      "type": "color",
+      "value": "#1D192B"
+    },
+    "on-surface": {
+      "type": "color",
+      "value": "#1C1B1F"
+    },
+    "on-surface-variant": {
+      "type": "color",
+      "value": "#49454F"
+    },
+    "outline": {
+      "type": "color",
+      "value": "#79747E"
+    },
+    "outline-variant": {
+      "type": "color",
+      "value": "#CAC4D0"
+    },
+    "primary": {
+      "type": "color",
+      "value": "#6750A4"
+    },
+    "primary-container": {
+      "type": "color",
+      "value": "#EADDFF"
+    },
+    "secondary": {
+      "type": "color",
+      "value": "#625B71"
+    },
+    "secondary-container": {
+      "type": "color",
+      "value": "#E8DEF8"
+    },
+    "surface": {
+      "type": "color",
+      "value": "#FFFBFE"
+    },
+    "surface-high": {
+      "type": "color",
+      "value": "#ECE6F0"
+    },
+    "surface-highest": {
+      "type": "color",
+      "value": "#E6E0E9"
+    },
+    "surface-low": {
+      "type": "color",
+      "value": "#F7F2FA"
+    },
+    "surface-mid": {
+      "type": "color",
+      "value": "#F3EDF7"
+    },
+    "tertiary": {
+      "type": "color",
+      "value": "#7D5260"
+    },
+    "tertiary-container": {
+      "type": "color",
+      "value": "#FFD8E4"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+@import './styles/theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --android-statusbar: 26px;
+  --safe-top: max(env(safe-area-inset-top), var(--android-statusbar));
+  --safe-bottom: env(safe-area-inset-bottom);
+
+  /* M3 state layer opacities */
+  --state-hover: 0.08;
+  --state-pressed: 0.12;
+  --state-focused: 0.12;
+  --state-dragged: 0.16;
+
+  /* Apple minimalist surface tokens */
+  --surface-header: #F7F4FA;
+  --surface-separator: rgba(0,0,0,0.03);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+  background: var(--surface);
+}
+
+body {
+  margin: 0;
+  color: var(--foreground-primary);
+  font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Number input: hide spin arrows on mobile */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* M3 ripple-style focus ring */
+*:focus-visible {
+  outline: 2px solid rgba(103,80,164,0.4);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Smooth tap highlighting on mobile */
+@media (hover: none) {
+  * {
+    -webkit-tap-highlight-color: rgba(103, 80, 164, 0.06);
+  }
+}

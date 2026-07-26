@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend development overview and guidelines index"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Component styling patterns, Tailwind usage, component structure conventions"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Pre-modification search rule — check existing patterns before changing colors/tokens"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Cross-layer consistency — token changes affect all components"}
