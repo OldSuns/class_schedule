@@ -101,5 +101,26 @@ export const STORAGE_KEYS = {
   UPDATE_LAST_ERROR_AT: "updateLastErrorAt",
   UPDATE_LAST_TOAST_DATE: "updateLastToastDate",
   THEME: "theme",
-  USER_EXAMS: "userExams"
+  USER_EXAMS: "userExams",
+  SUMMER_SCHEDULE_MIGRATION_VERSION: "summerScheduleMigrationVersion"
+};
+
+export const SUMMER_SCHEDULE_MIGRATION_VERSION = "1";
+
+export const SUMMER_STORAGE_KEYS = {
+  NOTIFICATIONS_LAST_SCHEDULED_AT: "summerNotificationsLastScheduledAt",
+  NOTIFICATIONS_LAST_RECONCILED_AT: "summerNotificationsLastReconciledAt",
+  NOTIFICATION_PLAN_SNAPSHOT: "summerNotificationPlanSnapshot",
+  WIDGET_SCHEDULE_SNAPSHOT: "summerWidgetScheduleSnapshot",
+  CUSTOM_SCHEDULE: "summerScheduleCustom",
+  SCHEDULE_SOURCE: "summerScheduleSource",
+  REMOTE_SCHEDULE_SNAPSHOT: "summerScheduleRemoteSnapshot",
+  REMOTE_SCHEDULE_META: "summerScheduleRemoteMeta",
+  REMOTE_SKIPPED_UPDATE: "summerScheduleRemoteSkippedUpdate",
+  DEFAULT_SCHEDULE_VERSION: "summerScheduleDefaultVersion",
+  DEFAULT_SCHEDULE_SIGNATURE: "summerScheduleDefaultSignature",
+  REMOTE_LAST_CHECK_AT: "summerScheduleRemoteLastCheckAt",
+  REMOTE_LAST_FOREGROUND_CHECK_AT: "summerScheduleRemoteLastForegroundCheckAt",
+  REMOTE_LAST_ERROR_AT: "summerScheduleRemoteLastErrorAt",
+  THEME: "summerTheme"
 };

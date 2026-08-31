@@ -25,8 +25,10 @@ export const setItem = async (key, value) => {
       // Web: 使用 localStorage
       localStorage.setItem(key, value);
     }
+    return true;
   } catch (error) {
     console.error('存储数据失败:', error);
+    return false;
   }
 };
 
@@ -65,8 +67,10 @@ export const removeItem = async (key) => {
       // Web: 使用 localStorage
       localStorage.removeItem(key);
     }
+    return true;
   } catch (error) {
     console.error('删除数据失败:', error);
+    return false;
   }
 };
 

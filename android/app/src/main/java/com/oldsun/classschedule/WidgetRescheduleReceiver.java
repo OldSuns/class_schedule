@@ -15,9 +15,8 @@ public class WidgetRescheduleReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (context != null) {
-            clearLegacyWidgetSnapshotIfNeeded(context);
-        }
+        if (!SummerScheduleMigration.ensureMigrated(context)) return;
+        clearLegacyWidgetSnapshotIfNeeded(context);
         TodayCoursesWidgetProvider.requestRefresh(context);
     }
 

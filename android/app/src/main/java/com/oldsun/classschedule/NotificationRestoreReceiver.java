@@ -25,9 +25,8 @@ public class NotificationRestoreReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            return;
-        }
+        if (!SummerScheduleMigration.ensureMigrated(context)) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return;
 
         AlarmClockStorage storage = new AlarmClockStorage(context);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
