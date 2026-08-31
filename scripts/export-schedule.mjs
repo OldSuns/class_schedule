@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-
 const findProjectRoot = (startDir) => {
   let current = startDir;
   while (true) {
@@ -41,9 +40,24 @@ if (!Array.isArray(scheduleData)) {
   process.exit(1);
 }
 
+// updatedAt 跟随内容：与旧 schedule.json 内容一致时保留旧日期（重复 build 不漂移），
+// 内容变化或首次生成时才写当天。远端软更新会拿它和内置侧比较，见 useScheduleData.js。
+const previousPayload = fs.existsSync(outputPath)
+  ? JSON.parse(fs.readFileSync(outputPath, "utf8"))
+  : null;
+const previousSchedule = Array.isArray(previousPayload?.schedule)
+  ? previousPayload.schedule
+  : null;
+const scheduleUnchanged =
+  previousSchedule != null &&
+  JSON.stringify(previousSchedule) === JSON.stringify(scheduleData);
+const updatedAt = scheduleUnchanged
+  ? previousPayload.updatedAt
+  : toIsoDate();
+
 const payload = {
   version: 1,
-  updatedAt: toIsoDate(),
+  updatedAt,
   schedule: scheduleData
 };
 
