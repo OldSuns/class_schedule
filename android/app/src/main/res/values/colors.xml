@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 主色调 - 靛蓝色 -->
+    <color name="colorPrimary">#4F46E5</color>
+    <!-- 深色主色调 - 用于状态栏 -->
+    <color name="colorPrimaryDark">#4338CA</color>
+    <!-- 强调色 -->
+    <color name="colorAccent">#6366F1</color>
+    <!-- 状态栏背景色 -->
+    <color name="statusBarColor">#4F46E5</color>
+</resources>
