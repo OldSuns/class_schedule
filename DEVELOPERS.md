@@ -30,7 +30,7 @@
 - `src/utils/schedule/timeUtils.js`：严格 `HH:mm` 解析、日期与周次计算。
 - `src/utils/schedule/groupUtils.js`：1组至7组及共同课程过滤。
 - `src/config/constants.js`：周次范围、默认开学日期、版本号、远端课表地址、存储键名。
-- `src/services/schedule/remoteSchedule.js`：远端 `schedule.json` 拉取与缓存校验。
+- `src/services/schedule/remoteSchedule.js`：远端 `schedule-v2.json` 拉取、v1 迁移与缓存校验。
 - `src/services/app/updateChecker.js`：版本检查。常量名保留 `GITHUB_*`，实际请求的是 Gitee Releases API。
 - `src/services/notifications/notificationScheduler.js`：Android 本地通知构建、去重、重排与快照持久化。
 - `src/services/platform/widgetBridge.js`：调用 Android 原生小组件刷新桥接。
@@ -49,18 +49,20 @@
 
 ## 课表软更新发布说明
 
-软更新使用仓库根目录 `schedule.json` 作为远端数据源。该文件由 `src/data/scheduleData.js` 生成。
+当前客户端使用仓库根目录 `schedule-v2.json` 作为远端数据源。导出脚本同时生成旧版地址 `schedule.json` 的严格 v1 投影：教师写回旧 `note`，独立备注不下发给无法展示它的旧 UI。两份文件都由 `src/data/scheduleData.js` 生成，不得手工分别维护。
 
 当前线上地址：
-- `https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
-- `https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
-- `https://gcore.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
+- `https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule-v2.json`
+- `https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule-v2.json`
+- `https://gcore.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule-v2.json`
+
+旧版客户端继续请求同域名下的 `schedule.json`。
 
 发布课表更新时需要：
 
 ```bash
 npm run export-schedule
-git add src/data/scheduleData.js schedule.json
+git add src/data/scheduleData.js schedule-v2.json schedule.json
 git commit -m "chore: update schedule"
 git push
 ```
@@ -68,10 +70,12 @@ git push
 ## 刷新 jsDelivr 缓存
 
 - 工具页：[jsDelivr purge](https://www.jsdelivr.com/tools/purge)
-- Purge URL：`https://purge.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
+- 当前版 Purge URL：`https://purge.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule-v2.json`
+- 旧版兼容 Purge URL：`https://purge.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
 - 测试地址：
+  - `https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule-v2.json`
+  - `https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule-v2.json`
   - `https://cdn.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
-  - `https://fastly.jsdelivr.net/gh/oldsuns/class_schedule@summer-schedule/schedule.json`
 
 ## Android 注意事项
 

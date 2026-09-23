@@ -5,7 +5,7 @@ import * as eventUtils from "../src/utils/schedule/eventUtils.js";
 test("widget snapshot serializes validated events with exact minutes", async () => {
     assert.equal(typeof eventUtils.buildWidgetScheduleSnapshot, "function");
     const snapshot = eventUtils.buildWidgetScheduleSnapshot({
-      version: 1,
+      version: 2,
       semesterStartDate: "2026-07-13",
       updatedAt: "2026-07-16T00:00:00+08:00",
       events: [
@@ -18,6 +18,7 @@ test("widget snapshot serializes validated events with exact minutes", async () 
           endTime: "12:00",
           group: "1组",
           location: "708A病区",
+          teacher: "",
           note: ""
         }
       ]

@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "semesterStartDate": "2026-07-13",
   "updatedAt": "2026-07-17T00:00:00+08:00",
   "events": [
@@ -14,7 +14,8 @@
       "endTime": "11:20",
       "group": null,
       "location": "1号楼1楼道德讲堂",
-      "note": "教育培训科等"
+      "teacher": "教育培训科等",
+      "note": ""
     },
     {
       "id": "common-1-wednesday-1345-2",
@@ -27,7 +28,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "1号楼1楼道德讲堂",
-      "note": "质管科等"
+      "teacher": "质管科等",
+      "note": ""
     },
     {
       "id": "common-1-thursday-0815-3",
@@ -40,7 +42,8 @@
       "endTime": "12:05",
       "group": null,
       "location": "1号楼1楼道德讲堂",
-      "note": "教学秘书、急诊科"
+      "teacher": "教学秘书、急诊科",
+      "note": ""
     },
     {
       "id": "common-1-thursday-1345-4",
@@ -53,7 +56,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼1楼教室/2楼医学模拟中心",
-      "note": "急诊科、标准化病人"
+      "teacher": "急诊科、标准化病人",
+      "note": ""
     },
     {
       "id": "common-1-thursday-1800-5",
@@ -66,6 +70,7 @@
       "endTime": "20:10",
       "group": null,
       "location": "11号楼1楼教室/2楼医学模拟中心",
+      "teacher": "",
       "note": ""
     },
     {
@@ -79,7 +84,8 @@
       "endTime": "11:00",
       "group": null,
       "location": "1号楼1楼道德讲堂",
-      "note": "急诊科等"
+      "teacher": "急诊科等",
+      "note": ""
     },
     {
       "id": "common-1-friday-1345-7",
@@ -92,7 +98,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼2楼医学模拟中心",
-      "note": "急诊科等"
+      "teacher": "急诊科等",
+      "note": ""
     },
     {
       "id": "common-2-tuesday-1300-8",
@@ -105,7 +112,8 @@
       "endTime": "13:40",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "徐美灵"
+      "teacher": "徐美灵",
+      "note": ""
     },
     {
       "id": "common-2-tuesday-1345-9",
@@ -118,7 +126,8 @@
       "endTime": "14:25",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "魏湘"
+      "teacher": "魏湘",
+      "note": ""
     },
     {
       "id": "common-2-tuesday-1430-10",
@@ -131,7 +140,8 @@
       "endTime": "15:10",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "曹丹"
+      "teacher": "曹丹",
+      "note": ""
     },
     {
       "id": "common-2-tuesday-1520-11",
@@ -144,7 +154,8 @@
       "endTime": "16:00",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "钟晓敬"
+      "teacher": "钟晓敬",
+      "note": ""
     },
     {
       "id": "common-2-tuesday-1605-12",
@@ -157,7 +168,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "殷琦淳"
+      "teacher": "殷琦淳",
+      "note": ""
     },
     {
       "id": "common-2-thursday-1345-13",
@@ -170,7 +182,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼2楼医学模拟中心",
-      "note": "曹丹、马德林、周凌燕、徐美灵"
+      "teacher": "曹丹、马德林、周凌燕、徐美灵",
+      "note": "1.骨髓穿刺术；2.腰椎穿刺术；3.胸腔穿刺术；4.腹腔穿刺术。（6-7班分成A、B、C、D四组，培训轮流进行，每个操作1课时）"
     },
     {
       "id": "common-3-tuesday-1345-14",
@@ -183,7 +196,8 @@
       "endTime": "14:25",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "董梁"
+      "teacher": "董梁",
+      "note": ""
     },
     {
       "id": "common-3-tuesday-1430-15",
@@ -196,7 +210,8 @@
       "endTime": "15:10",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "张栗"
+      "teacher": "张栗",
+      "note": ""
     },
     {
       "id": "common-3-tuesday-1520-16",
@@ -209,7 +224,8 @@
       "endTime": "16:00",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "张栗"
+      "teacher": "张栗",
+      "note": ""
     },
     {
       "id": "common-3-tuesday-1605-17",
@@ -222,7 +238,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "许瑜佳"
+      "teacher": "许瑜佳",
+      "note": ""
     },
     {
       "id": "common-4-tuesday-1345-18",
@@ -235,7 +252,8 @@
       "endTime": "14:25",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "姚翰勋"
+      "teacher": "姚翰勋",
+      "note": ""
     },
     {
       "id": "common-4-tuesday-1430-19",
@@ -248,7 +266,8 @@
       "endTime": "15:10",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "余胜"
+      "teacher": "余胜",
+      "note": ""
     },
     {
       "id": "common-4-tuesday-1520-20",
@@ -261,7 +280,8 @@
       "endTime": "16:00",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "高玉海"
+      "teacher": "高玉海",
+      "note": ""
     },
     {
       "id": "common-4-tuesday-1605-21",
@@ -274,7 +294,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "魏锋"
+      "teacher": "魏锋",
+      "note": ""
     },
     {
       "id": "common-4-thursday-1345-22",
@@ -287,7 +308,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼2楼医学模拟中心",
-      "note": "余胜、魏强、邵霞、肖鑫"
+      "teacher": "余胜、魏强、邵霞、肖鑫",
+      "note": "1.外科洗手、穿衣、戴手套、消毒、铺巾；2.切开、缝合、打结；3.换药；4.导尿术。（6-7班分成A、B、C、D四组，培训轮流进行，每个操作1课时）"
     },
     {
       "id": "common-5-tuesday-1345-23",
@@ -300,7 +322,8 @@
       "endTime": "14:25",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "心胸外科、闵伟伟"
+      "teacher": "心胸外科、闵伟伟",
+      "note": ""
     },
     {
       "id": "common-5-tuesday-1430-24",
@@ -313,7 +336,8 @@
       "endTime": "15:10",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "甲状腺外科、卢军"
+      "teacher": "甲状腺外科、卢军",
+      "note": ""
     },
     {
       "id": "common-5-tuesday-1520-25",
@@ -326,7 +350,8 @@
       "endTime": "16:00",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "乳腺外科、沈洋"
+      "teacher": "乳腺外科、沈洋",
+      "note": ""
     },
     {
       "id": "common-5-tuesday-1605-26",
@@ -339,7 +364,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "肝胆胰外科、孙旭"
+      "teacher": "肝胆胰外科、孙旭",
+      "note": ""
     },
     {
       "id": "common-6-tuesday-1345-27",
@@ -352,7 +378,8 @@
       "endTime": "14:25",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "丁盛娣"
+      "teacher": "丁盛娣",
+      "note": ""
     },
     {
       "id": "common-6-tuesday-1430-28",
@@ -365,7 +392,8 @@
       "endTime": "15:10",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "李宏岩"
+      "teacher": "李宏岩",
+      "note": ""
     },
     {
       "id": "common-6-tuesday-1520-29",
@@ -378,7 +406,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "陆玮芬"
+      "teacher": "陆玮芬",
+      "note": ""
     },
     {
       "id": "common-6-thursday-1345-30",
@@ -391,7 +420,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼2楼医学模拟中心",
-      "note": "马跃凤、唐杰、黄秋玲、陆玮芬"
+      "teacher": "马跃凤、唐杰、黄秋玲、陆玮芬",
+      "note": "1.妇科检查及阴道脱落细胞学检查等操作要点；2.产科四步触诊法；3.小儿腰椎穿刺术；4.小儿骨髓穿刺术。（6-7班分成A、B、C、D四组，培训轮流进行，每个操作1课时）"
     },
     {
       "id": "common-7-tuesday-1345-31",
@@ -404,7 +434,8 @@
       "endTime": "14:25",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "曹明月"
+      "teacher": "曹明月",
+      "note": ""
     },
     {
       "id": "common-7-tuesday-1430-32",
@@ -417,7 +448,8 @@
       "endTime": "15:10",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "邱建"
+      "teacher": "邱建",
+      "note": ""
     },
     {
       "id": "common-7-tuesday-1520-33",
@@ -430,7 +462,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "黄秋玲"
+      "teacher": "黄秋玲",
+      "note": ""
     },
     {
       "id": "common-7-thursday-1345-34",
@@ -443,7 +476,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼2楼医学模拟中心",
-      "note": "徐美灵、梅鹰、曹明月、陆玮芬"
+      "teacher": "徐美灵、梅鹰、曹明月、陆玮芬",
+      "note": ""
     },
     {
       "id": "common-8-tuesday-1345-35",
@@ -456,7 +490,8 @@
       "endTime": "15:10",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "何剑"
+      "teacher": "何剑",
+      "note": ""
     },
     {
       "id": "common-8-tuesday-1520-36",
@@ -469,7 +504,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼1楼教室",
-      "note": "王笑颜"
+      "teacher": "王笑颜",
+      "note": ""
     },
     {
       "id": "common-8-thursday-1345-37",
@@ -482,7 +518,8 @@
       "endTime": "16:45",
       "group": null,
       "location": "11号楼2楼医学模拟中心",
-      "note": "徐美灵、梅鹰、曹明月、陆玮芬"
+      "teacher": "徐美灵、梅鹰、曹明月、陆玮芬",
+      "note": ""
     },
     {
       "id": "rotation-w2-monday-g1-0800",
@@ -495,6 +532,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -508,6 +546,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -521,6 +560,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -534,6 +574,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -547,6 +588,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -560,6 +602,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -573,6 +616,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -586,6 +630,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -599,6 +644,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -612,6 +658,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -625,6 +672,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -638,6 +686,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -651,6 +700,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -664,6 +714,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -677,6 +728,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -690,6 +742,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -703,6 +756,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -716,6 +770,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -729,6 +784,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -742,6 +798,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -755,6 +812,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -768,6 +826,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -781,6 +840,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -794,6 +854,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -807,6 +868,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -820,6 +882,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -833,6 +896,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -846,6 +910,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -859,6 +924,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -872,6 +938,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -885,6 +952,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -898,6 +966,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -911,6 +980,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -924,6 +994,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -937,6 +1008,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -950,6 +1022,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -963,6 +1036,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -976,6 +1050,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -989,6 +1064,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1002,6 +1078,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1015,6 +1092,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1028,6 +1106,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1041,6 +1120,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1054,6 +1134,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1067,6 +1148,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1080,6 +1162,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1093,6 +1176,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1106,6 +1190,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1119,6 +1204,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1132,6 +1218,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1145,6 +1232,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1158,6 +1246,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1171,6 +1260,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1184,6 +1274,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1197,6 +1288,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1210,6 +1302,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1223,6 +1316,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1236,6 +1330,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1249,6 +1344,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1262,6 +1358,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1275,6 +1372,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1288,6 +1386,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1301,6 +1400,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1314,6 +1414,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1327,6 +1428,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1340,6 +1442,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1353,6 +1456,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1366,6 +1470,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1379,6 +1484,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1392,6 +1498,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1405,6 +1512,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1418,6 +1526,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1431,6 +1540,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1444,6 +1554,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1457,6 +1568,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1470,6 +1582,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1483,6 +1596,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1496,6 +1610,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1509,6 +1624,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1522,6 +1638,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1535,6 +1652,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1548,6 +1666,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1561,6 +1680,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1574,6 +1694,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "711B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1587,6 +1708,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "711B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1600,6 +1722,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "711B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1613,6 +1736,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "711B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1626,6 +1750,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "711B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1639,6 +1764,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "711B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1652,6 +1778,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "711B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1665,6 +1792,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "711B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1678,6 +1806,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "711B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1691,6 +1820,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1704,6 +1834,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1717,6 +1848,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1730,6 +1862,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1743,6 +1876,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1756,6 +1890,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1769,6 +1904,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1782,6 +1918,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1795,6 +1932,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1808,6 +1946,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1821,6 +1960,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1834,6 +1974,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1847,6 +1988,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1860,6 +2002,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1873,6 +2016,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1886,6 +2030,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1899,6 +2044,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1912,6 +2058,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1925,6 +2072,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1938,6 +2086,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1951,6 +2100,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1964,6 +2114,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1977,6 +2128,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -1990,6 +2142,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2003,6 +2156,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2016,6 +2170,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2029,6 +2184,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2042,6 +2198,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2055,6 +2212,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2068,6 +2226,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2081,6 +2240,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2094,6 +2254,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2107,6 +2268,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2120,6 +2282,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2133,6 +2296,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "511",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2146,6 +2310,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2159,6 +2324,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2172,6 +2338,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2185,6 +2352,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2198,6 +2366,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2211,6 +2380,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2224,6 +2394,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2237,6 +2408,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2250,6 +2422,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2263,6 +2436,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2276,6 +2450,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2289,6 +2464,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2302,6 +2478,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2315,6 +2492,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2328,6 +2506,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2341,6 +2520,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2354,6 +2534,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2367,6 +2548,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2380,6 +2562,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2393,6 +2576,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2406,6 +2590,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2419,6 +2604,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2432,6 +2618,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2445,6 +2632,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2458,6 +2646,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2471,6 +2660,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2484,6 +2674,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2497,6 +2688,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2510,6 +2702,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2523,6 +2716,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2536,6 +2730,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2549,6 +2744,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2562,6 +2758,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2575,6 +2772,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2588,6 +2786,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2601,6 +2800,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2614,6 +2814,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2627,6 +2828,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2640,6 +2842,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2653,6 +2856,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2666,6 +2870,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2679,6 +2884,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2692,6 +2898,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2705,6 +2912,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2718,6 +2926,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2731,6 +2940,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2744,6 +2954,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2757,6 +2968,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2770,6 +2982,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2783,6 +2996,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2796,6 +3010,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2809,6 +3024,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2822,6 +3038,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2835,6 +3052,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2848,6 +3066,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2861,6 +3080,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2874,6 +3094,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2887,6 +3108,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "607B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2900,6 +3122,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "607B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2913,6 +3136,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "607B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2926,6 +3150,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "607B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2939,6 +3164,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "607B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2952,6 +3178,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "607B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2965,6 +3192,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "607B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2978,6 +3206,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "607B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -2991,6 +3220,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "607B",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3004,6 +3234,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3017,6 +3248,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3030,6 +3262,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3043,6 +3276,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3056,6 +3290,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3069,6 +3304,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3082,6 +3318,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3095,6 +3332,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3108,6 +3346,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3121,6 +3360,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3134,6 +3374,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3147,6 +3388,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3160,6 +3402,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3173,6 +3416,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3186,6 +3430,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3199,6 +3444,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3212,6 +3458,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3225,6 +3472,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3238,6 +3486,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3251,6 +3500,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3264,6 +3514,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3277,6 +3528,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3290,6 +3542,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3303,6 +3556,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3316,6 +3570,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3329,6 +3584,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3342,6 +3598,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3355,6 +3612,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3368,6 +3626,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3381,6 +3640,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3394,6 +3654,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3407,6 +3668,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3420,6 +3682,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3433,6 +3696,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3446,6 +3710,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3459,6 +3724,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3472,6 +3738,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3485,6 +3752,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3498,6 +3766,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3511,6 +3780,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3524,6 +3794,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3537,6 +3808,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3550,6 +3822,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3563,6 +3836,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3576,6 +3850,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3589,6 +3864,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3602,6 +3878,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3615,6 +3892,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3628,6 +3906,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3641,6 +3920,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3654,6 +3934,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3667,6 +3948,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3680,6 +3962,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3693,6 +3976,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3706,6 +3990,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3719,6 +4004,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3732,6 +4018,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3745,6 +4032,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3758,6 +4046,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3771,6 +4060,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3784,6 +4074,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3797,6 +4088,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3810,6 +4102,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3823,6 +4116,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3836,6 +4130,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3849,6 +4144,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3862,6 +4158,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3875,6 +4172,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3888,6 +4186,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3901,6 +4200,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3914,6 +4214,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3927,6 +4228,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3940,6 +4242,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3953,6 +4256,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3966,6 +4270,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3979,6 +4284,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -3992,6 +4298,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4005,6 +4312,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4018,6 +4326,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4031,6 +4340,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4044,6 +4354,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4057,6 +4368,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4070,6 +4382,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4083,6 +4396,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4096,6 +4410,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4109,6 +4424,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4122,6 +4438,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4135,6 +4452,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4148,6 +4466,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4161,6 +4480,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4174,6 +4494,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4187,6 +4508,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4200,6 +4522,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "608A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4213,6 +4536,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4226,6 +4550,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4239,6 +4564,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4252,6 +4578,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4265,6 +4592,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4278,6 +4606,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4291,6 +4620,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4304,6 +4634,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4317,6 +4648,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4330,6 +4662,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4343,6 +4676,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4356,6 +4690,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4369,6 +4704,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4382,6 +4718,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4395,6 +4732,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4408,6 +4746,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4421,6 +4760,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4434,6 +4774,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4447,6 +4788,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4460,6 +4802,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4473,6 +4816,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4486,6 +4830,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4499,6 +4844,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4512,6 +4858,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4525,6 +4872,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4538,6 +4886,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4551,6 +4900,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4564,6 +4914,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4577,6 +4928,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4590,6 +4942,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4603,6 +4956,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4616,6 +4970,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "吴兴区福莱福路1号",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4629,6 +4984,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4642,6 +4998,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4655,6 +5012,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4668,6 +5026,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4681,6 +5040,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4694,6 +5054,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4707,6 +5068,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4720,6 +5082,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "710B病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4733,6 +5096,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4746,6 +5110,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4759,6 +5124,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4772,6 +5138,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4785,6 +5152,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4798,6 +5166,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4811,6 +5180,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4824,6 +5194,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4837,6 +5208,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4850,6 +5222,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4863,6 +5236,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4876,6 +5250,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4889,6 +5264,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4902,6 +5278,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4915,6 +5292,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4928,6 +5306,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4941,6 +5320,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4954,6 +5334,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4967,6 +5348,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4980,6 +5362,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -4993,6 +5376,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5006,6 +5390,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5019,6 +5404,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5032,6 +5418,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "606A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5045,6 +5432,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5058,6 +5446,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5071,6 +5460,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5084,6 +5474,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5097,6 +5488,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5110,6 +5502,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5123,6 +5516,7 @@
       "endTime": "12:00",
       "group": "1组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5136,6 +5530,7 @@
       "endTime": "17:00",
       "group": "1组",
       "location": "吴兴区震泽路966号临床诊疗中心105室",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5149,6 +5544,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5162,6 +5558,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5175,6 +5572,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5188,6 +5586,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5201,6 +5600,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5214,6 +5614,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5227,6 +5628,7 @@
       "endTime": "12:00",
       "group": "2组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5240,6 +5642,7 @@
       "endTime": "17:00",
       "group": "2组",
       "location": "508",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5253,6 +5656,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5266,6 +5670,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5279,6 +5684,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5292,6 +5698,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5305,6 +5712,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5318,6 +5726,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5331,6 +5740,7 @@
       "endTime": "12:00",
       "group": "3组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5344,6 +5754,7 @@
       "endTime": "17:00",
       "group": "3组",
       "location": "506病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5357,6 +5768,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5370,6 +5782,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5383,6 +5796,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5396,6 +5810,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5409,6 +5824,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5422,6 +5838,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5435,6 +5852,7 @@
       "endTime": "12:00",
       "group": "4组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5448,6 +5866,7 @@
       "endTime": "17:00",
       "group": "4组",
       "location": "708A病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5461,6 +5880,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5474,6 +5894,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5487,6 +5908,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5500,6 +5922,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5513,6 +5936,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5526,6 +5950,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5539,6 +5964,7 @@
       "endTime": "12:00",
       "group": "5组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5552,6 +5978,7 @@
       "endTime": "17:00",
       "group": "5组",
       "location": "707A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5565,6 +5992,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5578,6 +6006,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5591,6 +6020,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5604,6 +6034,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5617,6 +6048,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5630,6 +6062,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5643,6 +6076,7 @@
       "endTime": "12:00",
       "group": "6组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5656,6 +6090,7 @@
       "endTime": "17:00",
       "group": "6组",
       "location": "805病区",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5669,6 +6104,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5682,6 +6118,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5695,6 +6132,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5708,6 +6146,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5721,6 +6160,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5734,6 +6174,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5747,6 +6188,7 @@
       "endTime": "12:00",
       "group": "7组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     },
     {
@@ -5760,6 +6202,7 @@
       "endTime": "17:00",
       "group": "7组",
       "location": "711A",
+      "teacher": "",
       "note": ""
     }
   ]

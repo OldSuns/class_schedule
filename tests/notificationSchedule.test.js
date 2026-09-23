@@ -18,10 +18,11 @@ test("notification plan groups same-start events and uses exact event times", as
       weeks: [2],
       group: null,
       location: "11号楼1楼教室",
+      teacher: "",
       note: ""
     };
     const scheduleData = {
-      version: 1,
+      version: 2,
       semesterStartDate: "2026-07-13",
       updatedAt: "2026-07-16T00:00:00+08:00",
       events: [

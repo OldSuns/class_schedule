@@ -13,7 +13,8 @@ const event = {
   endTime: "14:25",
   group: null,
   location: "11号楼1楼教室",
-  note: "魏湘"
+  teacher: "魏湘",
+  note: "需携带听诊器"
 };
 
 test("course detail sheet renders one summer event without period language", async () => {
@@ -45,6 +46,8 @@ test("course detail sheet renders one summer event without period language", asy
     assert.match(markup, /11号楼1楼教室/);
     assert.match(markup, /授课教师/);
     assert.match(markup, /魏湘/);
+    assert.match(markup, /备注/);
+    assert.match(markup, /需携带听诊器/);
     assert.match(markup, /编辑/);
     assert.doesNotMatch(markup, /节次安排|当前周节次/);
   } finally {

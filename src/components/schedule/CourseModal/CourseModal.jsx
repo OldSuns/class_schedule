@@ -58,6 +58,7 @@ const CourseModal = ({
       ...form,
       name: form.name.trim(),
       location: form.location.trim(),
+      teacher: form.teacher.trim(),
       note: form.note.trim()
     });
     setIsEditMode(false);
@@ -159,11 +160,20 @@ const CourseModal = ({
                   />
                 </label>
                 <label className="block text-xs text-on-surface-variant">
-                  授课教师 / 备注
+                  授课教师
                   <input
+                    value={form.teacher}
+                    onChange={(inputEvent) => updateField("teacher", inputEvent.target.value)}
+                    className="mt-1 w-full rounded-xl bg-surface-primary px-3 py-2 text-sm text-on-surface outline-none"
+                  />
+                </label>
+                <label className="block text-xs text-on-surface-variant">
+                  备注
+                  <textarea
+                    rows={3}
                     value={form.note}
                     onChange={(inputEvent) => updateField("note", inputEvent.target.value)}
-                    className="mt-1 w-full rounded-xl bg-surface-primary px-3 py-2 text-sm text-on-surface outline-none"
+                    className="mt-1 w-full resize-y rounded-xl bg-surface-primary px-3 py-2 text-sm leading-6 text-on-surface outline-none"
                   />
                 </label>
                 <label className="block text-xs text-on-surface-variant">
@@ -267,10 +277,18 @@ const CourseModal = ({
                       {event.group ?? "全体学生"}
                     </p>
                   </div>
-                  {event.note && (
+                  {event.teacher && (
                     <div>
                       <p className="text-xs text-on-surface-variant">授课教师</p>
-                      <p className="mt-1 text-sm font-semibold text-on-surface">{event.note}</p>
+                      <p className="mt-1 text-sm font-semibold text-on-surface">{event.teacher}</p>
+                    </div>
+                  )}
+                  {event.note && (
+                    <div>
+                      <p className="text-xs text-on-surface-variant">备注</p>
+                      <p className="mt-1 whitespace-pre-wrap text-sm font-semibold leading-6 text-on-surface">
+                        {event.note}
+                      </p>
                     </div>
                   )}
                 </div>

@@ -10,11 +10,15 @@ const server = await createServer({
 const {
   buildScheduleSignature,
   fetchRemoteSchedule,
+  isScheduleNewer,
   normalizeRemotePayload
 } = await server.ssrLoadModule("/src/services/schedule/remoteSchedule.js");
+const { resolveStoredSchedule } = await server.ssrLoadModule(
+  "/src/hooks/schedule/useScheduleData.js"
+);
 
 const payload = {
-  version: 1,
+  version: 2,
   semesterStartDate: "2026-07-13",
   updatedAt: "2026-07-16T00:00:00+08:00",
   events: [
@@ -27,7 +31,8 @@ const payload = {
       endTime: "14:25",
       group: null,
       location: "11号楼1楼教室",
-      note: "魏湘"
+      teacher: "魏湘",
+      note: ""
     }
   ]
 };
@@ -36,9 +41,22 @@ test("remote schedule accepts only the authoritative summer root", () => {
   assert.equal(typeof normalizeRemotePayload, "function");
   assert.deepEqual(normalizeRemotePayload(payload), payload);
   assert.throws(
-    () => normalizeRemotePayload({ version: 1, schedule: payload.events }),
+    () => normalizeRemotePayload({ version: 2, schedule: payload.events }),
     /课表数据格式不兼容/
   );
+});
+
+test("remote schedule migrates legacy v1 payloads without losing teachers", () => {
+  const legacyPayload = {
+    ...payload,
+    version: 1,
+    events: payload.events.map(({ teacher, note: _note, ...event }) => ({
+      ...event,
+      note: teacher
+    }))
+  };
+
+  assert.deepEqual(normalizeRemotePayload(legacyPayload), payload);
 });
 
 test("schedule signature covers the complete normalized root", () => {
@@ -73,6 +91,57 @@ test("remote schedule compares updatedAt as absolute timestamps", async () => {
   } finally {
     globalThis.fetch = originalFetch;
   }
+});
+
+test("overwrite install keeps only remote snapshots newer than the built-in schedule", () => {
+  const builtIn = {
+    ...payload,
+    updatedAt: "2026-07-17T00:00:00+08:00"
+  };
+  const sameInstantRemote = {
+    payload: { ...payload, updatedAt: "2026-07-16T16:00:00Z" }
+  };
+  const sameInstant = resolveStoredSchedule({
+    custom: null,
+    remote: sameInstantRemote,
+    source: "remote",
+    builtIn
+  });
+  assert.equal(isScheduleNewer(sameInstantRemote.payload, builtIn), false);
+  assert.equal(sameInstant.source, "builtin");
+  assert.equal(sameInstant.shouldClearRemoteState, true);
+
+  const newerRemote = {
+    payload: { ...payload, updatedAt: "2026-07-16T16:00:01Z" }
+  };
+  const newer = resolveStoredSchedule({
+    custom: null,
+    remote: newerRemote,
+    source: "remote",
+    builtIn
+  });
+  assert.equal(newer.source, "remote");
+  assert.equal(newer.payload, newerRemote.payload);
+  assert.equal(newer.shouldClearRemoteState, false);
+
+  const older = resolveStoredSchedule({
+    custom: null,
+    remote: { payload: { ...payload, updatedAt: "2026-07-16T15:59:59Z" } },
+    source: "remote",
+    builtIn
+  });
+  assert.equal(older.source, "builtin");
+  assert.equal(older.shouldClearRemoteState, true);
+
+  const manual = { ...builtIn, updatedAt: "2026-07-18T00:00:00+08:00" };
+  const customized = resolveStoredSchedule({
+    custom: manual,
+    remote: newerRemote,
+    source: "manual",
+    builtIn
+  });
+  assert.equal(customized.source, "manual");
+  assert.equal(customized.payload, manual);
 });
 
 test.after(async () => {

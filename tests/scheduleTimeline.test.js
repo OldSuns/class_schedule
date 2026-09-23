@@ -14,6 +14,7 @@ const events = [
     endTime: "12:00",
     group: "1组",
     location: "708A病区",
+    teacher: "",
     note: ""
   },
   {
@@ -25,7 +26,8 @@ const events = [
     endTime: "14:25",
     group: null,
     location: "11号楼1楼教室",
-    note: "魏湘"
+    teacher: "魏湘",
+    note: ""
   }
 ];
 
