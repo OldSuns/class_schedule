@@ -7,14 +7,11 @@ import {
   STORAGE_KEYS
 } from "../../config/constants";
 import { scheduleData as defaultScheduleData } from "../../data/scheduleData";
+import { calculateDateInfo, parseTimeToMinutes } from "../../utils/schedule/timeUtils";
 import {
-  calculateDateInfo,
-  getPeriodLabel,
-  getPeriodRangeLabel,
-  getPeriodStartTime
-} from "../../utils/schedule/timeUtils";
-import { shouldIncludeCourseForAudience } from "../../utils/schedule/electiveUtils";
-import { getCourseLocation, getDisplayKey } from "../../utils/schedule/courseUtils";
+  filterScheduleEvents,
+  normalizeSchedulePayload
+} from "../../utils/schedule/eventUtils";
 import {
   scheduleNotifications as nativeSchedule,
   cancelNotifications as nativeCancel,
@@ -63,9 +60,14 @@ const toYyyyMmDd = (date) => {
   return `${yyyy}${mm}${dd}`;
 };
 
-const buildNotificationId = (date, period, suffix = "") => {
-  const base = `${toYyyyMmDd(date)}${String(period).padStart(2, "0")}${suffix}`;
-  return Number(base);
+const buildNotificationId = (date, startTime) => {
+  const value = `${toYyyyMmDd(date)}-${startTime}`;
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0) % 2_147_483_646 + 1;
 };
 
 const toEpochMs = (value) => {
@@ -126,130 +128,52 @@ const buildNotificationPayload = (notification) => ({
   extra: notification.signature
 });
 
-const getStartTimeParts = (period) => {
-  const startTime = getPeriodStartTime(period);
-  if (!startTime) return null;
-  const [hour, minute] = startTime.split(":").map(Number);
-  if (Number.isNaN(hour) || Number.isNaN(minute)) return null;
-  return { hour, minute, startTime };
-};
-
-const formatCourseLabels = (courses) => {
-  const labels = [];
-  const seen = new Set();
-  for (const course of courses) {
-    const label = course.group ? `${course.name}(${course.group})` : course.name;
-    if (seen.has(label)) continue;
-    seen.add(label);
-    labels.push(label);
-  }
-  return labels.join("、");
-};
-
-const buildCourseNotificationBody = (
-  periodStart,
-  periodEnd,
-  startTimeParts,
-  courses,
-  locationText
-) => {
-  const courseLabel = formatCourseLabels(courses);
-  const periodLabel =
-    periodStart === periodEnd
-      ? getPeriodLabel(periodStart)
-      : getPeriodRangeLabel(periodStart, periodEnd);
-  const spanText =
-    periodStart === periodEnd ? "" : `（共${periodEnd - periodStart + 1}节）`;
-  const locationSuffix = locationText ? ` · ${locationText}` : "";
-  return `${periodLabel} ${startTimeParts.startTime} · ${courseLabel}${spanText}${locationSuffix}`;
-};
+const buildCourseNotificationBody = (events) =>
+  events
+    .map((event) => {
+      const group = event.group ? `（${event.group}）` : "";
+      const location = event.location ? ` · ${event.location}` : "";
+      return `${event.startTime}–${event.endTime} · ${event.name}${group}${location}`;
+    })
+    .join("；");
 
 const buildDayCourseBlocks = ({
   semesterStartDate,
   userGroup,
-  selectedElectives,
   currentDate,
   scheduleData
 }) => {
   const info = calculateDateInfo(semesterStartDate, currentDate);
   if (!info) return [];
 
-  const dataSource = scheduleData ?? defaultScheduleData;
-  const daySchedule = dataSource.find((entry) => entry.day === info.day);
-  if (!daySchedule) return [];
-
-  const periodMap = new Map();
-  for (const periodEntry of daySchedule.periods) {
-    const startTimeParts = getStartTimeParts(periodEntry.period);
-    if (!startTimeParts) continue;
-
-    const matchingCourses = (periodEntry.courses || [])
-      .filter((course) => course.weeks.includes(info.week))
-      .filter((course) =>
-        shouldIncludeCourseForAudience(course, userGroup, selectedElectives)
-      );
-
-    if (!matchingCourses.length) continue;
-
-    const locations = matchingCourses
-      .map((course) => getCourseLocation(course.location, info.week))
-      .filter((location) => location && location.trim().length > 0);
-    const uniqueLocations = Array.from(new Set(locations));
-    const locationKey = [...uniqueLocations].sort().join("||");
-
-    periodMap.set(periodEntry.period, {
-      courses: matchingCourses,
-      startTimeParts,
-      key: `${getDisplayKey(matchingCourses)}::${locationKey}`,
-      locationText: uniqueLocations.join(" / ")
-    });
+  const payload = normalizeSchedulePayload(scheduleData ?? defaultScheduleData);
+  const matchingEvents = filterScheduleEvents(payload.events, {
+    week: info.week,
+    day: info.day,
+    group: userGroup
+  });
+  const byStart = new Map();
+  for (const event of matchingEvents) {
+    const group = byStart.get(event.startTime) ?? [];
+    group.push(event);
+    byStart.set(event.startTime, group);
   }
-
-  const blocks = [];
-  let period = 1;
-  while (period <= 13) {
-    const entry = periodMap.get(period);
-    if (!entry) {
-      period += 1;
-      continue;
-    }
-
-    let end = period;
-    while (end + 1 <= 13) {
-      const next = periodMap.get(end + 1);
-      if (!next) break;
-      if (next.key !== entry.key) break;
-      end += 1;
-    }
-
+  return Array.from(byStart, ([startTime, events]) => {
+    const startMinutes = parseTimeToMinutes(startTime);
     const classStart = new Date(currentDate);
-    classStart.setHours(entry.startTimeParts.hour, entry.startTimeParts.minute, 0, 0);
-    const body = buildCourseNotificationBody(
-      period,
-      end,
-      entry.startTimeParts,
-      entry.courses,
-      entry.locationText
-    );
-
-    blocks.push({
+    classStart.setHours(Math.floor(startMinutes / 60), startMinutes % 60, 0, 0);
+    return {
       classStart,
       date: currentDate,
-      periodStart: period,
-      periodEnd: end,
-      body
-    });
-
-    period = end + 1;
-  }
-
-  return blocks;
+      startTime,
+      body: buildCourseNotificationBody(events)
+    };
+  });
 };
 
 const collectUpcomingClasses = ({
   semesterStartDate,
   userGroup,
-  selectedElectives,
   fromDate,
   windowDays,
   scheduleData
@@ -268,7 +192,6 @@ const collectUpcomingClasses = ({
     const blocks = buildDayCourseBlocks({
       semesterStartDate,
       userGroup,
-      selectedElectives,
       currentDate,
       scheduleData
     });
@@ -345,7 +268,6 @@ export const cancelAllScheduledNotifications = async () => {
 export const buildNotificationPlan = ({
   semesterStartDate,
   userGroup,
-  selectedElectives,
   scheduleData,
   leadMinutes = DEFAULT_NOTIFICATION_LEAD_MINUTES,
   fromDate = new Date(),
@@ -373,7 +295,6 @@ export const buildNotificationPlan = ({
     const blocks = buildDayCourseBlocks({
       semesterStartDate,
       userGroup,
-      selectedElectives,
       currentDate,
       scheduleData
     });
@@ -384,7 +305,7 @@ export const buildNotificationPlan = ({
       );
       if (notifyAt <= now) continue;
       notifications.push({
-        id: buildNotificationId(currentDate, block.periodStart),
+        id: buildNotificationId(currentDate, block.startTime),
         title: "上课提醒",
         body: block.body,
         channelId: NOTIFICATION_CHANNEL_ID,
@@ -532,7 +453,6 @@ export const reconcileScheduledNotifications = async ({
 export const scheduleCourseNotifications = async ({
   semesterStartDate,
   userGroup,
-  selectedElectives,
   scheduleData,
   leadMinutes = DEFAULT_NOTIFICATION_LEAD_MINUTES,
   force = false,
@@ -561,7 +481,6 @@ export const scheduleCourseNotifications = async ({
   const planSnapshot = buildNotificationPlan({
     semesterStartDate,
     userGroup,
-    selectedElectives,
     scheduleData,
     leadMinutes
   });
@@ -582,7 +501,6 @@ export const scheduleCourseNotifications = async ({
 export const sendTestNotification = async ({
   semesterStartDate,
   userGroup,
-  selectedElectives,
   scheduleData,
   leadMinutes = DEFAULT_NOTIFICATION_LEAD_MINUTES
 }) => {
@@ -611,11 +529,10 @@ export const sendTestNotification = async ({
 
   const now = new Date();
   const fireAt = new Date(now.getTime() + 1000 * 5);
-  const id = buildNotificationId(now, 99);
+  const id = buildNotificationId(now, "test");
   const upcoming = collectUpcomingClasses({
     semesterStartDate,
     userGroup,
-    selectedElectives,
     fromDate: now,
     windowDays: NOTIFICATION_WINDOW_DAYS,
     scheduleData

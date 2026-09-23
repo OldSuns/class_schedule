@@ -1,0 +1,3902 @@
+{
+  "version": "2.14",
+  "children": [
+    {
+      "type": "frame",
+      "id": "o2h8NJ",
+      "x": 920,
+      "y": 0,
+      "name": "暑期课表 · 时间轴视图",
+      "clip": true,
+      "width": 430,
+      "height": 1088,
+      "fill": "$surfaceSoft",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "yFBGl",
+          "x": 20,
+          "y": 14,
+          "name": "状态栏",
+          "width": 390,
+          "height": 28,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "N3zlRr",
+              "name": "时间",
+              "fill": "$ink",
+              "content": "14:15",
+              "fontFamily": "$font",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "p1xm8o",
+              "name": "状态图标",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "HKnxS",
+                  "name": "网络",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "wifi",
+                  "library": "lucide",
+                  "fill": "$ink"
+                },
+                {
+                  "type": "icon",
+                  "id": "oObIM",
+                  "name": "电池",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "battery-medium",
+                  "library": "lucide",
+                  "fill": "$ink"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "INMIR",
+          "x": 20,
+          "y": 54,
+          "name": "课表标题栏",
+          "width": 390,
+          "height": 46,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "MX10T",
+              "x": 4,
+              "y": 2,
+              "name": "应用标题",
+              "fill": "#1A1A1A",
+              "content": "WL课表（2026暑期）",
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "TzFUZ",
+              "x": 4,
+              "y": 26,
+              "name": "今日状态",
+              "fill": "#666666",
+              "content": "今天是第2周 星期二",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "XT0GL",
+              "x": 326,
+              "y": 2,
+              "name": "标题栏组别切换",
+              "width": 64,
+              "height": 32,
+              "fill": "#0066FF",
+              "cornerRadius": 16,
+              "gap": 4,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "r00hf",
+                  "name": "标题栏组别文字",
+                  "fill": "#FFFFFF",
+                  "content": "1组",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "icon",
+                  "id": "S4NfU",
+                  "name": "标题栏组别展开",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "chevron-down",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "f8ifpI",
+          "x": 20,
+          "y": 112,
+          "name": "周次导航",
+          "width": 390,
+          "height": 46,
+          "fill": "$surface",
+          "cornerRadius": 12,
+          "stroke": "$faint",
+          "strokeWidth": 1,
+          "padding": [
+            0,
+            12
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "eQgbc",
+              "name": "上一周",
+              "width": 19,
+              "height": 19,
+              "icon": "chevron-left",
+              "library": "lucide",
+              "fill": "$ink"
+            },
+            {
+              "type": "text",
+              "id": "Sep7Y",
+              "name": "当前周次",
+              "fill": "$ink",
+              "content": "第 2 周",
+              "fontFamily": "$font",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "T4e6Xo",
+              "name": "下一周",
+              "width": 19,
+              "height": 19,
+              "icon": "chevron-right",
+              "library": "lucide",
+              "fill": "$ink"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ncWW5",
+          "x": 20,
+          "y": 218,
+          "name": "日程标题",
+          "width": 390,
+          "height": 34,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "kRC5d",
+              "name": "日期标题",
+              "fill": "$ink",
+              "content": "周二 · 7 月 21 日",
+              "fontFamily": "Geist",
+              "fontSize": 18,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "SaNTZ",
+          "x": 20,
+          "y": 268,
+          "name": "当日全部课程",
+          "width": 390,
+          "height": 564,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "wNAQX",
+              "x": 0,
+              "y": 0,
+              "name": "主内容当前课程",
+              "width": 390,
+              "height": 120,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": "#BFD8FF",
+              "strokeWidth": 1,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#0066FF0A",
+                "offset": {
+                  "x": 0,
+                  "y": 3
+                },
+                "blur": 12
+              },
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "iCbEf",
+                  "x": 16,
+                  "y": 16,
+                  "name": "主内容当前课程标签",
+                  "fill": "#0066FF",
+                  "content": "当前课程",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "uBmS6",
+                  "x": 16,
+                  "y": 38,
+                  "name": "主内容当前课程名称",
+                  "fill": "#1A1A1A",
+                  "textGrowth": "fixed-width",
+                  "width": 358,
+                  "content": "肺炎的诊断及治疗",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "yk1Md",
+                  "x": 16,
+                  "y": 67,
+                  "name": "主内容当前课程信息",
+                  "fill": "#66788A",
+                  "textGrowth": "fixed-width",
+                  "width": 358,
+                  "content": "13:45–14:25  ·  11号楼1楼教室",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "CrKz0",
+                  "x": 16,
+                  "y": 88,
+                  "name": "主内容当前课程进度文字",
+                  "fill": "#66788A",
+                  "content": "已进行 30 分钟 · 剩余 10 分钟",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "Z0ODq0",
+                  "x": 16,
+                  "y": 105,
+                  "name": "主内容当前课程进度轨道",
+                  "width": 358,
+                  "height": 5,
+                  "fill": "#E6EEF8",
+                  "cornerRadius": 3,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 3,
+                      "id": "dwNk4",
+                      "x": 0,
+                      "y": 0,
+                      "name": "主内容当前课程进度",
+                      "fill": "#0066FF",
+                      "width": 269,
+                      "height": 5
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "N2WMb",
+              "x": 0,
+              "y": 140,
+              "name": "日表标题",
+              "fill": "#1A1A1A",
+              "content": "当天全部课程",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "UYlAJ",
+              "x": 268,
+              "y": 142,
+              "name": "日表摘要",
+              "fill": "#666666",
+              "textGrowth": "fixed-width",
+              "width": 122,
+              "content": "6 项 · 08:00—16:45",
+              "textAlign": "right",
+              "fontFamily": "Geist Mono",
+              "fontSize": 10,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "yWiDX",
+              "x": 0,
+              "y": 166,
+              "name": "当天课程时间表",
+              "clip": true,
+              "width": 390,
+              "height": 398,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": "#DDE8F7",
+              "strokeWidth": 1,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000008",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 8
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "bDtzz",
+                  "name": "课程表头",
+                  "width": "fill_container",
+                  "height": 36,
+                  "fill": "#E6F0FF",
+                  "stroke": "#DDE8F7",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "iGRm0",
+                      "name": "时间表头单元格",
+                      "width": 90,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "LisuX",
+                          "name": "时间表头文字",
+                          "fill": "#52657A",
+                          "content": "时间",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "w9t2w",
+                      "name": "课程表头单元格",
+                      "width": 202,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "quZcx",
+                          "name": "课程表头文字",
+                          "fill": "#52657A",
+                          "content": "课程",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "WZF9j",
+                      "name": "地点表头单元格",
+                      "width": 98,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "nLhyz",
+                          "name": "地点表头文字",
+                          "fill": "#52657A",
+                          "content": "地点",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "i5hyTh",
+                  "name": "课程行1",
+                  "width": "fill_container",
+                  "height": 58,
+                  "fill": "#FFFFFF",
+                  "stroke": "#E8EDF3",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "WQZVi",
+                      "name": "时间单元格1",
+                      "width": 90,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "AbUmD",
+                          "name": "时间文字1",
+                          "fill": "#52657A",
+                          "textGrowth": "fixed-width",
+                          "width": 82,
+                          "content": "08:00–12:00",
+                          "textAlign": "center",
+                          "fontFamily": "Geist Mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "UBISH",
+                      "name": "课程单元格1",
+                      "width": 202,
+                      "height": "fill_container",
+                      "padding": [
+                        0,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "qb3qI",
+                          "name": "课程文字1",
+                          "fill": "#1A1A1A",
+                          "textGrowth": "fixed-width",
+                          "width": 190,
+                          "content": "神经内科见习",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IBiwj",
+                      "name": "地点单元格1",
+                      "width": 98,
+                      "height": "fill_container",
+                      "padding": [
+                        0,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "GvSlR",
+                          "name": "地点文字1",
+                          "fill": "#66788A",
+                          "textGrowth": "fixed-width",
+                          "width": 86,
+                          "content": "708A病区",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mTPUS",
+                  "name": "课程行2",
+                  "width": "fill_container",
+                  "height": 58,
+                  "fill": "#FFFFFF",
+                  "stroke": "#E8EDF3",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "LsTYW",
+                      "name": "时间单元格2",
+                      "width": 90,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "oBpAB",
+                          "name": "时间文字2",
+                          "fill": "#52657A",
+                          "textGrowth": "fixed-width",
+                          "width": 82,
+                          "content": "13:00–13:40",
+                          "textAlign": "center",
+                          "fontFamily": "Geist Mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NGVsw",
+                      "name": "课程单元格2",
+                      "width": 202,
+                      "height": "fill_container",
+                      "padding": [
+                        0,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "X901kq",
+                          "name": "课程文字2",
+                          "fill": "#1A1A1A",
+                          "textGrowth": "fixed-width",
+                          "width": 190,
+                          "content": "病历书写点评",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "I2qFrr",
+                      "name": "地点单元格2",
+                      "width": 98,
+                      "height": "fill_container",
+                      "padding": [
+                        0,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "DBNuw",
+                          "name": "地点文字2",
+                          "fill": "#66788A",
+                          "textGrowth": "fixed-width",
+                          "width": 86,
+                          "content": "11号楼1楼教室",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "phvfF",
+                  "name": "课程行3·当前",
+                  "width": "fill_container",
+                  "height": 58,
+                  "fill": "#EAF3FF",
+                  "stroke": "#E8EDF3",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "UdWlS",
+                      "layoutPosition": "absolute",
+                      "x": 0,
+                      "y": 0,
+                      "name": "当前课程焦点条",
+                      "fill": "#0066FF",
+                      "width": 4,
+                      "height": 58
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dUMdv",
+                      "name": "时间单元格3",
+                      "width": 90,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "uIlNv",
+                          "name": "时间文字3",
+                          "fill": "#52657A",
+                          "textGrowth": "fixed-width",
+                          "width": 82,
+                          "content": "13:45–14:25",
+                          "textAlign": "center",
+                          "fontFamily": "Geist Mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bw0OJ",
+                      "name": "课程单元格3",
+                      "width": 202,
+                      "height": "fill_container",
+                      "padding": [
+                        0,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "KH9RF",
+                          "name": "课程文字3",
+                          "fill": "#0066FF",
+                          "textGrowth": "fixed-width",
+                          "width": 190,
+                          "content": "肺炎的诊断及治疗",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fANsr",
+                      "name": "地点单元格3",
+                      "width": 98,
+                      "height": "fill_container",
+                      "padding": [
+                        0,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Ovgaa",
+                          "name": "地点文字3",
+                          "fill": "#66788A",
+                          "textGrowth": "fixed-width",
+                          "width": 86,
+                          "content": "11号楼1楼教室",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "W3OTd",
+                  "name": "课程行4",
+                  "width": "fill_container",
+                  "height": 58,
+                  "fill": "#FFFFFF",
+                  "stroke": "#E8EDF3",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "T4WiX",
+                      "name": "时间单元格4",
+                      "width": 90,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "G0sZDe",
+                          "name": "时间文字4",
+                          "fill": "#52657A",
+                          "textGrowth": "fixed-width",
+                          "width": 82,
+                          "content": "14:30–15:10",
+                          "textAlign": "center",
+                          "fontFamily": "Geist Mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "i9ZYx1",
+                      "name": "课程单元格4",
+                      "width": 202,
+                      "height": "fill_container",
+                      "padding": [
+                        0,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "aM3ux",
+                          "name": "课程文字4",
+                          "fill": "#1A1A1A",
+                          "textGrowth": "fixed-width",
+                          "width": 190,
+                          "content": "白血病化疗",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "mx4Cn",
+                      "name": "地点单元格4",
+                      "width": 98,
+                      "height": "fill_container",
+                      "padding": [
+                        0,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "dpYnj",
+                          "name": "地点文字4",
+                          "fill": "#66788A",
+                          "textGrowth": "fixed-width",
+                          "width": 86,
+                          "content": "11号楼1楼教室",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Vet0N",
+                  "name": "课程行5",
+                  "width": "fill_container",
+                  "height": 58,
+                  "fill": "#FFFFFF",
+                  "stroke": "#E8EDF3",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "YzAyg",
+                      "name": "时间单元格5",
+                      "width": 90,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "m2pRYo",
+                          "name": "时间文字5",
+                          "fill": "#52657A",
+                          "textGrowth": "fixed-width",
+                          "width": 82,
+                          "content": "15:20–16:00",
+                          "textAlign": "center",
+                          "fontFamily": "Geist Mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Kbeyv",
+                      "name": "课程单元格5",
+                      "width": 202,
+                      "height": "fill_container",
+                      "padding": [
+                        0,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Rzmhz",
+                          "name": "课程文字5",
+                          "fill": "#1A1A1A",
+                          "textGrowth": "fixed-width",
+                          "width": 190,
+                          "content": "糖尿病的诊治",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "aqqCA",
+                      "name": "地点单元格5",
+                      "width": 98,
+                      "height": "fill_container",
+                      "padding": [
+                        0,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "mrw8q",
+                          "name": "地点文字5",
+                          "fill": "#66788A",
+                          "textGrowth": "fixed-width",
+                          "width": 86,
+                          "content": "11号楼1楼教室",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ESHCs",
+                  "name": "课程行6",
+                  "width": "fill_container",
+                  "height": 72,
+                  "fill": "#FFFFFF",
+                  "stroke": "#E8EDF3",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "vCuXV",
+                      "name": "时间单元格6",
+                      "width": 90,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "G0yU5",
+                          "name": "时间文字6",
+                          "fill": "#52657A",
+                          "textGrowth": "fixed-width",
+                          "width": 82,
+                          "content": "16:05–16:45",
+                          "textAlign": "center",
+                          "fontFamily": "Geist Mono",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Mi3hF",
+                      "name": "课程单元格6",
+                      "width": 202,
+                      "height": "fill_container",
+                      "padding": [
+                        0,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "qzz3B",
+                          "name": "课程文字6",
+                          "fill": "#1A1A1A",
+                          "textGrowth": "fixed-width",
+                          "width": 190,
+                          "content": "慢性肾功能不全的治疗对策和疗效评价",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "JAs0b",
+                      "name": "地点单元格6",
+                      "width": 98,
+                      "height": "fill_container",
+                      "padding": [
+                        0,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "z9KzT1",
+                          "name": "地点文字6",
+                          "fill": "#66788A",
+                          "textGrowth": "fixed-width",
+                          "width": 86,
+                          "content": "11号楼1楼教室",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "yEwoe",
+          "x": 20,
+          "y": 848,
+          "name": "今日摘要",
+          "width": 390,
+          "height": 42,
+          "fill": "$surface",
+          "cornerRadius": 12,
+          "stroke": "$faint",
+          "strokeWidth": 1,
+          "padding": [
+            0,
+            14
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Gz7ty",
+              "name": "摘要文字",
+              "fill": "$ink",
+              "content": "今日 6 项 · 见习 1 项 · 共同课程 5 项",
+              "fontFamily": "$font",
+              "fontSize": 12,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "FfMuN",
+              "name": "摘要进度",
+              "fill": "$muted",
+              "content": "08:00 — 16:45",
+              "fontFamily": "$mono",
+              "fontSize": 10,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "yMd1c",
+          "x": 20,
+          "y": 994,
+          "name": "底部导航",
+          "width": 390,
+          "height": 66,
+          "fill": "#FFFFFFCC",
+          "cornerRadius": 33,
+          "stroke": "$faint",
+          "strokeWidth": 1,
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "D5pABC",
+              "name": "课表导航项",
+              "width": 76,
+              "height": 50,
+              "fill": "$bluePale",
+              "cornerRadius": 25,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "H3BQVB",
+                  "name": "课表图标",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "calendar-days",
+                  "library": "lucide",
+                  "fill": "$blue"
+                },
+                {
+                  "type": "text",
+                  "id": "EdEGU",
+                  "name": "课表标签",
+                  "fill": "$blue",
+                  "content": "课表",
+                  "fontFamily": "$font",
+                  "fontSize": 10,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Tv33H",
+              "name": "考试导航项",
+              "width": 76,
+              "height": 50,
+              "fill": "#FFFFFF00",
+              "cornerRadius": 25,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "p9xdKG",
+                  "name": "考试图标",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "file-text",
+                  "library": "lucide",
+                  "fill": "$muted"
+                },
+                {
+                  "type": "text",
+                  "id": "RsYIv",
+                  "name": "考试标签",
+                  "fill": "$muted",
+                  "content": "考试",
+                  "fontFamily": "$font",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "SqYqo",
+              "name": "设置导航项",
+              "width": 76,
+              "height": 50,
+              "fill": "#FFFFFF00",
+              "cornerRadius": 25,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "edC5E",
+                  "name": "设置图标",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "settings-2",
+                  "library": "lucide",
+                  "fill": "$muted"
+                },
+                {
+                  "type": "text",
+                  "id": "m20Kt",
+                  "name": "设置标签",
+                  "fill": "$muted",
+                  "content": "设置",
+                  "fontFamily": "$font",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "IzC5D",
+          "x": 20,
+          "y": 170,
+          "name": "周内日期切换",
+          "width": 390,
+          "height": 36,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "TekoF",
+              "x": 0,
+              "y": 0,
+              "name": "周一 20日期按钮",
+              "width": 73,
+              "height": 36,
+              "fill": "$surface",
+              "cornerRadius": 10,
+              "stroke": "$faint",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "oHCRZ",
+                  "name": "周一 20日期文字",
+                  "fill": "$muted",
+                  "content": "周一 20",
+                  "fontFamily": "$font",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "IyFAd",
+              "x": 79,
+              "y": 0,
+              "name": "周二 21日期按钮",
+              "width": 73,
+              "height": 36,
+              "fill": "$blue",
+              "cornerRadius": 10,
+              "stroke": "$blue",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "YV2am",
+                  "name": "周二 21日期文字",
+                  "fill": "#FFFFFF",
+                  "content": "周二 21",
+                  "fontFamily": "$font",
+                  "fontSize": 11,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Racmb",
+              "x": 158,
+              "y": 0,
+              "name": "周三 22日期按钮",
+              "width": 73,
+              "height": 36,
+              "fill": "$surface",
+              "cornerRadius": 10,
+              "stroke": "$faint",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zrrmG",
+                  "name": "周三 22日期文字",
+                  "fill": "$muted",
+                  "content": "周三 22",
+                  "fontFamily": "$font",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "C9RI3",
+              "x": 237,
+              "y": 0,
+              "name": "周四 23日期按钮",
+              "width": 73,
+              "height": 36,
+              "fill": "$surface",
+              "cornerRadius": 10,
+              "stroke": "$faint",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "mmvZy",
+                  "name": "周四 23日期文字",
+                  "fill": "$muted",
+                  "content": "周四 23",
+                  "fontFamily": "$font",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "i6Ufe",
+              "x": 316,
+              "y": 0,
+              "name": "周五 24日期按钮",
+              "width": 73,
+              "height": 36,
+              "fill": "$surface",
+              "cornerRadius": 10,
+              "stroke": "$faint",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "wlrlL",
+                  "name": "周五 24日期文字",
+                  "fill": "$muted",
+                  "content": "周五 24",
+                  "fontFamily": "$font",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "O3pwo",
+      "x": 1470,
+      "y": 0,
+      "name": "暑期课表 · 设置页",
+      "clip": true,
+      "width": 430,
+      "height": 1088,
+      "fill": "$surfaceSoft",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "U54QHL",
+          "x": 20,
+          "y": 14,
+          "name": "设置状态栏新",
+          "width": 390,
+          "height": 28,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Ek39f",
+              "name": "设置时间新",
+              "fill": "$ink",
+              "content": "9:41",
+              "fontFamily": "$font",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "SYDH9",
+              "name": "设置状态图标新",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Zd72R",
+                  "name": "设置信号新",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "wifi",
+                  "library": "lucide",
+                  "fill": "$ink"
+                },
+                {
+                  "type": "icon",
+                  "id": "azpl2",
+                  "name": "设置电池新",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "battery-medium",
+                  "library": "lucide",
+                  "fill": "$ink"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "AgByh",
+          "x": 16,
+          "y": 58,
+          "name": "设置标题新",
+          "fill": "$ink",
+          "content": "设置",
+          "fontFamily": "$font",
+          "fontSize": 20,
+          "fontWeight": "700"
+        },
+        {
+          "type": "frame",
+          "id": "VQnCS",
+          "x": 12,
+          "y": 100,
+          "name": "快速选择周数",
+          "width": 406,
+          "height": 54,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "stroke": "$faint",
+          "strokeWidth": 1,
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "pnMaJ",
+              "name": "快速选择周数文字",
+              "fill": "$ink",
+              "content": "快速选择周数",
+              "fontFamily": "$font",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "c7t2fa",
+              "name": "快速选择周数箭头",
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-down",
+              "library": "lucide",
+              "fill": "$muted"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Idwy7",
+          "x": 12,
+          "y": 166,
+          "name": "主题卡片新",
+          "width": 406,
+          "height": 92,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "stroke": "$faint",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "PhpUk",
+              "x": 16,
+              "y": 16,
+              "name": "主题标签新",
+              "fill": "$ink",
+              "content": "主题",
+              "fontFamily": "$font",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "pNWei",
+              "x": 244,
+              "y": 10,
+              "name": "M3主题按钮新",
+              "width": 60,
+              "height": 34,
+              "fill": "#CCE0FF",
+              "cornerRadius": 12,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "D3Sxg",
+                  "name": "M3主题文字新",
+                  "fill": "#001D3D",
+                  "content": "M3",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "F5RDp",
+              "x": 312,
+              "y": 10,
+              "name": "简约蓝主题按钮新",
+              "width": 78,
+              "height": 34,
+              "fill": "$blue",
+              "cornerRadius": 12,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "MTP7G",
+                  "name": "简约蓝主题文字新",
+                  "fill": "#FFFFFF",
+                  "content": "简约蓝",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "Lbz2E",
+              "x": 16,
+              "y": 60,
+              "name": "主题说明新",
+              "fill": "$muted",
+              "content": "切换应用的主题样式。",
+              "fontFamily": "$font",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "H9DbJo",
+          "x": 12,
+          "y": 270,
+          "name": "课程提醒卡片新",
+          "width": 406,
+          "height": 84,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "stroke": "$faint",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "m09DfL",
+              "x": 16,
+              "y": 16,
+              "name": "课程提醒标题新",
+              "fill": "$ink",
+              "content": "课程提醒",
+              "fontFamily": "$font",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "Qf9I1",
+              "x": 16,
+              "y": 48,
+              "name": "课程提醒说明新",
+              "fill": "$muted",
+              "content": "每节课开始前 15 分钟提醒（仅 Android）",
+              "fontFamily": "$font",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "ZrBjr",
+              "x": 348,
+              "y": 16,
+              "name": "课程提醒开关新",
+              "width": 42,
+              "height": 24,
+              "fill": "$blue",
+              "cornerRadius": 12,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "lv8c0",
+                  "x": 22,
+                  "y": 4,
+                  "name": "课程提醒开关圆点新",
+                  "fill": "#FFFFFF",
+                  "width": 16,
+                  "height": 16
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "f79Dj",
+          "x": 12,
+          "y": 368,
+          "name": "分组设置",
+          "width": 406,
+          "height": 54,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "stroke": "$faint",
+          "strokeWidth": 1,
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "UY9Od",
+              "name": "分组设置文字",
+              "fill": "$ink",
+              "content": "分组",
+              "fontFamily": "$font",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "XMr20",
+              "name": "分组设置箭头",
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-up",
+              "library": "lucide",
+              "fill": "$muted"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "HoqP7",
+          "x": 12,
+          "y": 568,
+          "name": "提醒高级",
+          "width": 406,
+          "height": 54,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "stroke": "$faint",
+          "strokeWidth": 1,
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "nCNWB",
+              "name": "提醒高级文字",
+              "fill": "$ink",
+              "content": "提醒高级",
+              "fontFamily": "$font",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "k3ScT",
+              "name": "提醒高级箭头",
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-down",
+              "library": "lucide",
+              "fill": "$muted"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "xQcnK",
+          "x": 12,
+          "y": 634,
+          "name": "软件更新",
+          "width": 406,
+          "height": 54,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "stroke": "$faint",
+          "strokeWidth": 1,
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "M8a8vo",
+              "name": "软件更新文字",
+              "fill": "$ink",
+              "content": "软件更新",
+              "fontFamily": "$font",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "Q80i5l",
+              "name": "软件更新箭头",
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-down",
+              "library": "lucide",
+              "fill": "$muted"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "mggq6",
+          "x": 12,
+          "y": 700,
+          "name": "课表管理",
+          "width": 406,
+          "height": 54,
+          "fill": "$surface",
+          "cornerRadius": 18,
+          "stroke": "$faint",
+          "strokeWidth": 1,
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "GMfGQ",
+              "name": "课表管理文字",
+              "fill": "$ink",
+              "content": "课表管理",
+              "fontFamily": "$font",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "kBTou",
+              "name": "课表管理箭头",
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-down",
+              "library": "lucide",
+              "fill": "$muted"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "StDQ2",
+          "x": 16,
+          "y": 776,
+          "name": "设置版本新",
+          "fill": "$muted",
+          "content": "v2.0.8",
+          "fontFamily": "$font",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "YqhxZ",
+          "x": 16,
+          "y": 994,
+          "name": "设置底部导航新",
+          "width": 398,
+          "height": 66,
+          "fill": "$surface",
+          "cornerRadius": 33,
+          "stroke": "$faint",
+          "strokeWidth": 1,
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "sU7b4",
+              "name": "课表新导航项",
+              "width": 76,
+              "height": 50,
+              "fill": "#FFFFFF00",
+              "cornerRadius": 25,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "q3G4iA",
+                  "name": "课表新图标",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "calendar-days",
+                  "library": "lucide",
+                  "fill": "$muted"
+                },
+                {
+                  "type": "text",
+                  "id": "x65Mb",
+                  "name": "课表新标签",
+                  "fill": "$muted",
+                  "content": "课表",
+                  "fontFamily": "$font",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "JcJG6",
+              "name": "考试新导航项",
+              "width": 76,
+              "height": 50,
+              "fill": "#FFFFFF00",
+              "cornerRadius": 25,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Q1KqZ",
+                  "name": "考试新图标",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "file-text",
+                  "library": "lucide",
+                  "fill": "$muted"
+                },
+                {
+                  "type": "text",
+                  "id": "Vbl9P",
+                  "name": "考试新标签",
+                  "fill": "$muted",
+                  "content": "考试",
+                  "fontFamily": "$font",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "TvMty",
+              "name": "设置新导航项",
+              "width": 76,
+              "height": 50,
+              "fill": "$bluePale",
+              "cornerRadius": 25,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "wXsXD",
+                  "name": "设置新图标",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "settings-2",
+                  "library": "lucide",
+                  "fill": "$blue"
+                },
+                {
+                  "type": "text",
+                  "id": "w8Yot",
+                  "name": "设置新标签",
+                  "fill": "$blue",
+                  "content": "设置",
+                  "fontFamily": "$font",
+                  "fontSize": 10,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "T83XRH",
+          "x": 12,
+          "y": 434,
+          "name": "展开的分组面板",
+          "width": 406,
+          "height": 122,
+          "fill": "#F0F0F0",
+          "cornerRadius": 16,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "oBF2z",
+              "x": 12,
+              "y": 12,
+              "name": "展开分组标题",
+              "fill": "$ink",
+              "content": "组别",
+              "fontFamily": "$font",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "Yd4M5",
+              "x": 12,
+              "y": 42,
+              "name": "1组展开按钮",
+              "width": 89,
+              "height": 30,
+              "fill": "$blue",
+              "cornerRadius": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "j0qeJ",
+                  "name": "1组展开文字",
+                  "fill": "#FFFFFF",
+                  "content": "1组",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "nlYiE",
+              "x": 109,
+              "y": 42,
+              "name": "2组展开按钮",
+              "width": 89,
+              "height": 30,
+              "fill": "$surface",
+              "cornerRadius": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "QePnI",
+                  "name": "2组展开文字",
+                  "fill": "$ink",
+                  "content": "2组",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "d0s8Oe",
+              "x": 206,
+              "y": 42,
+              "name": "3组展开按钮",
+              "width": 89,
+              "height": 30,
+              "fill": "$surface",
+              "cornerRadius": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "nhv0b",
+                  "name": "3组展开文字",
+                  "fill": "$ink",
+                  "content": "3组",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "goJqM",
+              "x": 303,
+              "y": 42,
+              "name": "4组展开按钮",
+              "width": 89,
+              "height": 30,
+              "fill": "$surface",
+              "cornerRadius": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "IBIxQ",
+                  "name": "4组展开文字",
+                  "fill": "$ink",
+                  "content": "4组",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "coRa6",
+              "x": 12,
+              "y": 80,
+              "name": "5组展开按钮",
+              "width": 89,
+              "height": 30,
+              "fill": "$surface",
+              "cornerRadius": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "j47rj",
+                  "name": "5组展开文字",
+                  "fill": "$ink",
+                  "content": "5组",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "TJ9Jt",
+              "x": 109,
+              "y": 80,
+              "name": "6组展开按钮",
+              "width": 89,
+              "height": 30,
+              "fill": "$surface",
+              "cornerRadius": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "LhK75",
+                  "name": "6组展开文字",
+                  "fill": "$ink",
+                  "content": "6组",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "DLWEB",
+              "x": 206,
+              "y": 80,
+              "name": "7组展开按钮",
+              "width": 89,
+              "height": 30,
+              "fill": "$surface",
+              "cornerRadius": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "HiNQW",
+                  "name": "7组展开文字",
+                  "fill": "$ink",
+                  "content": "7组",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "t4NHI",
+      "x": 2020,
+      "y": 0,
+      "name": "暑期课表 · 课程详情弹窗",
+      "clip": true,
+      "width": 430,
+      "height": 1088,
+      "fill": "$surfaceSoft",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "GmC6z",
+          "x": 0,
+          "y": 0,
+          "name": "模态背景时间轴",
+          "clip": true,
+          "width": 430,
+          "height": 1088,
+          "fill": "$surfaceSoft",
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "BDYg8",
+              "x": 20,
+              "y": 14,
+              "name": "状态栏",
+              "width": 390,
+              "height": 28,
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cuUOp",
+                  "name": "时间",
+                  "fill": "$ink",
+                  "content": "14:15",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "BAF9U",
+                  "name": "状态图标",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "w2yOz",
+                      "name": "网络",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "wifi",
+                      "library": "lucide",
+                      "fill": "$ink"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "yrPjf",
+                      "name": "电池",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "battery-medium",
+                      "library": "lucide",
+                      "fill": "$ink"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "o63D7",
+              "x": 20,
+              "y": 54,
+              "name": "课表标题栏",
+              "width": 390,
+              "height": 46,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "JeSOk",
+                  "x": 4,
+                  "y": 2,
+                  "name": "应用标题",
+                  "fill": "#1A1A1A",
+                  "content": "WL课表（2026暑期）",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "IQrTE",
+                  "x": 4,
+                  "y": 26,
+                  "name": "今日状态",
+                  "fill": "#666666",
+                  "content": "今天是第2周 星期二",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "JOqkA",
+                  "x": 326,
+                  "y": 2,
+                  "name": "标题栏组别切换",
+                  "width": 64,
+                  "height": 32,
+                  "fill": "#0066FF",
+                  "cornerRadius": 16,
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "A9BXcx",
+                      "name": "标题栏组别文字",
+                      "fill": "#FFFFFF",
+                      "content": "1组",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "RyQf5",
+                      "name": "标题栏组别展开",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "chevron-down",
+                      "library": "lucide",
+                      "fill": "#FFFFFF"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "i0ZnQp",
+              "x": 20,
+              "y": 112,
+              "name": "周次导航",
+              "width": 390,
+              "height": 46,
+              "fill": "$surface",
+              "cornerRadius": 12,
+              "stroke": "$faint",
+              "strokeWidth": 1,
+              "padding": [
+                0,
+                12
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "O36bg",
+                  "name": "上一周",
+                  "width": 19,
+                  "height": 19,
+                  "icon": "chevron-left",
+                  "library": "lucide",
+                  "fill": "$ink"
+                },
+                {
+                  "type": "text",
+                  "id": "rwbok",
+                  "name": "当前周次",
+                  "fill": "$ink",
+                  "content": "第 2 周",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "icon",
+                  "id": "MR9Re",
+                  "name": "下一周",
+                  "width": 19,
+                  "height": 19,
+                  "icon": "chevron-right",
+                  "library": "lucide",
+                  "fill": "$ink"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "oVkKb",
+              "x": 20,
+              "y": 218,
+              "name": "日程标题",
+              "width": 390,
+              "height": 34,
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "kS5dI",
+                  "name": "日期标题",
+                  "fill": "$ink",
+                  "content": "周二 · 7 月 21 日",
+                  "fontFamily": "Geist",
+                  "fontSize": 18,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "snuGh",
+              "x": 20,
+              "y": 268,
+              "name": "当日全部课程",
+              "width": 390,
+              "height": 564,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "KmDOu",
+                  "x": 0,
+                  "y": 0,
+                  "name": "主内容当前课程",
+                  "width": 390,
+                  "height": 120,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 16,
+                  "stroke": "#BFD8FF",
+                  "strokeWidth": 1,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#0066FF0A",
+                    "offset": {
+                      "x": 0,
+                      "y": 3
+                    },
+                    "blur": 12
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "yGY6R",
+                      "x": 16,
+                      "y": 16,
+                      "name": "主内容当前课程标签",
+                      "fill": "#0066FF",
+                      "content": "当前课程",
+                      "fontFamily": "Inter",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "jmix2",
+                      "x": 16,
+                      "y": 38,
+                      "name": "主内容当前课程名称",
+                      "fill": "#1A1A1A",
+                      "textGrowth": "fixed-width",
+                      "width": 358,
+                      "content": "肺炎的诊断及治疗",
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Ez18k",
+                      "x": 16,
+                      "y": 67,
+                      "name": "主内容当前课程信息",
+                      "fill": "#66788A",
+                      "textGrowth": "fixed-width",
+                      "width": 358,
+                      "content": "13:45–14:25  ·  11号楼1楼教室",
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "IC8OX",
+                      "x": 16,
+                      "y": 88,
+                      "name": "主内容当前课程进度文字",
+                      "fill": "#66788A",
+                      "content": "已进行 30 分钟 · 剩余 10 分钟",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cRDyo",
+                      "x": 16,
+                      "y": 105,
+                      "name": "主内容当前课程进度轨道",
+                      "width": 358,
+                      "height": 5,
+                      "fill": "#E6EEF8",
+                      "cornerRadius": 3,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 3,
+                          "id": "NZoIR",
+                          "x": 0,
+                          "y": 0,
+                          "name": "主内容当前课程进度",
+                          "fill": "#0066FF",
+                          "width": 269,
+                          "height": 5
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "lEbuB",
+                  "x": 0,
+                  "y": 140,
+                  "name": "日表标题",
+                  "fill": "#1A1A1A",
+                  "content": "当天全部课程",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "FjkK7",
+                  "x": 268,
+                  "y": 142,
+                  "name": "日表摘要",
+                  "fill": "#666666",
+                  "textGrowth": "fixed-width",
+                  "width": 122,
+                  "content": "6 项 · 08:00—16:45",
+                  "textAlign": "right",
+                  "fontFamily": "Geist Mono",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "Poj5u",
+                  "x": 0,
+                  "y": 166,
+                  "name": "当天课程时间表",
+                  "clip": true,
+                  "width": 390,
+                  "height": 398,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 16,
+                  "stroke": "#DDE8F7",
+                  "strokeWidth": 1,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#00000008",
+                    "offset": {
+                      "x": 0,
+                      "y": 2
+                    },
+                    "blur": 8
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "H8TZfL",
+                      "name": "课程表头",
+                      "width": "fill_container",
+                      "height": 36,
+                      "fill": "#E6F0FF",
+                      "stroke": "#DDE8F7",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "R9mNVw",
+                          "name": "时间表头单元格",
+                          "width": 90,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "X0ne0",
+                              "name": "时间表头文字",
+                              "fill": "#52657A",
+                              "content": "时间",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "uwfqW",
+                          "name": "课程表头单元格",
+                          "width": 202,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "yDTVf",
+                              "name": "课程表头文字",
+                              "fill": "#52657A",
+                              "content": "课程",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "RDBO8",
+                          "name": "地点表头单元格",
+                          "width": 98,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "S9Ihf",
+                              "name": "地点表头文字",
+                              "fill": "#52657A",
+                              "content": "地点",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BT2dh",
+                      "name": "课程行1",
+                      "width": "fill_container",
+                      "height": 58,
+                      "fill": "#FFFFFF",
+                      "stroke": "#E8EDF3",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "o3bLug",
+                          "name": "时间单元格1",
+                          "width": 90,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "pPgc4",
+                              "name": "时间文字1",
+                              "fill": "#52657A",
+                              "textGrowth": "fixed-width",
+                              "width": 82,
+                              "content": "08:00–12:00",
+                              "textAlign": "center",
+                              "fontFamily": "Geist Mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "KpwTK",
+                          "name": "课程单元格1",
+                          "width": 202,
+                          "height": "fill_container",
+                          "padding": [
+                            0,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "S6hGY",
+                              "name": "课程文字1",
+                              "fill": "#1A1A1A",
+                              "textGrowth": "fixed-width",
+                              "width": 190,
+                              "content": "神经内科见习",
+                              "lineHeight": 1.25,
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "fYdBc",
+                          "name": "地点单元格1",
+                          "width": 98,
+                          "height": "fill_container",
+                          "padding": [
+                            0,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "GRErJ",
+                              "name": "地点文字1",
+                              "fill": "#66788A",
+                              "textGrowth": "fixed-width",
+                              "width": 86,
+                              "content": "708A病区",
+                              "lineHeight": 1.25,
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Us1Wf",
+                      "name": "课程行2",
+                      "width": "fill_container",
+                      "height": 58,
+                      "fill": "#FFFFFF",
+                      "stroke": "#E8EDF3",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "H75T7h",
+                          "name": "时间单元格2",
+                          "width": 90,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "WH6Tx",
+                              "name": "时间文字2",
+                              "fill": "#52657A",
+                              "textGrowth": "fixed-width",
+                              "width": 82,
+                              "content": "13:00–13:40",
+                              "textAlign": "center",
+                              "fontFamily": "Geist Mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "SOJhM",
+                          "name": "课程单元格2",
+                          "width": 202,
+                          "height": "fill_container",
+                          "padding": [
+                            0,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "IjXGk",
+                              "name": "课程文字2",
+                              "fill": "#1A1A1A",
+                              "textGrowth": "fixed-width",
+                              "width": 190,
+                              "content": "病历书写点评",
+                              "lineHeight": 1.25,
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "PJ5PN",
+                          "name": "地点单元格2",
+                          "width": 98,
+                          "height": "fill_container",
+                          "padding": [
+                            0,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "qXt4r",
+                              "name": "地点文字2",
+                              "fill": "#66788A",
+                              "textGrowth": "fixed-width",
+                              "width": 86,
+                              "content": "11号楼1楼教室",
+                              "lineHeight": 1.25,
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fJTO2",
+                      "name": "课程行3·当前",
+                      "width": "fill_container",
+                      "height": 58,
+                      "fill": "#EAF3FF",
+                      "stroke": "#E8EDF3",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "id": "Byu8q",
+                          "layoutPosition": "absolute",
+                          "x": 0,
+                          "y": 0,
+                          "name": "当前课程焦点条",
+                          "fill": "#0066FF",
+                          "width": 4,
+                          "height": 58
+                        },
+                        {
+                          "type": "frame",
+                          "id": "YFsmN",
+                          "name": "时间单元格3",
+                          "width": 90,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "G6Kyz",
+                              "name": "时间文字3",
+                              "fill": "#52657A",
+                              "textGrowth": "fixed-width",
+                              "width": 82,
+                              "content": "13:45–14:25",
+                              "textAlign": "center",
+                              "fontFamily": "Geist Mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "pwiX3",
+                          "name": "课程单元格3",
+                          "width": 202,
+                          "height": "fill_container",
+                          "padding": [
+                            0,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Qxnyv",
+                              "name": "课程文字3",
+                              "fill": "#0066FF",
+                              "textGrowth": "fixed-width",
+                              "width": 190,
+                              "content": "肺炎的诊断及治疗",
+                              "lineHeight": 1.25,
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 15,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "IfNPg",
+                          "name": "地点单元格3",
+                          "width": 98,
+                          "height": "fill_container",
+                          "padding": [
+                            0,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "w5d2q",
+                              "name": "地点文字3",
+                              "fill": "#66788A",
+                              "textGrowth": "fixed-width",
+                              "width": 86,
+                              "content": "11号楼1楼教室",
+                              "lineHeight": 1.25,
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "l7h2sV",
+                      "name": "课程行4",
+                      "width": "fill_container",
+                      "height": 58,
+                      "fill": "#FFFFFF",
+                      "stroke": "#E8EDF3",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "n5MFFz",
+                          "name": "时间单元格4",
+                          "width": 90,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "rJCbC",
+                              "name": "时间文字4",
+                              "fill": "#52657A",
+                              "textGrowth": "fixed-width",
+                              "width": 82,
+                              "content": "14:30–15:10",
+                              "textAlign": "center",
+                              "fontFamily": "Geist Mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "djy8P",
+                          "name": "课程单元格4",
+                          "width": 202,
+                          "height": "fill_container",
+                          "padding": [
+                            0,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "SXfv0",
+                              "name": "课程文字4",
+                              "fill": "#1A1A1A",
+                              "textGrowth": "fixed-width",
+                              "width": 190,
+                              "content": "白血病化疗",
+                              "lineHeight": 1.25,
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Gsg8P",
+                          "name": "地点单元格4",
+                          "width": 98,
+                          "height": "fill_container",
+                          "padding": [
+                            0,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "AlNyW",
+                              "name": "地点文字4",
+                              "fill": "#66788A",
+                              "textGrowth": "fixed-width",
+                              "width": 86,
+                              "content": "11号楼1楼教室",
+                              "lineHeight": 1.25,
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "JGuSU",
+                      "name": "课程行5",
+                      "width": "fill_container",
+                      "height": 58,
+                      "fill": "#FFFFFF",
+                      "stroke": "#E8EDF3",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "MPJnl",
+                          "name": "时间单元格5",
+                          "width": 90,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "NDIQM",
+                              "name": "时间文字5",
+                              "fill": "#52657A",
+                              "textGrowth": "fixed-width",
+                              "width": 82,
+                              "content": "15:20–16:00",
+                              "textAlign": "center",
+                              "fontFamily": "Geist Mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "qSwdX",
+                          "name": "课程单元格5",
+                          "width": 202,
+                          "height": "fill_container",
+                          "padding": [
+                            0,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "eiDK2",
+                              "name": "课程文字5",
+                              "fill": "#1A1A1A",
+                              "textGrowth": "fixed-width",
+                              "width": 190,
+                              "content": "糖尿病的诊治",
+                              "lineHeight": 1.25,
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "mbl5w",
+                          "name": "地点单元格5",
+                          "width": 98,
+                          "height": "fill_container",
+                          "padding": [
+                            0,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "fcsDk",
+                              "name": "地点文字5",
+                              "fill": "#66788A",
+                              "textGrowth": "fixed-width",
+                              "width": 86,
+                              "content": "11号楼1楼教室",
+                              "lineHeight": 1.25,
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "GyL5Q",
+                      "name": "课程行6",
+                      "width": "fill_container",
+                      "height": 72,
+                      "fill": "#FFFFFF",
+                      "stroke": "#E8EDF3",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "QqEAF",
+                          "name": "时间单元格6",
+                          "width": 90,
+                          "height": "fill_container",
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "kKVEy",
+                              "name": "时间文字6",
+                              "fill": "#52657A",
+                              "textGrowth": "fixed-width",
+                              "width": 82,
+                              "content": "16:05–16:45",
+                              "textAlign": "center",
+                              "fontFamily": "Geist Mono",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "t6iR8E",
+                          "name": "课程单元格6",
+                          "width": 202,
+                          "height": "fill_container",
+                          "padding": [
+                            0,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "z4vByw",
+                              "name": "课程文字6",
+                              "fill": "#1A1A1A",
+                              "textGrowth": "fixed-width",
+                              "width": 190,
+                              "content": "慢性肾功能不全的治疗对策和疗效评价",
+                              "lineHeight": 1.25,
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wmegw",
+                          "name": "地点单元格6",
+                          "width": 98,
+                          "height": "fill_container",
+                          "padding": [
+                            0,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "jSLVV",
+                              "name": "地点文字6",
+                              "fill": "#66788A",
+                              "textGrowth": "fixed-width",
+                              "width": 86,
+                              "content": "11号楼1楼教室",
+                              "lineHeight": 1.25,
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "m8A7T",
+              "x": 20,
+              "y": 848,
+              "name": "今日摘要",
+              "width": 390,
+              "height": 42,
+              "fill": "$surface",
+              "cornerRadius": 12,
+              "stroke": "$faint",
+              "strokeWidth": 1,
+              "padding": [
+                0,
+                14
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "R5HUG",
+                  "name": "摘要文字",
+                  "fill": "$ink",
+                  "content": "今日 6 项 · 见习 1 项 · 共同课程 5 项",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "ACjh2",
+                  "name": "摘要进度",
+                  "fill": "$muted",
+                  "content": "08:00 — 16:45",
+                  "fontFamily": "$mono",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "hbq0w",
+              "x": 20,
+              "y": 994,
+              "name": "底部导航",
+              "width": 390,
+              "height": 66,
+              "fill": "#FFFFFFCC",
+              "cornerRadius": 33,
+              "stroke": "$faint",
+              "strokeWidth": 1,
+              "justifyContent": "space_around",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "pXI3j",
+                  "name": "课表导航项",
+                  "width": 76,
+                  "height": 50,
+                  "fill": "$bluePale",
+                  "cornerRadius": 25,
+                  "layout": "vertical",
+                  "gap": 2,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "F7UFXo",
+                      "name": "课表图标",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "calendar-days",
+                      "library": "lucide",
+                      "fill": "$blue"
+                    },
+                    {
+                      "type": "text",
+                      "id": "nexRo",
+                      "name": "课表标签",
+                      "fill": "$blue",
+                      "content": "课表",
+                      "fontFamily": "$font",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "w80SYN",
+                  "name": "考试导航项",
+                  "width": 76,
+                  "height": 50,
+                  "fill": "#FFFFFF00",
+                  "cornerRadius": 25,
+                  "layout": "vertical",
+                  "gap": 2,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "NpcSJ",
+                      "name": "考试图标",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "file-text",
+                      "library": "lucide",
+                      "fill": "$muted"
+                    },
+                    {
+                      "type": "text",
+                      "id": "BUCIg",
+                      "name": "考试标签",
+                      "fill": "$muted",
+                      "content": "考试",
+                      "fontFamily": "$font",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "wouVE",
+                  "name": "设置导航项",
+                  "width": 76,
+                  "height": 50,
+                  "fill": "#FFFFFF00",
+                  "cornerRadius": 25,
+                  "layout": "vertical",
+                  "gap": 2,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "Y3obG",
+                      "name": "设置图标",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "settings-2",
+                      "library": "lucide",
+                      "fill": "$muted"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ZOBgz",
+                      "name": "设置标签",
+                      "fill": "$muted",
+                      "content": "设置",
+                      "fontFamily": "$font",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Q3KcSL",
+              "x": 20,
+              "y": 170,
+              "name": "周内日期切换",
+              "width": 390,
+              "height": 36,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "z9Ko5j",
+                  "x": 0,
+                  "y": 0,
+                  "name": "周一 20日期按钮",
+                  "width": 73,
+                  "height": 36,
+                  "fill": "$surface",
+                  "cornerRadius": 10,
+                  "stroke": "$faint",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "nH1dZ",
+                      "name": "周一 20日期文字",
+                      "fill": "$muted",
+                      "content": "周一 20",
+                      "fontFamily": "$font",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Hi3s7",
+                  "x": 79,
+                  "y": 0,
+                  "name": "周二 21日期按钮",
+                  "width": 73,
+                  "height": 36,
+                  "fill": "$blue",
+                  "cornerRadius": 10,
+                  "stroke": "$blue",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Y0xEjD",
+                      "name": "周二 21日期文字",
+                      "fill": "#FFFFFF",
+                      "content": "周二 21",
+                      "fontFamily": "$font",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "P1dxb",
+                  "x": 158,
+                  "y": 0,
+                  "name": "周三 22日期按钮",
+                  "width": 73,
+                  "height": 36,
+                  "fill": "$surface",
+                  "cornerRadius": 10,
+                  "stroke": "$faint",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "HPwHH",
+                      "name": "周三 22日期文字",
+                      "fill": "$muted",
+                      "content": "周三 22",
+                      "fontFamily": "$font",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "IUHQc",
+                  "x": 237,
+                  "y": 0,
+                  "name": "周四 23日期按钮",
+                  "width": 73,
+                  "height": 36,
+                  "fill": "$surface",
+                  "cornerRadius": 10,
+                  "stroke": "$faint",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Fjnp3",
+                      "name": "周四 23日期文字",
+                      "fill": "$muted",
+                      "content": "周四 23",
+                      "fontFamily": "$font",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Mffyt",
+                  "x": 316,
+                  "y": 0,
+                  "name": "周五 24日期按钮",
+                  "width": 73,
+                  "height": 36,
+                  "fill": "$surface",
+                  "cornerRadius": 10,
+                  "stroke": "$faint",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "pibsP",
+                      "name": "周五 24日期文字",
+                      "fill": "$muted",
+                      "content": "周五 24",
+                      "fontFamily": "$font",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "PHRTE",
+          "x": 0,
+          "y": 0,
+          "name": "模态遮罩新",
+          "fill": "#00000040",
+          "width": 430,
+          "height": 1088
+        },
+        {
+          "type": "frame",
+          "id": "zEn8P",
+          "x": 0,
+          "y": 582,
+          "name": "课程模态面板新",
+          "clip": true,
+          "width": 430,
+          "height": 506,
+          "fill": "$surface",
+          "cornerRadius": [
+            28,
+            28,
+            0,
+            0
+          ],
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "k5HlBW",
+              "x": 0,
+              "y": 0,
+              "name": "课程模态标题栏",
+              "width": 430,
+              "height": 72,
+              "fill": "$surfaceSoft",
+              "cornerRadius": [
+                28,
+                28,
+                0,
+                0
+              ],
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "v6Www",
+                  "x": 16,
+                  "y": 26,
+                  "name": "课程模态时钟",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "clock-3",
+                  "library": "lucide",
+                  "fill": "$ink"
+                },
+                {
+                  "type": "text",
+                  "id": "OLGDm",
+                  "x": 46,
+                  "y": 26,
+                  "name": "课程模态标题",
+                  "fill": "$ink",
+                  "content": "星期二 · 13:45–14:25",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "uz5ey",
+                  "x": 286,
+                  "y": 28,
+                  "name": "编辑开关文字",
+                  "fill": "$muted",
+                  "content": "编辑",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "FMF7C",
+                  "x": 320,
+                  "y": 24,
+                  "name": "编辑切换开关",
+                  "width": 36,
+                  "height": 20,
+                  "fill": "#00000014",
+                  "cornerRadius": 10,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "zRSVT",
+                      "x": 4,
+                      "y": 4,
+                      "name": "编辑切换圆点",
+                      "fill": "#FFFFFF",
+                      "width": 12,
+                      "height": 12
+                    }
+                  ]
+                },
+                {
+                  "type": "icon",
+                  "id": "Xl4su",
+                  "x": 382,
+                  "y": 26,
+                  "name": "课程模态关闭",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "$muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Avmtn",
+              "x": 16,
+              "y": 88,
+              "name": "课程信息卡新",
+              "width": 398,
+              "height": 330,
+              "fill": "#E6F0FF",
+              "cornerRadius": 16,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Z73WR",
+                  "x": 16,
+                  "y": 18,
+                  "name": "课程信息名称",
+                  "fill": "#001D3D",
+                  "textGrowth": "fixed-width",
+                  "width": 260,
+                  "content": "肺炎的诊断及治疗",
+                  "fontFamily": "$font",
+                  "fontSize": 18,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "YVa0n",
+                  "x": 302,
+                  "y": 18,
+                  "name": "本周课程标识",
+                  "width": 80,
+                  "height": 24,
+                  "fill": "$blue",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "S1Aqn",
+                      "name": "本周课程标识文字",
+                      "fill": "#FFFFFF",
+                      "content": "本周课程",
+                      "fontFamily": "$font",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "bcb5O",
+                  "x": 16,
+                  "y": 82,
+                  "name": "上课周次标签",
+                  "fill": "$muted",
+                  "content": "上课周次",
+                  "fontFamily": "$font",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "n9TZs",
+                  "x": 16,
+                  "y": 102,
+                  "name": "上课周次内容",
+                  "fill": "$ink",
+                  "textGrowth": "fixed-width",
+                  "width": 330,
+                  "content": "2周",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "KEQhf",
+                  "x": 16,
+                  "y": 142,
+                  "name": "上课时间标签",
+                  "fill": "$muted",
+                  "content": "上课时间",
+                  "fontFamily": "$font",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon",
+                  "id": "v7ZT0",
+                  "x": 16,
+                  "y": 164,
+                  "name": "上课时间图标",
+                  "width": 13,
+                  "height": 13,
+                  "icon": "clock-3",
+                  "library": "lucide",
+                  "fill": "$muted"
+                },
+                {
+                  "type": "text",
+                  "id": "yqaTE",
+                  "x": 36,
+                  "y": 162,
+                  "name": "上课时间内容",
+                  "fill": "$ink",
+                  "textGrowth": "fixed-width",
+                  "width": 330,
+                  "content": "13:45 — 14:25",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "d2Cij",
+                  "x": 16,
+                  "y": 202,
+                  "name": "上课地点标签",
+                  "fill": "$muted",
+                  "content": "上课地点",
+                  "fontFamily": "$font",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon",
+                  "id": "BJ5Bj",
+                  "x": 16,
+                  "y": 224,
+                  "name": "上课地点图标",
+                  "width": 13,
+                  "height": 13,
+                  "icon": "map-pin",
+                  "library": "lucide",
+                  "fill": "$muted"
+                },
+                {
+                  "type": "text",
+                  "id": "D99kY",
+                  "x": 36,
+                  "y": 222,
+                  "name": "上课地点内容",
+                  "fill": "$ink",
+                  "textGrowth": "fixed-width",
+                  "width": 330,
+                  "content": "11号楼 1楼教室",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "iPO38",
+                  "x": 16,
+                  "y": 262,
+                  "name": "备注信息标签",
+                  "fill": "$muted",
+                  "content": "备注",
+                  "fontFamily": "$font",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "rkGFd",
+                  "x": 16,
+                  "y": 282,
+                  "name": "备注信息内容",
+                  "fill": "$ink",
+                  "textGrowth": "fixed-width",
+                  "width": 330,
+                  "content": "魏湘",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "a1nboH",
+              "x": 0,
+              "y": 434,
+              "name": "课程模态底栏",
+              "width": 430,
+              "height": 72,
+              "fill": "$surfaceSoft",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "W6vWYB",
+                  "x": 16,
+                  "y": 28,
+                  "name": "编辑提示",
+                  "fill": "$muted",
+                  "content": "开启编辑模式以修改课程",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "B46Fi",
+                  "x": 340,
+                  "y": 17,
+                  "name": "课程模态关闭按钮",
+                  "width": 74,
+                  "height": 38,
+                  "fill": "$blue",
+                  "cornerRadius": 19,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "FTBFA",
+                      "name": "课程模态关闭文字",
+                      "fill": "#FFFFFF",
+                      "content": "关闭",
+                      "fontFamily": "$font",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "surface": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "surfaceSoft": {
+      "type": "color",
+      "value": "#F8F8F8"
+    },
+    "ink": {
+      "type": "color",
+      "value": "#1A1A1A"
+    },
+    "muted": {
+      "type": "color",
+      "value": "#666666"
+    },
+    "faint": {
+      "type": "color",
+      "value": "#E5E5E5"
+    },
+    "blue": {
+      "type": "color",
+      "value": "#0066FF"
+    },
+    "blueSoft": {
+      "type": "color",
+      "value": "#E6F0FF"
+    },
+    "bluePale": {
+      "type": "color",
+      "value": "#E6F0FF"
+    },
+    "mint": {
+      "type": "color",
+      "value": "#E6F7F0"
+    },
+    "orange": {
+      "type": "color",
+      "value": "#FFF1DE"
+    },
+    "font": {
+      "type": "string",
+      "value": "Inter"
+    },
+    "mono": {
+      "type": "string",
+      "value": "Geist Mono"
+    }
+  },
+  "fileToken": "9786a71d-a06e-416d-85da-b338ff4f2937"
+}

@@ -1,491 +1,275 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as storage from "../../../storage";
-import { DEFAULT_SCHEDULE_VERSION, STORAGE_KEYS } from "../../config/constants";
+import {
+  DEFAULT_SCHEDULE_VERSION,
+  SCHEDULE_RESET_KEYS,
+  STORAGE_KEYS
+} from "../../config/constants";
 import { scheduleData as defaultScheduleData } from "../../data/scheduleData";
-import { normalizeSchedule } from "../../utils/schedule/scheduleUtils";
+import {
+  buildWidgetScheduleSnapshot,
+  normalizeSchedulePayload
+} from "../../utils/schedule/eventUtils";
 import {
   buildScheduleSignature,
   fetchRemoteSchedule
 } from "../../services/schedule/remoteSchedule";
 import { refreshWidget } from "../../services/platform/widgetBridge";
-import { getCourseEligibleElectives } from "../../utils/schedule/electiveUtils";
-import { GROUP_TYPES, getGroupType } from "../../utils/schedule/groupUtils";
-import { getPeriodRangeMinutes } from "../../utils/schedule/timeUtils";
-import { MAX_PERIOD, MAX_WEEK, MIN_PERIOD } from "../../config/constants";
 
-const STORAGE_VERSION = 1;
-const WIDGET_SNAPSHOT_VERSION = 3;
+const WIDGET_SNAPSHOT_VERSION = 4;
 const WIDGET_SNAPSHOT_FORCE_REWRITE_DELAY_MS = 2000;
 const SCHEDULE_SOURCES = {
   BUILTIN: "builtin",
   REMOTE: "remote",
   MANUAL: "manual"
 };
-const isValidScheduleSource = (value) =>
-  Object.values(SCHEDULE_SOURCES).includes(value);
-const createDefaultSchedule = () => normalizeSchedule(defaultScheduleData);
-const DEFAULT_SCHEDULE_SIGNATURE = buildScheduleSignature(
-  createDefaultSchedule()
-);
 
-const buildCourseEligibleGroups = (courseGroup) => {
-  const type = getGroupType(courseGroup);
-  if (type === GROUP_TYPES.ALL) return null;
-  if (type === GROUP_TYPES.G6ALL) return [GROUP_TYPES.G6A, GROUP_TYPES.G6B];
-  if (type === GROUP_TYPES.G7ALL) return [GROUP_TYPES.G7C, GROUP_TYPES.G7D];
-  return [type];
-};
+const isValidScheduleSource = (value) => Object.values(SCHEDULE_SOURCES).includes(value);
+const createDefaultSchedule = () => normalizeSchedulePayload(defaultScheduleData);
+const DEFAULT_SCHEDULE_SIGNATURE = buildScheduleSignature(createDefaultSchedule());
 
-const buildWidgetPeriodRanges = () => {
-  const ranges = {};
-  for (let period = MIN_PERIOD; period <= MAX_PERIOD; period += 1) {
-    const range = getPeriodRangeMinutes(period);
-    if (!range) continue;
-    ranges[String(period)] = { startMin: range.startMin, endMin: range.endMin };
-  }
-  return ranges;
-};
-
-const buildWidgetScheduleSnapshot = (scheduleData) => {
-  const list = Array.isArray(scheduleData) ? scheduleData : [];
-  return list.map((day) => ({
-    ...day,
-    periods: Array.isArray(day?.periods)
-      ? day.periods.map((periodEntry) => ({
-          ...periodEntry,
-          courses: Array.isArray(periodEntry?.courses)
-            ? periodEntry.courses.map((course) => ({
-                ...course,
-                eligibleGroups: buildCourseEligibleGroups(course?.group),
-                eligibleElectives: getCourseEligibleElectives(course?.electives)
-              }))
-            : []
-        }))
-      : []
-  }));
-};
-
-const hasCurrentWidgetSnapshotVersion = (raw) => {
-  if (!raw) return false;
+const parseJson = (raw) => {
+  if (!raw) return null;
   try {
-    const parsed = JSON.parse(raw);
-    return Number(parsed?.version) === WIDGET_SNAPSHOT_VERSION;
+    return JSON.parse(raw);
   } catch {
-    return false;
+    return null;
+  }
+};
+
+const parseStoredSchedule = (raw) => {
+  const parsed = parseJson(raw);
+  if (!parsed) return null;
+  try {
+    return normalizeSchedulePayload(parsed);
+  } catch {
+    return null;
   }
 };
 
 const parseRemoteSnapshot = (raw) => {
-  if (!raw) return null;
+  const parsed = parseJson(raw);
+  if (!parsed?.payload) return null;
   try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || !Array.isArray(parsed.schedule)) return null;
-    const schedule = normalizeSchedule(parsed.schedule);
-    const signature =
-      typeof parsed.signature === "string"
-        ? parsed.signature
-        : buildScheduleSignature(schedule);
+    const payload = normalizeSchedulePayload(parsed.payload);
     return {
-      version: Number(parsed.version) || 1,
-      updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : "",
-      schedule,
-      signature
+      payload,
+      signature:
+        typeof parsed.signature === "string"
+          ? parsed.signature
+          : buildScheduleSignature(payload)
     };
-  } catch (error) {
-    console.warn("远端课表缓存解析失败:", error);
+  } catch {
     return null;
   }
 };
 
 const parseRemoteMeta = (raw) => {
-  if (!raw) return null;
-  try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object") return null;
-    return {
-      etag: typeof parsed.etag === "string" ? parsed.etag : "",
-      lastModified:
-        typeof parsed.lastModified === "string" ? parsed.lastModified : "",
-      updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : "",
-      signature: typeof parsed.signature === "string" ? parsed.signature : "",
-      sourceUrl: typeof parsed.sourceUrl === "string" ? parsed.sourceUrl : ""
-    };
-  } catch (error) {
-    console.warn("远端课表元信息解析失败:", error);
-    return null;
-  }
+  const parsed = parseJson(raw);
+  if (!parsed || typeof parsed !== "object") return null;
+  return {
+    etag: typeof parsed.etag === "string" ? parsed.etag : "",
+    lastModified: typeof parsed.lastModified === "string" ? parsed.lastModified : "",
+    updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : "",
+    signature: typeof parsed.signature === "string" ? parsed.signature : "",
+    sourceUrl: typeof parsed.sourceUrl === "string" ? parsed.sourceUrl : ""
+  };
 };
 
 const parseSkippedRemoteUpdate = (raw) => {
-  if (!raw) return null;
-  try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object") return null;
-    const signature =
-      typeof parsed.signature === "string" ? parsed.signature : "";
-    if (!signature) return null;
-    return {
-      signature,
-      updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : "",
-      sourceUrl: typeof parsed.sourceUrl === "string" ? parsed.sourceUrl : "",
-      skippedAt: Number(parsed.skippedAt) || 0
-    };
-  } catch (error) {
-    console.warn("已跳过远端课表记录解析失败:", error);
-    return null;
-  }
+  const parsed = parseJson(raw);
+  if (!parsed || typeof parsed.signature !== "string" || !parsed.signature) return null;
+  return {
+    signature: parsed.signature,
+    updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : "",
+    sourceUrl: typeof parsed.sourceUrl === "string" ? parsed.sourceUrl : "",
+    skippedAt: Number(parsed.skippedAt) || 0
+  };
 };
 
-const persistRemoteSnapshot = async (snapshot) => {
-  if (!snapshot) return;
-  await storage.setItem(
-    STORAGE_KEYS.REMOTE_SCHEDULE_SNAPSHOT,
-    JSON.stringify(snapshot)
-  );
-};
-
-const persistRemoteMeta = async (meta) => {
-  if (!meta) return;
-  await storage.setItem(
-    STORAGE_KEYS.REMOTE_SCHEDULE_META,
-    JSON.stringify(meta)
-  );
+const hasCurrentWidgetSnapshotVersion = (raw) => {
+  const parsed = parseJson(raw);
+  return Number(parsed?.version) === WIDGET_SNAPSHOT_VERSION;
 };
 
 export const useScheduleData = () => {
-  const [scheduleData, setScheduleData] = useState(() => createDefaultSchedule());
+  const [scheduleData, setScheduleDataState] = useState(createDefaultSchedule);
   const [isScheduleLoaded, setIsScheduleLoaded] = useState(false);
   const [scheduleSource, setScheduleSource] = useState(SCHEDULE_SOURCES.BUILTIN);
   const [hasManualScheduleChanges, setHasManualScheduleChanges] = useState(false);
   const [remoteSnapshot, setRemoteSnapshot] = useState(null);
   const [remoteMeta, setRemoteMeta] = useState(null);
   const [skippedRemoteUpdate, setSkippedRemoteUpdate] = useState(null);
-  const [isCheckingRemote, setIsCheckingRemote] = useState(false);
   const [pendingRemoteSnapshot, setPendingRemoteSnapshot] = useState(null);
   const [pendingRemoteSourceUrl, setPendingRemoteSourceUrl] = useState("");
+  const [isCheckingRemote, setIsCheckingRemote] = useState(false);
   const [builtInUpdateNotice, setBuiltInUpdateNotice] = useState("");
-  const hasUserChangedScheduleRef = useRef(false);
   const remoteCheckLockRef = useRef(false);
 
-  const clearPendingRemoteUpdate = useCallback(() => {
-    setPendingRemoteSnapshot(null);
-    setPendingRemoteSourceUrl("");
+  const applySchedule = useCallback((payload, source) => {
+    const normalized = normalizeSchedulePayload(payload);
+    setScheduleDataState(normalized);
+    setScheduleSource(source);
+    setHasManualScheduleChanges(source === SCHEDULE_SOURCES.MANUAL);
+    void storage.setItem(STORAGE_KEYS.SCHEDULE_SOURCE, source);
   }, []);
-
-  const clearRemoteScheduleStorage = useCallback(async () => {
-    await Promise.all([
-      storage.removeItem(STORAGE_KEYS.REMOTE_SCHEDULE_SNAPSHOT),
-      storage.removeItem(STORAGE_KEYS.REMOTE_SCHEDULE_META)
-    ]);
-  }, []);
-
-  const persistSkippedRemoteUpdate = useCallback(async (record) => {
-    setSkippedRemoteUpdate(record);
-    await storage.setItem(
-      STORAGE_KEYS.REMOTE_SKIPPED_UPDATE,
-      JSON.stringify(record)
-    );
-  }, []);
-
-  const clearSkippedRemoteUpdate = useCallback(async () => {
-    setSkippedRemoteUpdate(null);
-    await storage.removeItem(STORAGE_KEYS.REMOTE_SKIPPED_UPDATE);
-  }, []);
-
-  const clearRemoteScheduleState = useCallback(() => {
-    setRemoteSnapshot(null);
-    setRemoteMeta(null);
-    clearPendingRemoteUpdate();
-  }, [clearPendingRemoteUpdate]);
 
   const applyBuiltInSchedule = useCallback(() => {
-    setScheduleSource(SCHEDULE_SOURCES.BUILTIN);
-    setHasManualScheduleChanges(false);
-    setScheduleData(createDefaultSchedule());
-    void storage.setItem(STORAGE_KEYS.SCHEDULE_SOURCE, SCHEDULE_SOURCES.BUILTIN);
-  }, []);
-
-  const applyScheduleState = useCallback((nextSchedule, nextSource) => {
-    setScheduleSource(nextSource);
-    setHasManualScheduleChanges(nextSource === SCHEDULE_SOURCES.MANUAL);
-    setScheduleData(nextSchedule);
-    void storage.setItem(STORAGE_KEYS.SCHEDULE_SOURCE, nextSource);
-  }, []);
+    applySchedule(createDefaultSchedule(), SCHEDULE_SOURCES.BUILTIN);
+  }, [applySchedule]);
 
   useEffect(() => {
     let cancelled = false;
-
-    const loadSchedule = async () => {
-      const [
-        saved,
-        remoteRaw,
-        remoteMetaRaw,
-        skippedRemoteUpdateRaw,
-        storedDefaultVersionRaw,
-        storedDefaultSignatureRaw,
-        storedScheduleSourceRaw
-      ] = await Promise.all([
-        storage.getItem(STORAGE_KEYS.CUSTOM_SCHEDULE),
-        storage.getItem(STORAGE_KEYS.REMOTE_SCHEDULE_SNAPSHOT),
-        storage.getItem(STORAGE_KEYS.REMOTE_SCHEDULE_META),
-        storage.getItem(STORAGE_KEYS.REMOTE_SKIPPED_UPDATE),
-        storage.getItem(STORAGE_KEYS.DEFAULT_SCHEDULE_VERSION),
-        storage.getItem(STORAGE_KEYS.DEFAULT_SCHEDULE_SIGNATURE),
-        storage.getItem(STORAGE_KEYS.SCHEDULE_SOURCE)
-      ]);
-
+    const load = async () => {
+      const [customRaw, remoteRaw, metaRaw, skippedRaw, versionRaw, signatureRaw, sourceRaw] =
+        await Promise.all([
+          storage.getItem(STORAGE_KEYS.CUSTOM_SCHEDULE),
+          storage.getItem(STORAGE_KEYS.REMOTE_SCHEDULE_SNAPSHOT),
+          storage.getItem(STORAGE_KEYS.REMOTE_SCHEDULE_META),
+          storage.getItem(STORAGE_KEYS.REMOTE_SKIPPED_UPDATE),
+          storage.getItem(STORAGE_KEYS.DEFAULT_SCHEDULE_VERSION),
+          storage.getItem(STORAGE_KEYS.DEFAULT_SCHEDULE_SIGNATURE),
+          storage.getItem(STORAGE_KEYS.SCHEDULE_SOURCE)
+        ]);
       if (cancelled) return;
 
-      const parsedRemoteSnapshot = parseRemoteSnapshot(remoteRaw);
-      const parsedRemoteMeta = parseRemoteMeta(remoteMetaRaw);
-      const parsedSkippedRemoteUpdate =
-        parseSkippedRemoteUpdate(skippedRemoteUpdateRaw);
-      setRemoteSnapshot(parsedRemoteSnapshot);
-      setRemoteMeta(parsedRemoteMeta);
-      setSkippedRemoteUpdate(parsedSkippedRemoteUpdate);
-
-      const storedDefaultVersion = storedDefaultVersionRaw ?? "";
-      const storedDefaultSignature = storedDefaultSignatureRaw ?? "";
-      const storedScheduleSource = isValidScheduleSource(storedScheduleSourceRaw)
-        ? storedScheduleSourceRaw
-        : "";
-      const hasStoredDefaultInfo =
-        storedDefaultVersionRaw != null || storedDefaultSignatureRaw != null;
+      const custom = parseStoredSchedule(customRaw);
+      const remote = parseRemoteSnapshot(remoteRaw);
+      const meta = parseRemoteMeta(metaRaw);
+      const skipped = parseSkippedRemoteUpdate(skippedRaw);
+      const source = isValidScheduleSource(sourceRaw) ? sourceRaw : SCHEDULE_SOURCES.BUILTIN;
       const defaultChanged =
-        hasStoredDefaultInfo &&
-        (storedDefaultVersion !== String(DEFAULT_SCHEDULE_VERSION) ||
-          storedDefaultSignature !== DEFAULT_SCHEDULE_SIGNATURE);
+        versionRaw != null &&
+        (versionRaw !== String(DEFAULT_SCHEDULE_VERSION) ||
+          signatureRaw !== DEFAULT_SCHEDULE_SIGNATURE);
 
-      if (!hasStoredDefaultInfo || defaultChanged) {
-        await Promise.all([
-          storage.setItem(
-            STORAGE_KEYS.DEFAULT_SCHEDULE_VERSION,
-            String(DEFAULT_SCHEDULE_VERSION)
-          ),
-          storage.setItem(
-            STORAGE_KEYS.DEFAULT_SCHEDULE_SIGNATURE,
-            DEFAULT_SCHEDULE_SIGNATURE
-          )
-        ]);
-      }
+      setRemoteSnapshot(remote);
+      setRemoteMeta(meta);
+      setSkippedRemoteUpdate(skipped);
 
-      let parsedCustomSchedule = null;
-      let hasSavedCustom = false;
+      await Promise.all([
+        storage.setItem(STORAGE_KEYS.DEFAULT_SCHEDULE_VERSION, String(DEFAULT_SCHEDULE_VERSION)),
+        storage.setItem(STORAGE_KEYS.DEFAULT_SCHEDULE_SIGNATURE, DEFAULT_SCHEDULE_SIGNATURE)
+      ]);
+      if (cancelled) return;
 
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (parsed?.version === STORAGE_VERSION && Array.isArray(parsed.schedule)) {
-            parsedCustomSchedule = normalizeSchedule(parsed.schedule);
-            hasSavedCustom = true;
-          } else if (Array.isArray(parsed)) {
-            parsedCustomSchedule = normalizeSchedule(parsed);
-            hasSavedCustom = true;
-          }
-        } catch (error) {
-          console.warn("自定义课表解析失败，已回退默认数据", error);
-        }
-      }
-
-      if (defaultChanged && hasSavedCustom) {
-        setBuiltInUpdateNotice("内置课表已更新，可在设置中重置");
-      }
-
-      if (hasUserChangedScheduleRef.current) {
-        setIsScheduleLoaded(true);
-        return;
-      }
-
-      const shouldAutoUseBuiltInSchedule =
-        defaultChanged &&
-        !hasSavedCustom &&
-        parsedRemoteSnapshot &&
-        parsedRemoteSnapshot.signature !== DEFAULT_SCHEDULE_SIGNATURE;
-
-      if (shouldAutoUseBuiltInSchedule) {
-        await Promise.all([
-          clearRemoteScheduleStorage(),
-          clearSkippedRemoteUpdate()
-        ]);
-        if (cancelled) return;
-        clearRemoteScheduleState();
-        applyBuiltInSchedule();
-        setBuiltInUpdateNotice("已自动更新为新版内置课表");
-        setIsScheduleLoaded(true);
-        return;
-      }
-
-      if (hasSavedCustom) {
-        applyScheduleState(parsedCustomSchedule, SCHEDULE_SOURCES.MANUAL);
-      } else if (
-        storedScheduleSource === SCHEDULE_SOURCES.REMOTE &&
-        parsedRemoteSnapshot
-      ) {
-        applyScheduleState(parsedRemoteSnapshot.schedule, SCHEDULE_SOURCES.REMOTE);
+      if (custom) {
+        applySchedule(custom, SCHEDULE_SOURCES.MANUAL);
+        if (defaultChanged) setBuiltInUpdateNotice("内置课表已更新，可在设置中重置");
+      } else if (source === SCHEDULE_SOURCES.REMOTE && remote) {
+        applySchedule(remote.payload, SCHEDULE_SOURCES.REMOTE);
       } else {
         applyBuiltInSchedule();
       }
-      if (!cancelled) {
-        setIsScheduleLoaded(true);
-      }
+      setIsScheduleLoaded(true);
     };
-
-    loadSchedule();
-
+    void load();
     return () => {
       cancelled = true;
     };
-  }, [
-    applyBuiltInSchedule,
-    applyScheduleState,
-    clearRemoteScheduleState,
-    clearRemoteScheduleStorage,
-    clearSkippedRemoteUpdate
-  ]);
+  }, [applyBuiltInSchedule, applySchedule]);
 
-  const updateScheduleData = useCallback((updater) => {
-    hasUserChangedScheduleRef.current = true;
+  const setScheduleData = useCallback((updater) => {
     setBuiltInUpdateNotice("");
+    setScheduleDataState((current) => {
+      const next = typeof updater === "function" ? updater(current) : updater;
+      return normalizeSchedulePayload(next);
+    });
     setScheduleSource(SCHEDULE_SOURCES.MANUAL);
     setHasManualScheduleChanges(true);
-    setScheduleData((prev) =>
-      typeof updater === "function" ? updater(prev) : updater
-    );
+    void storage.setItem(STORAGE_KEYS.SCHEDULE_SOURCE, SCHEDULE_SOURCES.MANUAL);
   }, []);
-
-  const applyRemoteSchedule = useCallback((snapshot) => {
-    if (!snapshot?.schedule) return;
-    hasUserChangedScheduleRef.current = true;
-    setBuiltInUpdateNotice("");
-    applyScheduleState(snapshot.schedule, SCHEDULE_SOURCES.REMOTE);
-  }, [applyScheduleState]);
-
-  const confirmRemoteUpdate = useCallback(async () => {
-    if (!pendingRemoteSnapshot) return null;
-    applyRemoteSchedule(pendingRemoteSnapshot);
-    setPendingRemoteSnapshot(null);
-    setPendingRemoteSourceUrl("");
-    await clearSkippedRemoteUpdate();
-    return {
-      status: "updated",
-      message: "课表已更新",
-      updatedAt: pendingRemoteSnapshot.updatedAt,
-      sourceUrl: pendingRemoteSourceUrl
-    };
-  }, [
-    applyRemoteSchedule,
-    clearSkippedRemoteUpdate,
-    pendingRemoteSnapshot,
-    pendingRemoteSourceUrl
-  ]);
-
-  const cancelRemoteUpdate = useCallback(async () => {
-    if (!pendingRemoteSnapshot) return null;
-    const updatedAt = pendingRemoteSnapshot.updatedAt;
-    const signature =
-      pendingRemoteSnapshot.signature ||
-      buildScheduleSignature(pendingRemoteSnapshot.schedule);
-    setPendingRemoteSnapshot(null);
-    setPendingRemoteSourceUrl("");
-    await persistSkippedRemoteUpdate({
-      signature,
-      updatedAt,
-      sourceUrl: pendingRemoteSourceUrl,
-      skippedAt: Date.now()
-    });
-    return {
-      status: "skipped",
-      message: "已暂不更新",
-      updatedAt,
-      sourceUrl: pendingRemoteSourceUrl
-    };
-  }, [
-    pendingRemoteSnapshot,
-    pendingRemoteSourceUrl,
-    persistSkippedRemoteUpdate
-  ]);
 
   useEffect(() => {
     if (!isScheduleLoaded) return;
     if (!hasManualScheduleChanges) {
-      storage.removeItem(STORAGE_KEYS.CUSTOM_SCHEDULE);
+      void storage.removeItem(STORAGE_KEYS.CUSTOM_SCHEDULE);
       return;
     }
-    const payload = JSON.stringify({
-      version: STORAGE_VERSION,
-      schedule: scheduleData
-    });
-    storage.setItem(STORAGE_KEYS.CUSTOM_SCHEDULE, payload);
-  }, [scheduleData, hasManualScheduleChanges, isScheduleLoaded]);
+    void storage.setItem(STORAGE_KEYS.CUSTOM_SCHEDULE, JSON.stringify(scheduleData));
+  }, [hasManualScheduleChanges, isScheduleLoaded, scheduleData]);
 
   const persistWidgetSnapshot = useCallback(async () => {
     try {
-      const payload = JSON.stringify({
-        version: WIDGET_SNAPSHOT_VERSION,
-        updatedAt: Date.now(),
-        maxWeek: MAX_WEEK,
-        periodRanges: buildWidgetPeriodRanges(),
-        schedule: buildWidgetScheduleSnapshot(scheduleData)
-      });
-      await storage.setItem(STORAGE_KEYS.WIDGET_SCHEDULE_SNAPSHOT, payload);
+      await storage.setItem(
+        STORAGE_KEYS.WIDGET_SCHEDULE_SNAPSHOT,
+        JSON.stringify(buildWidgetScheduleSnapshot(scheduleData))
+      );
       await refreshWidget();
     } catch (error) {
       console.warn("小组件课表快照写入失败:", error);
     }
   }, [scheduleData]);
 
-  // Persist a normalized schedule snapshot for the Android home-screen widget.
-  // Stored in Capacitor Preferences (SharedPreferences) so native code can read it.
   useEffect(() => {
-    if (!isScheduleLoaded) return;
-    void persistWidgetSnapshot();
+    if (isScheduleLoaded) void persistWidgetSnapshot();
   }, [isScheduleLoaded, persistWidgetSnapshot]);
 
-  // Best-effort migration: if the user has an older snapshot version, rewrite once after a short delay
-  // to cover first-launch races where schedule loads before preferences are ready.
   useEffect(() => {
-    if (!isScheduleLoaded) return;
-
+    if (!isScheduleLoaded) return undefined;
     let cancelled = false;
-    let timeoutId = null;
-
-    const scheduleRewriteIfNeeded = async () => {
-      try {
-        const raw = await storage.getItem(STORAGE_KEYS.WIDGET_SCHEDULE_SNAPSHOT);
-        if (cancelled) return;
-        if (hasCurrentWidgetSnapshotVersion(raw)) return;
+    const timeoutId = setTimeout(async () => {
+      const raw = await storage.getItem(STORAGE_KEYS.WIDGET_SCHEDULE_SNAPSHOT);
+      if (!cancelled && !hasCurrentWidgetSnapshotVersion(raw)) {
         await persistWidgetSnapshot();
-      } catch (error) {
-        console.warn("小组件课表快照补写失败:", error);
       }
-    };
-
-    timeoutId = setTimeout(scheduleRewriteIfNeeded, WIDGET_SNAPSHOT_FORCE_REWRITE_DELAY_MS);
-
+    }, WIDGET_SNAPSHOT_FORCE_REWRITE_DELAY_MS);
     return () => {
       cancelled = true;
-      if (timeoutId != null) {
-        clearTimeout(timeoutId);
-      }
+      clearTimeout(timeoutId);
     };
   }, [isScheduleLoaded, persistWidgetSnapshot]);
 
-  const resetSchedule = async () => {
-    hasUserChangedScheduleRef.current = true;
+  const resetSchedule = useCallback(async () => {
+    setRemoteSnapshot(null);
+    setRemoteMeta(null);
+    setSkippedRemoteUpdate(null);
+    setPendingRemoteSnapshot(null);
+    setPendingRemoteSourceUrl("");
     setBuiltInUpdateNotice("");
+    await Promise.all(SCHEDULE_RESET_KEYS.map((key) => storage.removeItem(key)));
     applyBuiltInSchedule();
-    clearRemoteScheduleState();
-    await Promise.all([
-      storage.removeItem(STORAGE_KEYS.CUSTOM_SCHEDULE),
-      storage.setItem(STORAGE_KEYS.SCHEDULE_SOURCE, SCHEDULE_SOURCES.BUILTIN),
-      clearRemoteScheduleStorage(),
-      clearSkippedRemoteUpdate()
-    ]);
+    await storage.setItem(STORAGE_KEYS.SCHEDULE_SOURCE, SCHEDULE_SOURCES.BUILTIN);
+    return { status: "reset", message: "课表已恢复为内置数据" };
+  }, [applyBuiltInSchedule]);
+
+  const persistSkipped = useCallback(async (record) => {
+    setSkippedRemoteUpdate(record);
+    await storage.setItem(STORAGE_KEYS.REMOTE_SKIPPED_UPDATE, JSON.stringify(record));
+  }, []);
+
+  const clearSkipped = useCallback(async () => {
+    setSkippedRemoteUpdate(null);
+    await storage.removeItem(STORAGE_KEYS.REMOTE_SKIPPED_UPDATE);
+  }, []);
+
+  const confirmRemoteUpdate = useCallback(async () => {
+    if (!pendingRemoteSnapshot) return null;
+    applySchedule(pendingRemoteSnapshot, SCHEDULE_SOURCES.REMOTE);
+    setPendingRemoteSnapshot(null);
+    setPendingRemoteSourceUrl("");
+    await clearSkipped();
     return {
-      status: "reset",
-      message: "课表已恢复为内置数据"
+      status: "updated",
+      message: "课表已更新",
+      updatedAt: pendingRemoteSnapshot.updatedAt,
+      sourceUrl: pendingRemoteSourceUrl
     };
-  };
+  }, [applySchedule, clearSkipped, pendingRemoteSnapshot, pendingRemoteSourceUrl]);
+
+  const cancelRemoteUpdate = useCallback(async () => {
+    if (!pendingRemoteSnapshot) return null;
+    const record = {
+      signature: buildScheduleSignature(pendingRemoteSnapshot),
+      updatedAt: pendingRemoteSnapshot.updatedAt,
+      sourceUrl: pendingRemoteSourceUrl,
+      skippedAt: Date.now()
+    };
+    setPendingRemoteSnapshot(null);
+    setPendingRemoteSourceUrl("");
+    await persistSkipped(record);
+    return { status: "skipped", message: "已暂不更新", ...record };
+  }, [pendingRemoteSnapshot, pendingRemoteSourceUrl, persistSkipped]);
 
   const softUpdateSchedule = useCallback(async ({ trigger = "auto" } = {}) => {
     if (pendingRemoteSnapshot) {
@@ -496,7 +280,6 @@ export const useScheduleData = () => {
         sourceUrl: pendingRemoteSourceUrl
       };
     }
-
     if (remoteCheckLockRef.current || isCheckingRemote) {
       return { status: "busy", message: "正在检查更新，请稍后" };
     }
@@ -505,75 +288,50 @@ export const useScheduleData = () => {
     setIsCheckingRemote(true);
     try {
       const result = await fetchRemoteSchedule({ meta: remoteMeta });
-      const checkedSourceUrl = result?.meta?.sourceUrl || result?.sourceUrl || "";
+      if (result.status === "error") return result;
 
-      let nextSnapshot = remoteSnapshot;
+      let nextPayload = remoteSnapshot?.payload ?? null;
       let nextMeta = remoteMeta;
-
       if (result.status === "updated") {
-        nextSnapshot = {
-          ...result.snapshot,
-          signature: result.meta?.signature
-        };
+        nextPayload = result.snapshot;
         nextMeta = result.meta;
-        await persistRemoteSnapshot(nextSnapshot);
-        await persistRemoteMeta(nextMeta);
-        setRemoteSnapshot(nextSnapshot);
+        const stored = { payload: nextPayload, signature: result.meta.signature };
+        await Promise.all([
+          storage.setItem(STORAGE_KEYS.REMOTE_SCHEDULE_SNAPSHOT, JSON.stringify(stored)),
+          storage.setItem(STORAGE_KEYS.REMOTE_SCHEDULE_META, JSON.stringify(nextMeta))
+        ]);
+        setRemoteSnapshot(stored);
         setRemoteMeta(nextMeta);
-      } else if (result.status === "not-modified") {
-        if (!nextSnapshot) {
-          return { status: "error", message: "未获取到远端课表" };
-        }
-      } else if (result.status === "error") {
-        return { status: "error", message: result.message || "课表更新失败" };
       }
+      if (!nextPayload) return { status: "error", message: "未获取到远端课表" };
 
-      if (!nextSnapshot) {
-        return { status: "error", message: "未获取到远端课表" };
-      }
-
-      const currentSignature = buildScheduleSignature(scheduleData);
-      const remoteSignature =
-        nextSnapshot.signature || buildScheduleSignature(nextSnapshot.schedule);
-
-      if (currentSignature === remoteSignature) {
-        clearPendingRemoteUpdate();
+      const remoteSignature = buildScheduleSignature(nextPayload);
+      if (remoteSignature === buildScheduleSignature(scheduleData)) {
+        setPendingRemoteSnapshot(null);
         return {
           status: "latest",
           message: "已是最新课表",
-          updatedAt: nextSnapshot.updatedAt,
-          sourceUrl: checkedSourceUrl
+          updatedAt: nextPayload.updatedAt,
+          sourceUrl: result.sourceUrl || nextMeta?.sourceUrl || ""
         };
       }
-
       if (
-        skippedRemoteUpdate?.signature &&
-        skippedRemoteUpdate.signature === remoteSignature &&
-        trigger !== "manual"
+        trigger !== "manual" &&
+        skippedRemoteUpdate?.signature === remoteSignature
       ) {
-        clearPendingRemoteUpdate();
-        return {
-          status: "skipped-by-user",
-          message: "该远端课表已暂不提醒，等待内容变化后再提示",
-          updatedAt: nextSnapshot.updatedAt,
-          sourceUrl: checkedSourceUrl
-        };
+        return { status: "skipped-by-user", message: "该远端课表已暂不提醒" };
       }
-
-      if (
-        skippedRemoteUpdate?.signature &&
-        skippedRemoteUpdate.signature !== remoteSignature
-      ) {
-        await clearSkippedRemoteUpdate();
+      if (skippedRemoteUpdate?.signature && skippedRemoteUpdate.signature !== remoteSignature) {
+        await clearSkipped();
       }
-
-      setPendingRemoteSourceUrl(checkedSourceUrl);
-      setPendingRemoteSnapshot(nextSnapshot);
+      const sourceUrl = result.sourceUrl || nextMeta?.sourceUrl || "";
+      setPendingRemoteSnapshot(nextPayload);
+      setPendingRemoteSourceUrl(sourceUrl);
       return {
         status: "update-available",
         message: "检测到远端课表更新",
-        updatedAt: nextSnapshot.updatedAt,
-        sourceUrl: checkedSourceUrl
+        updatedAt: nextPayload.updatedAt,
+        sourceUrl
       };
     } catch (error) {
       console.error("课表软更新失败:", error);
@@ -583,8 +341,7 @@ export const useScheduleData = () => {
       setIsCheckingRemote(false);
     }
   }, [
-    clearPendingRemoteUpdate,
-    clearSkippedRemoteUpdate,
+    clearSkipped,
     isCheckingRemote,
     pendingRemoteSnapshot,
     pendingRemoteSourceUrl,
@@ -596,7 +353,7 @@ export const useScheduleData = () => {
 
   return {
     scheduleData,
-    setScheduleData: updateScheduleData,
+    setScheduleData,
     scheduleSource,
     hasManualScheduleChanges,
     isScheduleLoaded,
@@ -606,7 +363,7 @@ export const useScheduleData = () => {
     cancelRemoteUpdate,
     pendingRemoteSnapshot,
     isCheckingRemote,
-    remoteUpdatedAt: remoteSnapshot?.updatedAt || remoteMeta?.updatedAt || "",
+    remoteUpdatedAt: remoteSnapshot?.payload?.updatedAt || remoteMeta?.updatedAt || "",
     builtInUpdateNotice
   };
 };

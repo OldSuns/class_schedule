@@ -1,616 +1,297 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Clock, Calendar, Plus } from "lucide-react";
-import { getPeriodRangeLabel } from "../../../utils/schedule/timeUtils";
-import {
-  DAY_NAMES,
-  DISPLAY_MODES,
-  MAX_WEEK,
-  MIN_WEEK
-} from "../../../config/constants";
-import { getCourseLocation, getCourseNote } from "../../../utils/schedule/courseUtils";
-import { shouldIncludeCourseForAudience } from "../../../utils/schedule/electiveUtils";
-import { collectLogicalCoursesForRange } from "../../../utils/schedule/scheduleUtils";
-import CourseEditor from "./CourseEditor.jsx";
-import CourseCard from "./CourseCard.jsx";
-import DeleteCoursePanel from "./DeleteCoursePanel.jsx";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Clock, MapPin, Pencil, Trash2, X } from "lucide-react";
+import { DAY_NAMES, MAX_WEEK, MIN_WEEK } from "../../../config/constants";
+import { parseTimeToMinutes } from "../../../utils/schedule/timeUtils";
 
-const normalizeNumbers = (list) =>
-  Array.from(new Set(Array.isArray(list) ? list : [])).sort((a, b) => a - b);
-
-const buildRanges = (numbers) => {
-  const values = normalizeNumbers(numbers);
-  if (values.length === 0) return [];
-  const ranges = [];
-  let start = values[0];
-  let end = values[0];
-  for (let index = 1; index < values.length; index += 1) {
-    const current = values[index];
-    if (current === end + 1) {
-      end = current;
-      continue;
-    }
-    ranges.push([start, end]);
-    start = current;
-    end = current;
-  }
-  ranges.push([start, end]);
-  return ranges;
-};
-
-const formatWeekList = (weeks) =>
-  buildRanges(weeks)
-    .map(([start, end]) => (start === end ? `${start}` : `${start}-${end}`))
-    .join("、");
-
-const formatWeekSentence = (weeks) => {
-  const label = formatWeekList(weeks);
-  return label ? `第${label}周` : "";
-};
-
-const formatPeriodSetLabel = (periods) =>
-  buildRanges(periods)
-    .map(([start, end]) => getPeriodRangeLabel(start, end))
-    .join("、");
-
-const getUniqueNonEmptyTexts = (values) =>
-  Array.from(
-    new Set(
-      (Array.isArray(values) ? values : [])
-        .map((value) => (typeof value === "string" ? value.trim() : ""))
-        .filter(Boolean)
-    )
-  );
-
-const buildWeekPeriodSummary = (logicalCourse) => {
-  const groups = new Map();
-  for (const week of logicalCourse.allWeeks) {
-    const periods = normalizeNumbers(logicalCourse.weekPeriodMap?.[week] ?? []);
-    const key = periods.join(",");
-    if (!groups.has(key)) {
-      groups.set(key, { periods, weeks: [] });
-    }
-    groups.get(key).weeks.push(week);
-  }
-
-  const items = Array.from(groups.values()).map((item) => ({
-    ...item,
-    weeks: normalizeNumbers(item.weeks)
-  }));
-  if (items.length <= 1) {
-    return items.map((item) => ({
-      label: "",
-      periodsLabel: formatPeriodSetLabel(item.periods)
-    }));
-  }
-  const mainItem =
-    items.length > 1
-      ? items.reduce(
-          (best, item) => (!best || item.weeks.length > best.weeks.length ? item : best),
-          null
-        )
-      : null;
-
-  return items
-    .sort((a, b) => a.weeks.length - b.weeks.length || a.weeks[0] - b.weeks[0])
-    .map((item) => ({
-      label:
-        mainItem && item === mainItem && item.weeks.length !== logicalCourse.allWeeks.length
-          ? "其余周"
-          : formatWeekSentence(item.weeks),
-      periodsLabel: formatPeriodSetLabel(item.periods)
-    }));
-};
-
-const buildLogicalCourseDisplay = (logicalCourse, currentWeek) => {
-  const currentWeekFragments = logicalCourse.fragments.filter((fragment) =>
-    Array.isArray(fragment.course?.weeks)
-      ? fragment.course.weeks.includes(currentWeek)
-      : false
-  );
-  const activeFragments =
-    currentWeekFragments.length > 0 ? currentWeekFragments : logicalCourse.fragments;
-  const locationTexts = getUniqueNonEmptyTexts(
-    activeFragments.map((fragment) =>
-      getCourseLocation(fragment.course?.location, currentWeek)
-    )
-  );
-  const noteTexts = getUniqueNonEmptyTexts(
-    activeFragments.map((fragment) => getCourseNote(fragment.course?.note, currentWeek))
-  );
-  const currentWeekPeriods = normalizeNumbers(
-    logicalCourse.weekPeriodMap?.[currentWeek] ??
-      activeFragments[0]?.periods ??
-      logicalCourse.availablePeriods
-  );
-
-  const locationGroupMap = new Map();
-  for (const fragment of activeFragments) {
-    const loc = getCourseLocation(fragment.course?.location, currentWeek);
-    if (!loc || loc === "未排地点") continue;
-    const periods = Array.isArray(fragment.periods) ? fragment.periods : [];
-    const existing = locationGroupMap.get(loc);
-    if (existing) {
-      existing.periods.push(...periods);
-    } else {
-      locationGroupMap.set(loc, { location: loc, periods: [...periods] });
-    }
-  }
-  const locationPeriods = Array.from(locationGroupMap.values())
-    .map((g) => {
-      const normalized = normalizeNumbers(g.periods);
-      return {
-        location: g.location,
-        periods: normalized,
-        periodsLabel: formatPeriodSetLabel(normalized)
-      };
-    })
-    .sort((a, b) => (a.periods[0] ?? 0) - (b.periods[0] ?? 0));
-
-  return {
-    ...logicalCourse,
-    isCurrentWeek: logicalCourse.allWeeks.includes(currentWeek),
-    currentWeekPeriods,
-    currentWeekPeriodsLabel: formatPeriodSetLabel(currentWeekPeriods),
-    periodSummary: buildWeekPeriodSummary(logicalCourse),
-    hasPeriodVariation:
-      Object.keys(logicalCourse.weekPeriodMap ?? {}).length > 0 &&
-      new Set(
-        Object.values(logicalCourse.weekPeriodMap ?? {}).map((periods) =>
-          normalizeNumbers(periods).join(",")
-        )
-      ).size > 1,
-    locationText: locationTexts.join(" / "),
-    locationPeriods,
-    noteText: noteTexts.join(" / "),
-    allWeeksLabel: formatWeekList(logicalCourse.allWeeks)
-  };
-};
+const GROUP_OPTIONS = Array.from({ length: 7 }, (_, index) => `${index + 1}组`);
 
 const CourseModal = ({
   isOpen,
-  selectedCell,
+  event,
   currentWeek,
-  displayMode = DISPLAY_MODES.ALL,
-  userGroup,
-  selectedElectives = [],
-  scheduleData,
-  onAddCourse,
-  onUpdateCourse,
-  onDeleteCourse,
+  onUpdateEvent,
+  onDeleteEvent,
   onClose
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editingLogicalId, setEditingLogicalId] = useState(null);
-  const [addingCourse, setAddingCourse] = useState(false);
-  const [deletingLogicalId, setDeletingLogicalId] = useState(null);
-  const [deletePeriods, setDeletePeriods] = useState([]);
-  const [deleteWeeks, setDeleteWeeks] = useState([]);
-  const [deleteError, setDeleteError] = useState("");
-  const [hasUnsavedEditorChanges, setHasUnsavedEditorChanges] = useState(false);
-
-  const selectedRangePeriods = useMemo(() => {
-    if (!selectedCell) return [];
-    const start = Math.min(selectedCell.periodStart, selectedCell.periodEnd);
-    const end = Math.max(selectedCell.periodStart, selectedCell.periodEnd);
-    const list = [];
-    for (let period = start; period <= end; period += 1) {
-      list.push(period);
-    }
-    return list;
-  }, [selectedCell]);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [form, setForm] = useState(event ?? null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!isOpen) {
-      setIsEditMode(false);
-      setEditingLogicalId(null);
-      setAddingCourse(false);
-      setDeletingLogicalId(null);
-      setDeletePeriods([]);
-      setDeleteWeeks([]);
-      setDeleteError("");
-      setHasUnsavedEditorChanges(false);
+    setForm(event ?? null);
+    setIsEditMode(false);
+    setIsConfirmingDelete(false);
+    setError("");
+  }, [event, isOpen]);
+
+  if (!isOpen || !event || !form) return null;
+
+  const updateField = (key, value) => setForm((current) => ({ ...current, [key]: value }));
+  const toggleWeek = (week) => {
+    const selected = new Set(form.weeks);
+    if (selected.has(week)) selected.delete(week);
+    else selected.add(week);
+    updateField("weeks", Array.from(selected).sort((left, right) => left - right));
+  };
+
+  const save = () => {
+    if (!form.name.trim()) {
+      setError("请输入课程名称");
+      return;
     }
-  }, [isOpen, selectedCell]);
-
-  useEffect(() => {
-    if (!isEditMode) {
-      setEditingLogicalId(null);
-      setAddingCourse(false);
-      setDeletingLogicalId(null);
-      setDeletePeriods([]);
-      setDeleteWeeks([]);
-      setDeleteError("");
-      setHasUnsavedEditorChanges(false);
+    if (
+      parseTimeToMinutes(form.startTime) == null ||
+      parseTimeToMinutes(form.endTime) == null ||
+      parseTimeToMinutes(form.endTime) <= parseTimeToMinutes(form.startTime)
+    ) {
+      setError("结束时间必须晚于开始时间");
+      return;
     }
-  }, [isEditMode]);
-
-  const logicalCourses = useMemo(() => {
-    if (!selectedCell || !scheduleData) return [];
-    return collectLogicalCoursesForRange(
-      scheduleData,
-      selectedCell.day,
-      selectedCell.periodStart,
-      selectedCell.periodEnd
-    )
-      .filter((course) =>
-        shouldIncludeCourseForAudience(
-          {
-            ...course.baseCourse,
-            group: course.baseCourse.group,
-            electives: course.baseCourse.electives
-          },
-          userGroup,
-          selectedElectives
-        )
-      )
-      .filter((course) =>
-        displayMode === DISPLAY_MODES.CURRENT_ONLY
-          ? course.allWeeks.includes(currentWeek)
-          : true
-      )
-      .map((course) => buildLogicalCourseDisplay(course, currentWeek));
-  }, [
-    scheduleData,
-    selectedCell,
-    currentWeek,
-    displayMode,
-    userGroup,
-    selectedElectives
-  ]);
-
-  const addingInitialValues = useMemo(
-    () => ({
-      name: "",
-      group: "",
-      electives: [],
-      weeks: [],
-      location: "",
-      note: "",
-      periods: selectedRangePeriods
-    }),
-    [selectedRangePeriods]
-  );
-
-  const editingCourse = useMemo(
-    () => logicalCourses.find((course) => course.logicalId === editingLogicalId) || null,
-    [logicalCourses, editingLogicalId]
-  );
-
-  const deletingCourse = useMemo(
-    () => logicalCourses.find((course) => course.logicalId === deletingLogicalId) || null,
-    [logicalCourses, deletingLogicalId]
-  );
-
-  if (!selectedCell) return null;
-
-  const requestDiscardIfNeeded = () => {
-    if (!hasUnsavedEditorChanges) return true;
-    return window.confirm("有未保存修改，确认放弃？");
-  };
-
-  const handleRequestClose = () => {
-    if (!requestDiscardIfNeeded()) return;
-    onClose?.();
-  };
-
-  const handleAdd = (course, payload) => {
-    onAddCourse?.(selectedCell.day, payload.periods, {
-      ...course,
-      weeks: payload.weeks
+    if (form.weeks.length === 0) {
+      setError("请至少选择一个周次");
+      return;
+    }
+    setError("");
+    onUpdateEvent?.({
+      ...form,
+      name: form.name.trim(),
+      location: form.location.trim(),
+      note: form.note.trim()
     });
-    setAddingCourse(false);
-    setHasUnsavedEditorChanges(false);
-  };
-
-  const handleUpdate = (logicalCourse, course, payload) => {
-    const weeksPeriodsIntersection = (logicalCourse.availablePeriods || []).filter((period) =>
-      payload.weeks.every((week) => {
-        const weekPeriods = logicalCourse.weekPeriodMap?.[week] || [];
-        return weekPeriods.includes(period);
-      })
-    );
-
-    const effectiveScopePeriods =
-      weeksPeriodsIntersection.length > 0 ? weeksPeriodsIntersection : payload.periods;
-
-    onUpdateCourse?.({
-      day: selectedCell.day,
-      logicalId: logicalCourse.logicalId,
-      scopePeriods: effectiveScopePeriods,
-      selectedWeeks: payload.weeks,
-      selectedPeriods: payload.periods,
-      course: {
-        ...course,
-        weeks: payload.weeks
-      },
-      preserveLocation: !payload.changedFields.location,
-      preserveNote: !payload.changedFields.note
-    });
-    setEditingLogicalId(null);
-    setHasUnsavedEditorChanges(false);
-  };
-
-  const handleDelete = (logicalCourse, weeks, periods) => {
-    onDeleteCourse?.({
-      day: selectedCell.day,
-      logicalId: logicalCourse.logicalId,
-      scopePeriods: logicalCourse.availablePeriods,
-      selectedWeeks: weeks,
-      selectedPeriods: periods
-    });
-    setDeletingLogicalId(null);
-    setDeletePeriods([]);
-    setDeleteWeeks([]);
-    setDeleteError("");
-  };
-
-  const openDelete = (logicalCourse) => {
-    if (!requestDiscardIfNeeded()) return;
-    setHasUnsavedEditorChanges(false);
-    setEditingLogicalId(null);
-    setAddingCourse(false);
-    setDeletingLogicalId(logicalCourse.logicalId);
-    setDeletePeriods(logicalCourse.currentWeekPeriods);
-    setDeleteWeeks([]);
-    setDeleteError("");
+    setIsEditMode(false);
   };
 
   const confirmDelete = () => {
-    if (!deletingCourse) return;
-    const normalizedWeeks = normalizeNumbers(deleteWeeks).filter((item) =>
-      deletingCourse.allWeeks.includes(item)
-    );
-    const normalizedPeriods = normalizeNumbers(deletePeriods).filter((item) =>
-      deletingCourse.availablePeriods.includes(item)
-    );
-    if (normalizedWeeks.length === 0) {
-      setDeleteError("请选择要删除的周次");
-      return;
-    }
-    if (normalizedPeriods.length === 0) {
-      setDeleteError("请选择要删除的节次");
-      return;
-    }
-    handleDelete(deletingCourse, normalizedWeeks, normalizedPeriods);
-  };
-
-  const handleStartEdit = (course) => {
-    if (!requestDiscardIfNeeded()) return;
-    setHasUnsavedEditorChanges(false);
-    setEditingLogicalId(course.logicalId);
-    setAddingCourse(false);
-    setDeletingLogicalId(null);
-    setDeletePeriods([]);
-    setDeleteWeeks([]);
-    setDeleteError("");
-  };
-
-  const handleCancelDelete = () => {
-    setDeletingLogicalId(null);
-    setDeletePeriods([]);
-    setDeleteWeeks([]);
-    setDeleteError("");
-  };
-
-  const handleStartAdd = () => {
-    if (!requestDiscardIfNeeded()) return;
-    setHasUnsavedEditorChanges(false);
-    setAddingCourse(true);
-    setEditingLogicalId(null);
-    setDeletingLogicalId(null);
-    setDeletePeriods([]);
-    setDeleteWeeks([]);
-    setDeleteError("");
+    onDeleteEvent?.(event.id);
+    setIsConfirmingDelete(false);
   };
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      <motion.div
+        key="course-modal-backdrop"
+        className="fixed inset-0 z-40 flex items-end bg-black/25"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onMouseDown={(mouseEvent) => {
+          if (mouseEvent.target === mouseEvent.currentTarget) onClose?.();
+        }}
+      >
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 flex items-end sm:items-center justify-center p-0 sm:p-4 z-50"
-          style={{ backgroundColor: "rgba(0,0,0,0.25)" }}
-          onClick={handleRequestClose}
+          className="mx-auto flex max-h-[88vh] w-full max-w-[430px] flex-col overflow-hidden rounded-t-[28px] bg-surface-primary"
+          initial={{ y: "100%" }}
+          animate={{ y: 0 }}
+          exit={{ y: "100%" }}
+          transition={{ duration: 0.2 }}
         >
-          <motion.div
-            initial={{ opacity: 0, y: 48 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 48 }}
-            transition={{ duration: 0.3, ease: [0.2, 0, 0, 1] }}
-            className="w-full sm:max-w-2xl max-h-[92vh] sm:max-h-[90vh] overflow-hidden flex flex-col rounded-t-[28px] sm:rounded-[28px]"
-            style={{
-              backgroundColor: "var(--surface-primary)",
-              boxShadow: "0 4px 32px rgba(0,0,0,0.10)"
-            }}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div
-              className="flex-shrink-0 p-4 flex justify-between items-center"
-              style={{ backgroundColor: "var(--surface-elevated)", borderRadius: "28px 28px 0 0" }}
-            >
-              <div className="flex items-center gap-2 flex-1 min-w-0">
-                <Clock className="flex-shrink-0" size={20} style={{ color: "var(--foreground-primary)" }} />
-                <h2 className="text-base font-bold truncate" style={{ color: "var(--foreground-primary)" }}>
-                  {DAY_NAMES[selectedCell.day].zh} ·{" "}
-                  {getPeriodRangeLabel(selectedCell.periodStart, selectedCell.periodEnd)}
-                </h2>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5 text-xs" style={{ color: "var(--foreground-secondary)" }}>
-                  <span>编辑</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (isEditMode && !requestDiscardIfNeeded()) return;
-                      setIsEditMode((prev) => !prev);
-                    }}
-                    className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors"
-                    style={{
-                      backgroundColor: isEditMode
-                        ? "var(--primary)"
-                        : "rgba(0,0,0,0.08)"
-                    }}
-                    aria-pressed={isEditMode}
-                  >
-                    <span
-                      className="inline-block h-3 w-3 transform rounded-full transition-transform"
-                      style={{
-                        backgroundColor: "#FFFFFF",
-                        transform: isEditMode ? "translateX(20px)" : "translateX(4px)"
-                      }}
-                    />
-                  </button>
-                </div>
-                <button
-                  onClick={handleRequestClose}
-                  className="transition-opacity hover:opacity-75 flex-shrink-0"
-                  style={{ color: "var(--foreground-secondary)" }}
-                >
-                  <X size={20} />
-                </button>
-              </div>
+          <header className="flex items-center justify-between rounded-t-[28px] bg-surface-elevated p-4">
+            <div className="flex min-w-0 items-center gap-2">
+              <Clock size={20} className="shrink-0" />
+              <h2 className="truncate text-base font-bold text-on-surface">
+                {DAY_NAMES[event.day].zh} · {event.startTime}–{event.endTime}
+              </h2>
             </div>
-
-            <div className="flex-1 p-4 overflow-y-auto" style={{ backgroundColor: "var(--surface-primary)" }}>
-              {logicalCourses.length === 0 ? (
-                <div className="text-center py-10">
-                  <Calendar className="mx-auto mb-3" size={36} style={{ color: "var(--outline)" }} />
-                  <h3 className="text-base font-semibold mb-1" style={{ color: "var(--foreground-primary)" }}>
-                    本节无课程安排
-                  </h3>
-                  <p className="text-sm" style={{ color: "var(--foreground-secondary)" }}>
-                    该时间段没有安排课程
-                  </p>
-                </div>
-              ) : (
-                logicalCourses.map((course) => {
-                  const isEditing = editingCourse?.logicalId === course.logicalId && isEditMode;
-                  const isDeleting = deletingCourse?.logicalId === course.logicalId && isEditMode;
-
-                  if (isEditing) {
-                    return (
-                      <CourseEditor
-                        key={course.logicalId}
-                        title="编辑课程"
-                        initialValues={{
-                          name: course.baseCourse.name,
-                          group: course.baseCourse.group ?? "",
-                          electives: course.baseCourse.electives,
-                          weeks: course.allWeeks,
-                          location: course.locationText,
-                          note: course.noteText,
-                          periods: course.currentWeekPeriods
-                        }}
-                        onSave={(nextCourse, payload) =>
-                          handleUpdate(course, nextCourse, payload)
-                        }
-                        onCancel={() => {
-                          setEditingLogicalId(null);
-                          setHasUnsavedEditorChanges(false);
-                        }}
-                        onDirtyChange={setHasUnsavedEditorChanges}
-                        availablePeriods={course.availablePeriods}
-                        weekPeriodMap={course.weekPeriodMap}
-                        hasPeriodVariation={course.hasPeriodVariation}
-                        minWeek={MIN_WEEK}
-                        maxWeek={MAX_WEEK}
-                        allowedWeeks={course.allWeeks}
-                        weekLabel="选择要修改的周次"
-                        weekErrorMessage="请选择要修改的周次"
-                        currentWeek={currentWeek}
-                      />
-                    );
-                  }
-
-                  return (
-                    <CourseCard
-                      key={course.logicalId}
-                      course={course}
-                      isEditMode={isEditMode}
-                      onEdit={() => handleStartEdit(course)}
-                      onDelete={() => openDelete(course)}
-                    >
-                      {isDeleting && (
-                        <DeleteCoursePanel
-                          course={course}
-                          deleteWeeks={deleteWeeks}
-                          onDeleteWeeksChange={setDeleteWeeks}
-                          deletePeriods={deletePeriods}
-                          onDeletePeriodsChange={setDeletePeriods}
-                          deleteError={deleteError}
-                          onConfirm={confirmDelete}
-                          onCancel={handleCancelDelete}
-                        />
-                      )}
-                    </CourseCard>
-                  );
-                })
-              )}
-
-              {addingCourse && isEditMode && (
-                <CourseEditor
-                  title="新增课程"
-                  initialValues={addingInitialValues}
-                  onSave={handleAdd}
-                  onCancel={() => {
-                    setAddingCourse(false);
-                    setHasUnsavedEditorChanges(false);
-                  }}
-                  onDirtyChange={setHasUnsavedEditorChanges}
-                  availablePeriods={selectedRangePeriods}
-                  minWeek={MIN_WEEK}
-                  maxWeek={MAX_WEEK}
-                  allowedWeeks={Array.from(
-                    { length: MAX_WEEK - MIN_WEEK + 1 },
-                    (_, index) => MIN_WEEK + index
-                  )}
-                  weekLabel="上课周次"
-                  weekErrorMessage="请选择上课周次"
-                  currentWeek={currentWeek}
-                />
-              )}
-            </div>
-
-            <div
-              className="flex-shrink-0 px-4 py-3 pb-[max(12px,var(--safe-bottom))] flex justify-between items-center"
-              style={{ backgroundColor: "var(--surface-elevated)" }}
-            >
-              {isEditMode ? (
-                <button
-                  onClick={handleStartAdd}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold transition-colors"
-                  style={{
-                    backgroundColor: "var(--secondary-container)",
-                    color: "var(--on-secondary-container)",
-                    borderRadius: "9999px"
-                  }}
-                >
-                  <Plus size={16} />
-                  新增课程
-                </button>
-              ) : (
-                <span className="text-xs" style={{ color: "var(--foreground-secondary)" }}>
-                  开启编辑模式以修改课程
-                </span>
-              )}
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-on-surface-variant">编辑</span>
               <button
-                onClick={handleRequestClose}
-                className="px-5 py-2 text-sm font-semibold transition-colors"
-                style={{
-                  backgroundColor: "var(--primary)",
-                  color: "var(--on-primary)",
-                  borderRadius: "9999px"
+                type="button"
+                aria-label="切换编辑模式"
+                aria-pressed={isEditMode}
+                onClick={() => {
+                  setIsEditMode((value) => !value);
+                  setIsConfirmingDelete(false);
+                  setError("");
                 }}
+                className="relative h-5 w-9 rounded-full"
+                style={{ backgroundColor: isEditMode ? "var(--primary)" : "var(--surface-high)" }}
               >
-                关闭
+                <span
+                  className="absolute top-1 h-3 w-3 rounded-full bg-white transition-transform"
+                  style={{ transform: `translateX(${isEditMode ? 20 : 4}px)` }}
+                />
+              </button>
+              <button type="button" aria-label="关闭课程详情" onClick={onClose}>
+                <X size={20} />
               </button>
             </div>
-          </motion.div>
+          </header>
+
+          <div className="overflow-y-auto p-4">
+            {isEditMode ? (
+              <div className="space-y-4 rounded-2xl bg-primary-container p-4">
+                <label className="block text-xs text-on-surface-variant">
+                  课程名称
+                  <input
+                    value={form.name}
+                    onChange={(inputEvent) => updateField("name", inputEvent.target.value)}
+                    className="mt-1 w-full rounded-xl bg-surface-primary px-3 py-2 text-sm text-on-surface outline-none"
+                  />
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <label className="text-xs text-on-surface-variant">
+                    开始时间
+                    <input
+                      type="time"
+                      value={form.startTime}
+                      onChange={(inputEvent) => updateField("startTime", inputEvent.target.value)}
+                      className="mt-1 w-full rounded-xl bg-surface-primary px-3 py-2 text-sm text-on-surface outline-none"
+                    />
+                  </label>
+                  <label className="text-xs text-on-surface-variant">
+                    结束时间
+                    <input
+                      type="time"
+                      value={form.endTime}
+                      onChange={(inputEvent) => updateField("endTime", inputEvent.target.value)}
+                      className="mt-1 w-full rounded-xl bg-surface-primary px-3 py-2 text-sm text-on-surface outline-none"
+                    />
+                  </label>
+                </div>
+                <label className="block text-xs text-on-surface-variant">
+                  地点
+                  <input
+                    value={form.location}
+                    onChange={(inputEvent) => updateField("location", inputEvent.target.value)}
+                    className="mt-1 w-full rounded-xl bg-surface-primary px-3 py-2 text-sm text-on-surface outline-none"
+                  />
+                </label>
+                <label className="block text-xs text-on-surface-variant">
+                  授课教师 / 备注
+                  <input
+                    value={form.note}
+                    onChange={(inputEvent) => updateField("note", inputEvent.target.value)}
+                    className="mt-1 w-full rounded-xl bg-surface-primary px-3 py-2 text-sm text-on-surface outline-none"
+                  />
+                </label>
+                <label className="block text-xs text-on-surface-variant">
+                  适用对象
+                  <select
+                    value={form.group ?? ""}
+                    onChange={(inputEvent) => updateField("group", inputEvent.target.value || null)}
+                    className="mt-1 w-full rounded-xl bg-surface-primary px-3 py-2 text-sm text-on-surface outline-none"
+                  >
+                    <option value="">共同课程</option>
+                    {GROUP_OPTIONS.map((group) => (
+                      <option key={group} value={group}>{group}</option>
+                    ))}
+                  </select>
+                </label>
+                <div>
+                  <span className="text-xs text-on-surface-variant">上课周次</span>
+                  <div className="mt-2 grid grid-cols-4 gap-2">
+                    {Array.from(
+                      { length: MAX_WEEK - MIN_WEEK + 1 },
+                      (_, index) => MIN_WEEK + index
+                    ).map((week) => (
+                      <button
+                        key={week}
+                        type="button"
+                        aria-pressed={form.weeks.includes(week)}
+                        onClick={() => toggleWeek(week)}
+                        className="rounded-xl py-2 text-xs font-semibold"
+                        style={
+                          form.weeks.includes(week)
+                            ? { backgroundColor: "var(--primary)", color: "var(--on-primary)" }
+                            : { backgroundColor: "var(--surface-primary)", color: "var(--foreground-primary)" }
+                        }
+                      >
+                        {week}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {error && <p className="text-xs text-error">{error}</p>}
+                <div className="flex justify-between gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsConfirmingDelete(true)}
+                    className="inline-flex items-center gap-1 rounded-full bg-error-container px-4 py-2 text-sm font-semibold text-error-on-container"
+                  >
+                    <Trash2 size={15} /> 删除
+                  </button>
+                  <button
+                    type="button"
+                    onClick={save}
+                    className="inline-flex items-center gap-1 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-on-primary"
+                  >
+                    <Pencil size={15} /> 保存
+                  </button>
+                </div>
+                {isConfirmingDelete && (
+                  <div className="rounded-xl bg-surface-primary p-3 text-sm">
+                    <p className="font-semibold text-on-surface">确认删除这门课程？</p>
+                    <div className="mt-3 flex justify-end gap-2">
+                      <button type="button" onClick={() => setIsConfirmingDelete(false)}>取消</button>
+                      <button type="button" className="font-bold text-error" onClick={confirmDelete}>确认删除</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <article className="rounded-2xl bg-primary-container p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="min-w-0 flex-1 text-lg font-bold text-primary-on-container">
+                    {event.name}
+                  </h3>
+                  {event.weeks.includes(currentWeek) && (
+                    <span className="shrink-0 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold text-primary-on-primary">
+                      本周课程
+                    </span>
+                  )}
+                </div>
+                <div className="mt-4 space-y-4">
+                  <div>
+                    <p className="text-xs text-on-surface-variant">上课周次</p>
+                    <p className="mt-1 text-sm font-semibold text-on-surface">{event.weeks.join("、")}周</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-on-surface-variant">上课时间</p>
+                    <p className="mt-1 text-sm font-semibold text-on-surface">
+                      {event.startTime} — {event.endTime}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="flex items-center gap-1 text-xs text-on-surface-variant">
+                      <MapPin size={13} /> 上课地点
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-on-surface">
+                      {event.location || "未提供"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-on-surface-variant">适用对象</p>
+                    <p className="mt-1 text-sm font-semibold text-on-surface">
+                      {event.group ?? "全体学生"}
+                    </p>
+                  </div>
+                  {event.note && (
+                    <div>
+                      <p className="text-xs text-on-surface-variant">授课教师</p>
+                      <p className="mt-1 text-sm font-semibold text-on-surface">{event.note}</p>
+                    </div>
+                  )}
+                </div>
+              </article>
+            )}
+          </div>
+
+          <footer className="flex items-center justify-between bg-surface-elevated px-4 py-3 pb-[max(12px,var(--safe-bottom))]">
+            <span className="text-xs text-on-surface-variant">
+              {isEditMode ? "修改后点击保存" : "开启编辑模式以修改课程"}
+            </span>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-on-primary"
+            >
+              关闭
+            </button>
+          </footer>
         </motion.div>
-      )}
+      </motion.div>
     </AnimatePresence>
   );
 };

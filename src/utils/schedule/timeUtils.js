@@ -2,7 +2,11 @@
  * 时间相关工具函数
  */
 
-import { DAYS, MAX_WEEK } from "../../config/constants";
+import { DAYS, MAX_WEEK, MIN_WEEK } from "../../config/constants.js";
+
+const SWIPE_DISTANCE_THRESHOLD = 56;
+const SWIPE_VELOCITY_THRESHOLD = 500;
+const HORIZONTAL_SWIPE_RATIO = 1.15;
 
 const createDateAtMidnight = (year, month, day) => {
   const date = new Date(year, month, day);
@@ -42,75 +46,11 @@ const calculateBaseDateInfo = (startDate, targetDate) => {
   };
 };
 
-// 获取节次时间
-export const getPeriodTime = (period) => {
-  const timeMap = {
-    1: "8:15-8:55",
-    2: "9:00-9:40",
-    3: "9:55-10:35",
-    4: "10:40-11:20",
-    5: "11:25-12:05",
-    6: "13:45-14:25",
-    7: "14:30-15:10",
-    8: "15:20-16:00",
-    9: "16:05-16:45",
-    10: "16:45-17:55",
-    11: "18:00-18:40",
-    12: "18:45-19:25",
-    13: "19:30-20:10"
-  };
-  return timeMap[period] || "";
-};
-
 export const parseTimeToMinutes = (time) => {
-  if (!time) return null;
-  const [hours, minutes] = String(time).split(":").map(Number);
-  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return null;
+  if (typeof time !== "string" || !/^\d{2}:\d{2}$/.test(time)) return null;
+  const [hours, minutes] = time.split(":").map(Number);
+  if (hours > 23 || minutes > 59) return null;
   return hours * 60 + minutes;
-};
-
-export const getPeriodRangeMinutes = (period) => {
-  const time = getPeriodTime(period);
-  if (!time || !time.includes("-")) return null;
-  const [start, end] = time.split("-");
-  const startMin = parseTimeToMinutes(start);
-  const endMin = parseTimeToMinutes(end);
-  if (startMin == null || endMin == null) return null;
-  return { startMin, endMin };
-};
-
-export const getCurrentPeriod = (now = new Date()) => {
-  const current = now instanceof Date ? now : new Date(now);
-  const nowMinutes = current.getHours() * 60 + current.getMinutes();
-  for (let period = 1; period <= 13; period += 1) {
-    const range = getPeriodRangeMinutes(period);
-    if (!range) continue;
-    if (nowMinutes >= range.startMin && nowMinutes < range.endMin) {
-      return period;
-    }
-  }
-  return null;
-};
-
-// 获取节次开始时间（HH:mm）
-export const getPeriodStartTime = (period) => {
-  const time = getPeriodTime(period);
-  if (!time) return "";
-  return time.split("-")[0];
-};
-
-// 获取节次名称
-export const getPeriodLabel = (period) => {
-  if (period >= 11 && period <= 13) {
-    return `晚${period - 10}节`;
-  }
-  return `${period}节`;
-};
-
-// 获取节次范围标签
-export const getPeriodRangeLabel = (periodStart, periodEnd) => {
-  if (periodStart === periodEnd) return getPeriodLabel(periodStart);
-  return `${getPeriodLabel(periodStart)}～${getPeriodLabel(periodEnd)}`;
 };
 
 // 计算指定日期是第几周的星期几
@@ -169,6 +109,80 @@ export const getScheduleDate = (startDate, week, day) => {
     semesterStart.getMonth(),
     semesterStart.getDate() + (weekNum - 1) * 7 + dayIndex
   );
+};
+
+export const getAdjacentWorkday = ({ week, day }, direction) => {
+  const weekNumber = Number(week);
+  const dayIndex = DAYS.indexOf(day);
+  if (
+    !Number.isInteger(weekNumber) ||
+    weekNumber < MIN_WEEK ||
+    weekNumber > MAX_WEEK ||
+    dayIndex === -1 ||
+    (direction !== "previous" && direction !== "next")
+  ) {
+    return null;
+  }
+
+  if (direction === "previous") {
+    if (dayIndex > 0) return { week: weekNumber, day: DAYS[dayIndex - 1] };
+    return weekNumber > MIN_WEEK
+      ? { week: weekNumber - 1, day: DAYS.at(-1) }
+      : { week: weekNumber, day };
+  }
+
+  if (dayIndex < DAYS.length - 1) {
+    return { week: weekNumber, day: DAYS[dayIndex + 1] };
+  }
+  return weekNumber < MAX_WEEK
+    ? { week: weekNumber + 1, day: DAYS[0] }
+    : { week: weekNumber, day };
+};
+
+export const getWeekStartSelection = (week) => {
+  const weekNumber = Number(week);
+  if (!Number.isInteger(weekNumber) || weekNumber < MIN_WEEK || weekNumber > MAX_WEEK) {
+    return null;
+  }
+  return { week: weekNumber, day: DAYS[0] };
+};
+
+export const getScheduleSelectionDirection = (previous, next) => {
+  const getIndex = (selection) => {
+    const week = Number(selection?.week);
+    const dayIndex = DAYS.indexOf(selection?.day);
+    if (!Number.isInteger(week) || week < MIN_WEEK || week > MAX_WEEK || dayIndex < 0) {
+      return null;
+    }
+    return (week - 1) * DAYS.length + dayIndex;
+  };
+  const previousIndex = getIndex(previous);
+  const nextIndex = getIndex(next);
+  if (previousIndex == null || nextIndex == null) return 0;
+  return Math.sign(nextIndex - previousIndex);
+};
+
+export const getSwipeDayDirection = ({ offsetX, offsetY, velocityX }) => {
+  const horizontal = Number(offsetX);
+  const vertical = Number(offsetY);
+  const velocity = Number(velocityX);
+  if (![horizontal, vertical, velocity].every(Number.isFinite)) return null;
+  if (Math.abs(horizontal) <= Math.abs(vertical) * HORIZONTAL_SWIPE_RATIO) {
+    return null;
+  }
+  if (
+    horizontal >= SWIPE_DISTANCE_THRESHOLD ||
+    velocity >= SWIPE_VELOCITY_THRESHOLD
+  ) {
+    return "previous";
+  }
+  if (
+    horizontal <= -SWIPE_DISTANCE_THRESHOLD ||
+    velocity <= -SWIPE_VELOCITY_THRESHOLD
+  ) {
+    return "next";
+  }
+  return null;
 };
 
 export const formatMonthDay = (date) => {

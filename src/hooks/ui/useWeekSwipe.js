@@ -8,17 +8,13 @@ const SUPPRESS_CLICK_MS = 350;
 export const useWeekSwipe = ({
   enabled = false,
   onSwipeLeft,
-  onSwipeRight,
-  minDistance = SWIPE_MIN_DISTANCE,
-  axisBias = SWIPE_AXIS_BIAS,
-  axisLockDistance = SWIPE_AXIS_LOCK_DISTANCE
+  onSwipeRight
 } = {}) => {
   const touchStateRef = useRef({
     startX: 0,
     startY: 0,
     axis: null,
-    tracking: false,
-    triggered: false
+    tracking: false
   });
   const suppressClickRef = useRef(false);
   const suppressTimeoutRef = useRef(null);
@@ -28,8 +24,7 @@ export const useWeekSwipe = ({
       startX: 0,
       startY: 0,
       axis: null,
-      tracking: false,
-      triggered: false
+      tracking: false
     };
   }, []);
 
@@ -41,29 +36,23 @@ export const useWeekSwipe = ({
     }
   }, []);
 
-  const startSuppressClickWindow = useCallback(() => {
-    suppressClickRef.current = true;
-    if (typeof window === "undefined") return;
-    if (suppressTimeoutRef.current !== null) {
-      window.clearTimeout(suppressTimeoutRef.current);
-    }
-    suppressTimeoutRef.current = window.setTimeout(() => {
-      suppressClickRef.current = false;
-      suppressTimeoutRef.current = null;
-    }, SUPPRESS_CLICK_MS);
-  }, []);
-
   const triggerSwipe = useCallback(
     (direction) => {
-      if (direction === "left") {
-        onSwipeLeft?.();
-      } else {
-        onSwipeRight?.();
+      if (direction === "left") onSwipeLeft?.();
+      else onSwipeRight?.();
+      suppressClickRef.current = true;
+      if (typeof window !== "undefined") {
+        if (suppressTimeoutRef.current !== null) {
+          window.clearTimeout(suppressTimeoutRef.current);
+        }
+        suppressTimeoutRef.current = window.setTimeout(() => {
+          suppressClickRef.current = false;
+          suppressTimeoutRef.current = null;
+        }, SUPPRESS_CLICK_MS);
       }
-      startSuppressClickWindow();
       resetTouchState();
     },
-    [onSwipeLeft, onSwipeRight, resetTouchState, startSuppressClickWindow]
+    [onSwipeLeft, onSwipeRight, resetTouchState]
   );
 
   const handleTouchStart = useCallback(
@@ -72,14 +61,12 @@ export const useWeekSwipe = ({
         resetTouchState();
         return;
       }
-
       const touch = event.touches[0];
       touchStateRef.current = {
         startX: touch.clientX,
         startY: touch.clientY,
         axis: null,
-        tracking: true,
-        triggered: false
+        tracking: true
       };
     },
     [enabled, resetTouchState]
@@ -88,9 +75,7 @@ export const useWeekSwipe = ({
   const handleTouchMove = useCallback(
     (event) => {
       const state = touchStateRef.current;
-      if (!enabled || !state.tracking || state.triggered || event.touches.length !== 1) {
-        return;
-      }
+      if (!enabled || !state.tracking || event.touches.length !== 1) return;
 
       const touch = event.touches[0];
       const deltaX = touch.clientX - state.startX;
@@ -99,10 +84,9 @@ export const useWeekSwipe = ({
       const absY = Math.abs(deltaY);
 
       if (!state.axis) {
-        if (absX < axisLockDistance && absY < axisLockDistance) {
+        if (absX < SWIPE_AXIS_LOCK_DISTANCE && absY < SWIPE_AXIS_LOCK_DISTANCE) {
           return;
         }
-
         state.axis = absX > absY ? "x" : "y";
         if (state.axis === "y") {
           state.tracking = false;
@@ -110,38 +94,18 @@ export const useWeekSwipe = ({
         }
       }
 
-      if (state.axis !== "x") {
-        return;
-      }
-
-      if (event.cancelable) {
-        event.preventDefault();
-      }
-
-      if (absX < minDistance || absX <= absY * axisBias) {
-        return;
-      }
-
-      state.triggered = true;
+      if (event.cancelable) event.preventDefault();
+      if (absX < SWIPE_MIN_DISTANCE || absX <= absY * SWIPE_AXIS_BIAS) return;
       triggerSwipe(deltaX < 0 ? "left" : "right");
     },
-    [axisBias, axisLockDistance, enabled, minDistance, triggerSwipe]
+    [enabled, triggerSwipe]
   );
 
-  const handleTouchEnd = useCallback(() => {
-    resetTouchState();
-  }, [resetTouchState]);
-
-  const handleClickCapture = useCallback(
-    (event) => {
-      if (!suppressClickRef.current) return;
-      event.preventDefault();
-      event.stopPropagation();
-    },
-    []
-  );
-
-  const isSwipeLocked = useCallback(() => suppressClickRef.current, []);
+  const handleClickCapture = useCallback((event) => {
+    if (!suppressClickRef.current) return;
+    event.preventDefault();
+    event.stopPropagation();
+  }, []);
 
   useEffect(() => {
     if (enabled) return;
@@ -149,24 +113,16 @@ export const useWeekSwipe = ({
     clearSuppressClick();
   }, [clearSuppressClick, enabled, resetTouchState]);
 
-  useEffect(
-    () => () => {
-      clearSuppressClick();
-    },
-    [clearSuppressClick]
-  );
+  useEffect(() => clearSuppressClick, [clearSuppressClick]);
 
   return useMemo(
     () => ({
-      handlers: {
-        onTouchStart: handleTouchStart,
-        onTouchMove: handleTouchMove,
-        onTouchEnd: handleTouchEnd,
-        onTouchCancel: handleTouchEnd,
-        onClickCapture: handleClickCapture
-      },
-      isSwipeLocked
+      onTouchStart: handleTouchStart,
+      onTouchMove: handleTouchMove,
+      onTouchEnd: resetTouchState,
+      onTouchCancel: resetTouchState,
+      onClickCapture: handleClickCapture
     }),
-    [handleClickCapture, handleTouchEnd, handleTouchMove, handleTouchStart, isSwipeLocked]
+    [handleClickCapture, handleTouchMove, handleTouchStart, resetTouchState]
   );
 };

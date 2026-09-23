@@ -62,7 +62,7 @@ final class TodayCoursesWidgetApi31 {
                 row.setTextViewText(R.id.widget_item_status, chipText);
             }
 
-            long stableId = item.startMillis != 0L ? item.startMillis : index;
+            long stableId = item.stableId != 0L ? item.stableId : index;
             builder.addItem(stableId, row);
         }
 

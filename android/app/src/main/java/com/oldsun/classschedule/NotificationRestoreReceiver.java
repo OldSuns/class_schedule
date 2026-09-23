@@ -17,7 +17,7 @@ import org.json.JSONObject;
 public class NotificationRestoreReceiver extends BroadcastReceiver {
     private static final String TAG = "NotificationRestore";
     private static final String PREFS_NAME = "CapacitorStorage";
-    private static final String SNAPSHOT_KEY = "notificationPlanSnapshot";
+    private static final String SNAPSHOT_KEY = "summerNotificationPlanSnapshot";
     private static final String DEFAULT_CHANNEL_ID = "course-reminders";
     private static final String DEFAULT_CHANNEL_NAME = "课程提醒";
     private static final String DEFAULT_CHANNEL_DESC = "上课前提醒";

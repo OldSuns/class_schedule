@@ -105,7 +105,7 @@
   --on-surface-variant: #666666;
 
   /* Primary palette */
-  --primary: #0066FF;
+  --primary: #3976D2;
   --primary-container: #E6F0FF;
   --on-primary: #FFFFFF;
   --on-primary-container: #001D3D;
@@ -162,26 +162,26 @@
   /* Today's course colors - blue theme with prominent border */
   --course-today-purple-bg: #E6F0FF;
   --course-today-purple-text: #001D3D;
-  --course-today-purple-border: #0066FF;
+  --course-today-purple-border: var(--primary);
   --course-today-blue-bg: #E6F0FF;
   --course-today-blue-text: #001D3D;
-  --course-today-blue-border: #0066FF;
+  --course-today-blue-border: var(--primary);
   --course-today-green-bg: #E6F0FF;
   --course-today-green-text: #001D3D;
-  --course-today-green-border: #0066FF;
+  --course-today-green-border: var(--primary);
   --course-today-orange-bg: #E6F0FF;
   --course-today-orange-text: #001D3D;
-  --course-today-orange-border: #0066FF;
+  --course-today-orange-border: var(--primary);
   --course-today-pink-bg: #E6F0FF;
   --course-today-pink-text: #001D3D;
-  --course-today-pink-border: #0066FF;
+  --course-today-pink-border: var(--primary);
   --course-today-yellow-bg: #E6F0FF;
   --course-today-yellow-text: #001D3D;
-  --course-today-yellow-border: #0066FF;
+  --course-today-yellow-border: var(--primary);
   --course-today-teal-bg: #E6F0FF;
   --course-today-teal-text: #001D3D;
-  --course-today-teal-border: #0066FF;
+  --course-today-teal-border: var(--primary);
   --course-today-lavender-bg: #E6F0FF;
   --course-today-lavender-text: #001D3D;
-  --course-today-lavender-border: #0066FF;
+  --course-today-lavender-border: var(--primary);
 }

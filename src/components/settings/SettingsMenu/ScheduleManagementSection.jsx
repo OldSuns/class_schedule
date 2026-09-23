@@ -4,10 +4,6 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 const ScheduleManagementSection = ({
   showScheduleManagement,
   onToggleScheduleManagement,
-  semesterStartDate,
-  onStartDateChange,
-  weekStatusText,
-  weekStatusStyle,
   currentScheduleSourceLabel,
   hasManualScheduleChanges,
   onResetSchedule,
@@ -39,40 +35,6 @@ const ScheduleManagementSection = ({
             className="rounded-2xl p-3 space-y-4"
             style={{ backgroundColor: "var(--surface-mid)" }}
           >
-            <div className="space-y-2">
-              <div className="text-sm font-semibold"
-                   style={{ color: "var(--foreground-primary)" }}>
-                开学日期
-              </div>
-              <input
-                type="date"
-                value={semesterStartDate}
-                onChange={(event) => onStartDateChange(event.target.value)}
-                lang="zh-CN"
-                placeholder="选择开学日期"
-                className="w-full px-3 py-2.5 rounded-xl text-sm font-medium cursor-pointer"
-                style={{
-                  backgroundColor: "var(--surface-elevated)",
-                  color: "var(--foreground-primary)",
-                  border: "1px solid var(--border-subtle)",
-                  colorScheme: "light"
-                }}
-              />
-              {weekStatusText && (
-                <div className="text-sm font-medium p-2.5 rounded-xl" style={weekStatusStyle}>
-                  {weekStatusText}
-                </div>
-              )}
-              {!weekStatusText && semesterStartDate && (
-                <div
-                  className="text-sm font-medium p-2.5 rounded-xl"
-                  style={{ backgroundColor: "var(--surface-elevated)", color: "var(--foreground-secondary)" }}
-                >
-                  今天不在上课时间
-                </div>
-              )}
-            </div>
-
             <div className="space-y-2">
               <div className="text-sm font-semibold"
                    style={{ color: "var(--foreground-primary)" }}>

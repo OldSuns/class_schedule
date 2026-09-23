@@ -24,6 +24,7 @@ const root = findProjectRoot(process.cwd());
 const gradlePath = path.join(root, "android", "app", "build.gradle");
 const constantsPath = path.join(root, "src", "config", "constants.js");
 const packageJsonPath = path.join(root, "package.json");
+const packageLockPath = path.join(root, "package-lock.json");
 
 const buildDateVersionCode = (date = new Date()) => {
   const yyyy = String(date.getFullYear());
@@ -39,6 +40,19 @@ if (!versionName) {
   process.exit(1);
 }
 const versionCode = buildDateVersionCode();
+
+const packageLock = JSON.parse(fs.readFileSync(packageLockPath, "utf8"));
+if (!packageLock.packages?.[""]) {
+  console.error('package-lock.json 未包含 packages[""]');
+  process.exit(1);
+}
+packageLock.version = versionName;
+packageLock.packages[""].version = versionName;
+fs.writeFileSync(
+  packageLockPath,
+  `${JSON.stringify(packageLock, null, 2)}\n`,
+  "utf8"
+);
 
 let constants = fs.readFileSync(constantsPath, "utf8");
 const versionPattern = /export const APP_VERSION\s*=\s*["'][^"']+["']/;

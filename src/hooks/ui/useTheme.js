@@ -16,8 +16,8 @@ const applyThemeClass = (theme) => {
  */
 export const useTheme = () => {
   const initialTheme =
-    storage.getItemSync(STORAGE_KEYS.THEME) || THEMES.M3;
-  const validInitialTheme = isValidTheme(initialTheme) ? initialTheme : THEMES.M3;
+    storage.getItemSync(STORAGE_KEYS.THEME) || THEMES.DEFAULT;
+  const validInitialTheme = isValidTheme(initialTheme) ? initialTheme : THEMES.DEFAULT;
 
   const [theme, setTheme] = useState(validInitialTheme);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -33,7 +33,7 @@ export const useTheme = () => {
       if (!hasUserChangedThemeRef.current && isValidTheme(saved)) {
         setTheme(saved);
       } else if (!saved && !hasUserChangedThemeRef.current) {
-        await storage.setItem(STORAGE_KEYS.THEME, THEMES.M3);
+        await storage.setItem(STORAGE_KEYS.THEME, THEMES.DEFAULT);
       }
       if (!cancelled) {
         setIsLoaded(true);

@@ -1,26 +1,13 @@
 import { SCHEDULE_REMOTE_URLS } from "../../config/constants";
 import { fetchWithTimeout, isTimeoutError } from "../platform/fetchWithTimeout";
-import { normalizeSchedule } from "../../utils/schedule/scheduleUtils";
+import { normalizeSchedulePayload } from "../../utils/schedule/eventUtils";
 
 const REMOTE_SCHEDULE_REQUEST_TIMEOUT_MS = 10000;
 
 export const buildScheduleSignature = (schedule) =>
-  JSON.stringify(Array.isArray(schedule) ? schedule : []);
+  JSON.stringify(normalizeSchedulePayload(schedule));
 
-const normalizeRemotePayload = (payload) => {
-  if (!payload || typeof payload !== "object") {
-    throw new Error("invalid-payload");
-  }
-  if (!Array.isArray(payload.schedule)) {
-    throw new Error("invalid-schedule");
-  }
-  const schedule = normalizeSchedule(payload.schedule);
-  return {
-    version: Number(payload.version) || 1,
-    updatedAt: typeof payload.updatedAt === "string" ? payload.updatedAt : "",
-    schedule
-  };
-};
+export const normalizeRemotePayload = normalizeSchedulePayload;
 
 export const fetchRemoteSchedule = async ({ meta } = {}) => {
   const request = async (url, headers) =>
@@ -91,7 +78,7 @@ export const fetchRemoteSchedule = async ({ meta } = {}) => {
 
     try {
       const snapshot = normalizeRemotePayload(payload);
-      const signature = buildScheduleSignature(snapshot.schedule);
+      const signature = buildScheduleSignature(snapshot);
       const meta = {
         etag: response.headers.get("etag") || "",
         lastModified: response.headers.get("last-modified") || "",
@@ -135,10 +122,10 @@ export const fetchRemoteSchedule = async ({ meta } = {}) => {
     };
   }
 
-  // updatedAt 是 ISO 日期字符串，字典序比较等价于时间比较；平手时按原始数组顺序优先。
+  // 按绝对时间比较，避免不同时区偏移的 ISO 字符串字典序误判；平手时按源顺序优先。
   successful.sort((a, b) => {
     if (a.comparableUpdatedAt !== b.comparableUpdatedAt) {
-      return a.comparableUpdatedAt < b.comparableUpdatedAt ? 1 : -1;
+      return Date.parse(b.comparableUpdatedAt) - Date.parse(a.comparableUpdatedAt);
     }
     return a.index - b.index;
   });

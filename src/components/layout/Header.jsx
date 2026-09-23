@@ -1,118 +1,142 @@
-import React from "react";
-import { MIN_WEEK, MAX_WEEK } from "../../config/constants";
+import { CalendarDays, Check, ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-/**
- * Header — M3 mobile schedule header
- *
- * Layout: title | week input + status chip
- * Design tokens from Pencil:
- * - Title: fontFamily $font-sans, fontSize 15px, fontWeight 700
- * - Week input: cornerRadius 12px, fill $surface-elevated, padding [5,8]
- * - Status chip: cornerRadius 9999px, fill $primary-container, padding [2,8]
- */
+const GROUP_OPTIONS = Array.from({ length: 7 }, (_, index) => `${index + 1}组`);
+
 const Header = ({
   todayInfo,
-  displayWeekInfo,
-  currentWeek,
-  currentClassProgress,
-  onWeekChange
+  isViewingToday = true,
+  userGroup = "1组",
+  onGroupChange,
+  onReturnToday
 }) => {
-  const handleWeekInputChange = (e) => {
-    onWeekChange(e.target.value);
-  };
-
+  const [isGroupOpen, setIsGroupOpen] = useState(false);
+  const groupRootRef = useRef(null);
+  const triggerRef = useRef(null);
   const statusText = todayInfo
     ? `今天是第${todayInfo.week}周 星期${["一", "二", "三", "四", "五"][todayInfo.dayOfWeek - 1]}`
-    : displayWeekInfo?.isWeekendPreview
-    ? `今天是周末，默认显示第${displayWeekInfo.week}周课表`
-    : "";
+    : "暑期社会实践课表";
+  const showReturnToday = Boolean(todayInfo?.day) && !isViewingToday;
 
-  // Weekend preview → secondary tonal chip; weekday → primary tonal chip
-  const statusStyle = displayWeekInfo?.isWeekendPreview
-    ? { backgroundColor: "var(--secondary-container)", color: "var(--on-secondary-container)" }
-    : { backgroundColor: "var(--primary-container)", color: "var(--on-primary-container)" };
+  useEffect(() => {
+    if (!isGroupOpen) return undefined;
+    const closeOnOutsidePress = (event) => {
+      if (!groupRootRef.current?.contains(event.target)) setIsGroupOpen(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key !== "Escape") return;
+      setIsGroupOpen(false);
+      triggerRef.current?.focus();
+    };
+    document.addEventListener("pointerdown", closeOnOutsidePress);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsidePress);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isGroupOpen]);
+
+  const selectGroup = (group) => {
+    onGroupChange?.(group);
+    setIsGroupOpen(false);
+    triggerRef.current?.focus();
+  };
 
   return (
-    <div className="mb-2 sm:mb-3">
-      {/* Mobile top spacing (status bar already handled by safe-top) */}
-      <div className="sm:hidden mb-1" />
-
-      {/* Title row */}
-      <div className="flex items-center gap-3 sm:gap-4 mb-1 px-1">
-        {/* Centre: progress or title */}
-        <div className="flex-1 min-w-0">
-          {currentClassProgress ? (
-            <div className="flex flex-col gap-0.5">
-              <div className="text-[11px] sm:text-sm font-semibold truncate leading-tight"
-                   style={{ color: "var(--foreground-primary)" }}>
-                {currentClassProgress.periodLabel}
-                <span className="mx-1" style={{ color: "var(--foreground-secondary)" }}>·</span>
-                {currentClassProgress.courseLabel}
-              </div>
-              {/* Linear progress bar */}
-              <div className="h-2 rounded-pill overflow-hidden"
-                   style={{ backgroundColor: "var(--surface-mid)" }}>
-                <div
-                  className="h-full rounded-pill transition-[width] duration-500"
-                  style={{
-                    width: `${currentClassProgress.percent}%`,
-                    backgroundColor: "var(--primary)",
-                    opacity: 0.8
-                  }}
-                />
-              </div>
-              <div className="text-[10px] sm:text-xs leading-tight"
-                   style={{ color: "var(--foreground-secondary)" }}>
-                已过 {currentClassProgress.elapsedMinutes} 分钟 · 剩余{" "}
-                {currentClassProgress.remainingMinutes} 分钟（{currentClassProgress.percent}%）
-              </div>
-            </div>
-          ) : (
-            <h1 className="text-[15px] font-semibold leading-tight truncate"
-                style={{ color: "var(--foreground-primary)" }}>
-              WL课表（2026-1）
-            </h1>
-          )}
-        </div>
-
-        {/* Week input + status chip */}
-        <div className="flex-shrink-0 flex flex-col items-end gap-1">
-          <input
-            type="number"
-            min={MIN_WEEK}
-            max={MAX_WEEK}
-            value={currentWeek}
-            onChange={handleWeekInputChange}
-            className="w-16 px-2 py-1 rounded-xl border border-outline-variant
-                       text-base font-bold text-center
-                       focus:ring-2 focus:outline-none
-                       transition-[border-color,box-shadow] duration-200"
-            style={{
-              backgroundColor: "var(--surface-elevated)",
-              color: "var(--foreground-primary)",
-              borderColor: "var(--outline-variant)",
-              boxShadow: "none"
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = "var(--primary)";
-              e.target.style.boxShadow = "0 0 0 2px var(--primary)";
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = "var(--outline-variant)";
-              e.target.style.boxShadow = "none";
-            }}
-          />
-          {statusText && (
-            <span
-              className="inline-flex items-center px-2 py-0.5 rounded-pill text-[10px] font-medium leading-tight"
-              style={statusStyle}
-            >
-              {statusText}
-            </span>
-          )}
-        </div>
+    <header className="mb-3 flex items-start justify-between px-1 pt-1">
+      <div className="min-w-0">
+        <h1 className="truncate text-[15px] font-semibold leading-tight text-on-surface">
+          WL课表（2026暑期）
+        </h1>
+        <p className="mt-1 text-[10px] font-medium leading-tight text-on-surface-variant">
+          {statusText}
+        </p>
       </div>
-    </div>
+      {showReturnToday ? (
+        <button
+          type="button"
+          aria-label="返回今天"
+          onClick={onReturnToday}
+          className="flex h-9 w-[78px] shrink-0 items-center justify-center gap-1.5 rounded-full border px-3 text-sm font-bold outline-none transition-[background-color,box-shadow,transform] active:scale-[0.98]"
+          style={{
+            backgroundColor: "var(--primary)",
+            borderColor: "var(--primary)",
+            color: "var(--on-primary)",
+            boxShadow: "0 6px 18px rgba(15, 23, 42, 0.12)"
+          }}
+        >
+          <CalendarDays aria-hidden="true" size={14} />
+          <span>今天</span>
+        </button>
+      ) : (
+        <div ref={groupRootRef} className="relative shrink-0">
+        <button
+          ref={triggerRef}
+          type="button"
+          data-slot="group-trigger"
+          aria-label="选择分组"
+          aria-haspopup="listbox"
+          aria-expanded={isGroupOpen}
+          aria-controls="header-group-listbox"
+          onClick={() => setIsGroupOpen((open) => !open)}
+          className="flex h-9 w-[78px] items-center justify-center gap-1 rounded-full border px-3 text-sm font-bold outline-none transition-[background-color,color,box-shadow,border-color] active:scale-[0.98]"
+          style={{
+            backgroundColor: "var(--primary)",
+            borderColor: "var(--primary)",
+            color: "var(--on-primary)",
+            boxShadow: isGroupOpen ? "0 8px 22px rgba(15, 23, 42, 0.14)" : "none"
+          }}
+        >
+          <span>{userGroup}</span>
+          <ChevronDown
+            aria-hidden="true"
+            size={14}
+            className={`transition-transform ${isGroupOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        <div
+          id="header-group-listbox"
+          role="listbox"
+          aria-label="分组列表"
+          hidden={!isGroupOpen}
+          className="absolute right-0 z-40 mt-2 w-[232px] rounded-2xl border p-2 shadow-[0_16px_40px_rgba(15,23,42,0.14)]"
+          style={{
+            backgroundColor: "var(--surface-primary)",
+            borderColor: "var(--outline-variant)"
+          }}
+        >
+          <div className="grid grid-cols-4 gap-1.5">
+            {GROUP_OPTIONS.map((group) => {
+              const selected = group === userGroup;
+              return (
+                <button
+                  key={group}
+                  type="button"
+                  role="option"
+                  aria-selected={selected}
+                  onClick={() => selectGroup(group)}
+                  className="relative flex h-10 items-center justify-center rounded-xl border text-xs font-bold transition-colors"
+                  style={{
+                    backgroundColor: selected
+                      ? "var(--primary-container)"
+                      : "var(--surface-primary)",
+                    borderColor: selected ? "var(--primary)" : "var(--outline-variant)",
+                    color: selected ? "var(--primary)" : "var(--on-surface)"
+                  }}
+                >
+                  {selected && (
+                    <Check aria-hidden="true" size={12} className="absolute left-1" />
+                  )}
+                  {group}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        </div>
+      )}
+    </header>
   );
 };
 
