@@ -5,7 +5,10 @@
 @tailwind utilities;
 
 :root {
-  --safe-bottom: env(safe-area-inset-bottom);
+  /* Capacitor SystemBars 注入 --safe-area-inset-*（WebView<140 时为 0，由原生 padding 避让；
+     WebView>=140 时为实际 inset）。env() 在新版 Chromium WebView 中同样可用，二者取大兜底。 */
+  --safe-top: max(env(safe-area-inset-top), var(--safe-area-inset-top, 0px));
+  --safe-bottom: max(env(safe-area-inset-bottom), var(--safe-area-inset-bottom, 0px));
 }
 
 html,

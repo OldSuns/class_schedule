@@ -7,16 +7,16 @@ import { DEFAULT_SEMESTER_START_DATE, STORAGE_KEYS } from "../../config/constant
 import { refreshWidget } from "../../services/platform/widgetBridge";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-const LEGACY_DEFAULT_SEMESTER_START_DATE = "2026-03-02";
+const LEGACY_DEFAULT_SEMESTER_START_DATES = ["2026-03-02", "2026-09-07"];
 
-export const getSemesterStartDateMigration = (savedDate) => ({
-  date:
-    savedDate === LEGACY_DEFAULT_SEMESTER_START_DATE
-      ? DEFAULT_SEMESTER_START_DATE
-      : savedDate || DEFAULT_SEMESTER_START_DATE,
-  shouldPersist:
-    !savedDate || savedDate === LEGACY_DEFAULT_SEMESTER_START_DATE
-});
+export const getSemesterStartDateMigration = (savedDate) => {
+  const isLegacyDefault = LEGACY_DEFAULT_SEMESTER_START_DATES.includes(savedDate);
+  return {
+    date:
+      isLegacyDefault || !savedDate ? DEFAULT_SEMESTER_START_DATE : savedDate,
+    shouldPersist: !savedDate || isLegacyDefault
+  };
+};
 
 const getDateInfos = (date) => ({
   todayInfo: date ? calculateTodayInfo(date) : null,

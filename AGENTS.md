@@ -43,7 +43,7 @@
 ## Android-specific architecture
 
 - The Android shell lives under `android/`.
-- `android/app/src/main/java/com/oldsun/classschedule/MainActivity.java` registers the custom widget bridge plugin and injects the status-bar inset into CSS.
+- `android/app/src/main/java/com/oldsun/classschedule/MainActivity.java` registers the custom widget bridge plugin. System-bar insets are handled by Capacitor core's built-in `SystemBars` plugin: WebView < 140 gets native padding automatically, WebView ≥ 140 requires the web layer to consume the safe area — `src/index.css` defines `--safe-top` / `--safe-bottom` from `env(safe-area-inset-*)` and the SystemBars-injected `--safe-area-inset-*`, and `src/app/App.jsx` applies `--safe-top` on the root. Do not add a second native inset listener in MainActivity (it doubles the offset).
 - `android/app/src/main/java/com/oldsun/classschedule/WidgetBridgePlugin.java` exposes widget refresh to the web layer; the JS side calls it via `src/services/platform/widgetBridge.js`.
 - Notification scheduling logic lives in `src/services/notifications/notificationScheduler.js` and `src/hooks/notifications/useNotifications.js`.
 - `android/app/src/main/java/com/oldsun/classschedule/NotificationRestoreReceiver.java` restores scheduled local notifications from the stored snapshot after reboot / process loss on Android 12+.
@@ -55,4 +55,3 @@
 - The checked-in Android tests are still the default Capacitor scaffold examples and use the old `com.getcapacitor.myapp` package name.
 - `README.md` and `DEVELOPERS.md` still mention some old flat `src/*.js` paths; the current code is organized under `src/app`, `src/components`, `src/hooks`, `src/services`, `src/utils`, `src/data`, and `src/config`.
 - If remote `schedule.json` changes do not appear immediately through jsDelivr, `DEVELOPERS.md` contains the purge workflow used by this project.
-
