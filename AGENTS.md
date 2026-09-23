@@ -40,6 +40,10 @@
 - `src/config/constants.js` contains `DEFAULT_SCHEDULE_VERSION`, the remote schedule URLs, storage keys, and the default semester start date.
 - Update checking for app releases is handled separately by `src/services/app/updateChecker.js`. The constants are still named `GITHUB_*`, but they actually point to Gitee release APIs.
 
+## 课表数据约定
+
+- 地点命名：`<x>期11号楼1楼(的)教室`、`11号楼1楼大教室` 这类表述一律写成 `1楼教室`；其它地点一律按原文照录（如 `1期7号楼的9楼709病区示教室`、`网课`）。
+
 ## Android-specific architecture
 
 - The Android shell lives under `android/`.

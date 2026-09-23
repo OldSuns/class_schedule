@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-26",
+  "updatedAt": "2026-09-23",
   "schedule": [
     {
       "day": "Monday",
@@ -53,11 +53,11 @@
               ],
               "group": null,
               "note": {
-                "default": "",
+                "default": "刘鹤｜呼吸功能的监测和临床应用，血流动力学监测",
                 "weeks": {}
               },
               "location": {
-                "default": "未排地点",
+                "default": "1楼教室",
                 "weeks": {}
               }
             }
@@ -111,11 +111,11 @@
               ],
               "group": null,
               "note": {
-                "default": "",
+                "default": "刘鹤｜呼吸功能的监测和临床应用，血流动力学监测",
                 "weeks": {}
               },
               "location": {
-                "default": "未排地点",
+                "default": "1楼教室",
                 "weeks": {}
               }
             }
@@ -129,7 +129,6 @@
               "weeks": [
                 1,
                 2,
-                3,
                 5,
                 6,
                 7,
@@ -149,6 +148,21 @@
                 "default": "未排地点",
                 "weeks": {}
               }
+            },
+            {
+              "name": "眼科学",
+              "weeks": [
+                3
+              ],
+              "group": null,
+              "note": {
+                "default": "何峰英｜结膜疾病",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
             }
           ]
         },
@@ -160,7 +174,6 @@
               "weeks": [
                 1,
                 2,
-                3,
                 5,
                 6,
                 7,
@@ -178,6 +191,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "眼科学",
+              "weeks": [
+                3
+              ],
+              "group": null,
+              "note": {
+                "default": "何峰英｜结膜疾病",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             }
@@ -193,7 +221,6 @@
             {
               "name": "内科学见习",
               "weeks": [
-                3,
                 6
               ],
               "group": "6班A组",
@@ -203,6 +230,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学见习",
+              "weeks": [
+                3
+              ],
+              "group": "6班A组",
+              "note": {
+                "default": "吴国栋｜消化科见习1",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1期7号楼的9楼709病区示教室",
                 "weeks": {}
               }
             },
@@ -299,7 +341,6 @@
             {
               "name": "内科学见习",
               "weeks": [
-                3,
                 6
               ],
               "group": "6班A组",
@@ -309,6 +350,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学见习",
+              "weeks": [
+                3
+              ],
+              "group": "6班A组",
+              "note": {
+                "default": "吴国栋｜消化科见习1",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1期7号楼的9楼709病区示教室",
                 "weeks": {}
               }
             },
@@ -405,7 +461,6 @@
             {
               "name": "内科学见习",
               "weeks": [
-                3,
                 6
               ],
               "group": "6班A组",
@@ -415,6 +470,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学见习",
+              "weeks": [
+                3
+              ],
+              "group": "6班A组",
+              "note": {
+                "default": "吴国栋｜消化科见习1",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1期7号楼的9楼709病区示教室",
                 "weeks": {}
               }
             },
@@ -556,7 +626,6 @@
             {
               "name": "内科学A(Ⅱ)",
               "weeks": [
-                3,
                 6,
                 8,
                 16
@@ -568,6 +637,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学A(Ⅱ)",
+              "weeks": [
+                3
+              ],
+              "group": null,
+              "note": {
+                "default": "赵辉｜胰腺炎",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },
@@ -597,7 +681,6 @@
             {
               "name": "内科学A(Ⅱ)",
               "weeks": [
-                3,
                 6,
                 8,
                 16
@@ -609,6 +692,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学A(Ⅱ)",
+              "weeks": [
+                3
+              ],
+              "group": null,
+              "note": {
+                "default": "赵辉｜胰腺炎",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },
@@ -638,7 +736,6 @@
             {
               "name": "外科学A(Ⅱ)",
               "weeks": [
-                3,
                 5,
                 7,
                 9,
@@ -653,6 +750,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "外科学A(Ⅱ)",
+              "weeks": [
+                3
+              ],
+              "group": null,
+              "note": {
+                "default": "孙旭｜门静脉高压症，胆道疾病(二)",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },
@@ -679,7 +791,6 @@
             {
               "name": "外科学A(Ⅱ)",
               "weeks": [
-                3,
                 5,
                 7,
                 9,
@@ -694,6 +805,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "外科学A(Ⅱ)",
+              "weeks": [
+                3
+              ],
+              "group": null,
+              "note": {
+                "default": "孙旭｜门静脉高压症，胆道疾病(二)",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },
@@ -756,7 +882,6 @@
             {
               "name": "内科学见习",
               "weeks": [
-                3,
                 5
               ],
               "group": "6班B组",
@@ -766,6 +891,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学见习",
+              "weeks": [
+                3
+              ],
+              "group": "6班B组",
+              "note": {
+                "default": "彭礼清｜消化科见习1",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1期7号楼的9楼709病区示教室",
                 "weeks": {}
               }
             },
@@ -877,7 +1017,6 @@
             {
               "name": "内科学见习",
               "weeks": [
-                3,
                 5
               ],
               "group": "6班B组",
@@ -887,6 +1026,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学见习",
+              "weeks": [
+                3
+              ],
+              "group": "6班B组",
+              "note": {
+                "default": "彭礼清｜消化科见习1",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1期7号楼的9楼709病区示教室",
                 "weeks": {}
               }
             },
@@ -998,7 +1152,6 @@
             {
               "name": "内科学见习",
               "weeks": [
-                3,
                 5
               ],
               "group": "6班B组",
@@ -1008,6 +1161,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学见习",
+              "weeks": [
+                3
+              ],
+              "group": "6班B组",
+              "note": {
+                "default": "彭礼清｜消化科见习1",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1期7号楼的9楼709病区示教室",
                 "weeks": {}
               }
             },
@@ -1211,7 +1379,6 @@
             {
               "name": "精神病学",
               "weeks": [
-                3,
                 9
               ],
               "group": null,
@@ -1221,6 +1388,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "精神病学",
+              "weeks": [
+                3
+              ],
+              "group": null,
+              "note": {
+                "default": "赵徐东｜神经发育障碍、应激相关障碍",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             }
@@ -1250,7 +1432,6 @@
             {
               "name": "精神病学",
               "weeks": [
-                3,
                 9
               ],
               "group": null,
@@ -1260,6 +1441,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "精神病学",
+              "weeks": [
+                3
+              ],
+              "group": null,
+              "note": {
+                "default": "赵徐东｜神经发育障碍、应激相关障碍",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             }
@@ -1289,7 +1485,6 @@
             {
               "name": "精神病学",
               "weeks": [
-                3,
                 9
               ],
               "group": null,
@@ -1299,6 +1494,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "精神病学",
+              "weeks": [
+                3
+              ],
+              "group": null,
+              "note": {
+                "default": "赵徐东｜神经发育障碍、应激相关障碍",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },

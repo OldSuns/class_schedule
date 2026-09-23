@@ -30,8 +30,8 @@ export const scheduleData = [
             name: "麻醉学",
             weeks: [3],
             group: null,
-            note: { default: "", weeks: {} },
-            location: { default: "未排地点", weeks: {} }
+            note: { default: "刘鹤｜呼吸功能的监测和临床应用，血流动力学监测", weeks: {} },
+            location: { default: "1楼教室", weeks: {} }
           }
         ]
       },
@@ -56,8 +56,8 @@ export const scheduleData = [
             name: "麻醉学",
             weeks: [3],
             group: null,
-            note: { default: "", weeks: {} },
-            location: { default: "未排地点", weeks: {} }
+            note: { default: "刘鹤｜呼吸功能的监测和临床应用，血流动力学监测", weeks: {} },
+            location: { default: "1楼教室", weeks: {} }
           }
         ]
       },
@@ -66,10 +66,17 @@ export const scheduleData = [
         courses: [
           {
             name: "眼科学",
-            weeks: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+            weeks: [1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13],
             group: null,
             note: { default: "", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "眼科学",
+            weeks: [3],
+            group: null,
+            note: { default: "何峰英｜结膜疾病", weeks: {} },
+            location: { default: "1楼教室", weeks: {} }
           }
         ]
       },
@@ -78,10 +85,17 @@ export const scheduleData = [
         courses: [
           {
             name: "眼科学",
-            weeks: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+            weeks: [1, 2, 5, 6, 7, 8, 9, 10, 11, 12, 13],
             group: null,
             note: { default: "", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "眼科学",
+            weeks: [3],
+            group: null,
+            note: { default: "何峰英｜结膜疾病", weeks: {} },
+            location: { default: "1楼教室", weeks: {} }
           }
         ]
       },
@@ -94,10 +108,17 @@ export const scheduleData = [
         courses: [
           {
             name: "内科学见习",
-            weeks: [3, 6],
+            weeks: [6],
             group: "6班A组",
             note: { default: "", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "内科学见习",
+            weeks: [3],
+            group: "6班A组",
+            note: { default: "吴国栋｜消化科见习1", weeks: {} },
+            location: { default: "1期7号楼的9楼709病区示教室", weeks: {} }
           },
           {
             name: "内科学见习",
@@ -141,10 +162,17 @@ export const scheduleData = [
         courses: [
           {
             name: "内科学见习",
-            weeks: [3, 6],
+            weeks: [6],
             group: "6班A组",
             note: { default: "", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "内科学见习",
+            weeks: [3],
+            group: "6班A组",
+            note: { default: "吴国栋｜消化科见习1", weeks: {} },
+            location: { default: "1期7号楼的9楼709病区示教室", weeks: {} }
           },
           {
             name: "内科学见习",
@@ -188,10 +216,17 @@ export const scheduleData = [
         courses: [
           {
             name: "内科学见习",
-            weeks: [3, 6],
+            weeks: [6],
             group: "6班A组",
             note: { default: "", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "内科学见习",
+            weeks: [3],
+            group: "6班A组",
+            note: { default: "吴国栋｜消化科见习1", weeks: {} },
+            location: { default: "1期7号楼的9楼709病区示教室", weeks: {} }
           },
           {
             name: "内科学见习",
@@ -268,10 +303,17 @@ export const scheduleData = [
         courses: [
           {
             name: "内科学A(Ⅱ)",
-            weeks: [3, 6, 8, 16],
+            weeks: [6, 8, 16],
             group: null,
             note: { default: "", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "内科学A(Ⅱ)",
+            weeks: [3],
+            group: null,
+            note: { default: "赵辉｜胰腺炎", weeks: {} },
+            location: { default: "1楼教室", weeks: {} }
           },
           {
             name: "麻醉学",
@@ -287,10 +329,17 @@ export const scheduleData = [
         courses: [
           {
             name: "内科学A(Ⅱ)",
-            weeks: [3, 6, 8, 16],
+            weeks: [6, 8, 16],
             group: null,
             note: { default: "", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "内科学A(Ⅱ)",
+            weeks: [3],
+            group: null,
+            note: { default: "赵辉｜胰腺炎", weeks: {} },
+            location: { default: "1楼教室", weeks: {} }
           },
           {
             name: "麻醉学",
@@ -306,10 +355,17 @@ export const scheduleData = [
         courses: [
           {
             name: "外科学A(Ⅱ)",
-            weeks: [3, 5, 7, 9, 13, 14, 15],
+            weeks: [5, 7, 9, 13, 14, 15],
             group: null,
             note: { default: "", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "外科学A(Ⅱ)",
+            weeks: [3],
+            group: null,
+            note: { default: "孙旭｜门静脉高压症，胆道疾病(二)", weeks: {} },
+            location: { default: "1楼教室", weeks: {} }
           },
           {
             name: "精神病学",
@@ -325,10 +381,17 @@ export const scheduleData = [
         courses: [
           {
             name: "外科学A(Ⅱ)",
-            weeks: [3, 5, 7, 9, 13, 14, 15],
+            weeks: [5, 7, 9, 13, 14, 15],
             group: null,
             note: { default: "", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "外科学A(Ⅱ)",
+            weeks: [3],
+            group: null,
+            note: { default: "孙旭｜门静脉高压症，胆道疾病(二)", weeks: {} },
+            location: { default: "1楼教室", weeks: {} }
           },
           {
             name: "精神病学",
@@ -363,10 +426,17 @@ export const scheduleData = [
           },
           {
             name: "内科学见习",
-            weeks: [3, 5],
+            weeks: [5],
             group: "6班B组",
             note: { default: "", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "内科学见习",
+            weeks: [3],
+            group: "6班B组",
+            note: { default: "彭礼清｜消化科见习1", weeks: {} },
+            location: { default: "1期7号楼的9楼709病区示教室", weeks: {} }
           },
           {
             name: "内科学见习",
@@ -417,10 +487,17 @@ export const scheduleData = [
           },
           {
             name: "内科学见习",
-            weeks: [3, 5],
+            weeks: [5],
             group: "6班B组",
             note: { default: "", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "内科学见习",
+            weeks: [3],
+            group: "6班B组",
+            note: { default: "彭礼清｜消化科见习1", weeks: {} },
+            location: { default: "1期7号楼的9楼709病区示教室", weeks: {} }
           },
           {
             name: "内科学见习",
@@ -471,10 +548,17 @@ export const scheduleData = [
           },
           {
             name: "内科学见习",
-            weeks: [3, 5],
+            weeks: [5],
             group: "6班B组",
             note: { default: "", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "内科学见习",
+            weeks: [3],
+            group: "6班B组",
+            note: { default: "彭礼清｜消化科见习1", weeks: {} },
+            location: { default: "1期7号楼的9楼709病区示教室", weeks: {} }
           },
           {
             name: "内科学见习",
@@ -579,10 +663,17 @@ export const scheduleData = [
           },
           {
             name: "精神病学",
-            weeks: [3, 9],
+            weeks: [9],
             group: null,
             note: { default: "赵徐东、陈浙丽", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "精神病学",
+            weeks: [3],
+            group: null,
+            note: { default: "赵徐东｜神经发育障碍、应激相关障碍", weeks: {} },
+            location: { default: "1楼教室", weeks: {} }
           }
         ]
       },
@@ -598,10 +689,17 @@ export const scheduleData = [
           },
           {
             name: "精神病学",
-            weeks: [3, 9],
+            weeks: [9],
             group: null,
             note: { default: "赵徐东、陈浙丽", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "精神病学",
+            weeks: [3],
+            group: null,
+            note: { default: "赵徐东｜神经发育障碍、应激相关障碍", weeks: {} },
+            location: { default: "1楼教室", weeks: {} }
           }
         ]
       },
@@ -617,10 +715,17 @@ export const scheduleData = [
           },
           {
             name: "精神病学",
-            weeks: [3, 9],
+            weeks: [9],
             group: null,
             note: { default: "赵徐东、陈浙丽", weeks: {} },
             location: { default: "未排地点", weeks: {} }
+          },
+          {
+            name: "精神病学",
+            weeks: [3],
+            group: null,
+            note: { default: "赵徐东｜神经发育障碍、应激相关障碍", weeks: {} },
+            location: { default: "1楼教室", weeks: {} }
           },
           {
             name: "外科学A(Ⅱ)",

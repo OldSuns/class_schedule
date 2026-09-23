@@ -28,7 +28,7 @@ export const SECTION_LAST_PERIODS = [5, 10];
 export const DEFAULT_SEMESTER_START_DATE = "2026-09-14";
 
 // 内置课表版本（更新内置课表时递增）
-export const DEFAULT_SCHEDULE_VERSION = 2;
+export const DEFAULT_SCHEDULE_VERSION = 3;
 
 // 课程显示模式
 export const DISPLAY_MODES = {
