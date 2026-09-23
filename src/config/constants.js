@@ -21,6 +21,9 @@ export const MAX_WEEK = 17;
 export const MIN_PERIOD = 1;
 export const MAX_PERIOD = 13;
 
+// 时段末节次（第5节后午休、第10节后晚休），跨时段课程在此断开显示
+export const SECTION_LAST_PERIODS = [5, 10];
+
 // 默认开学日期
 export const DEFAULT_SEMESTER_START_DATE = "2026-09-07";
 
@@ -98,5 +101,26 @@ export const STORAGE_KEYS = {
   UPDATE_LAST_ERROR_AT: "updateLastErrorAt",
   UPDATE_LAST_TOAST_DATE: "updateLastToastDate",
   THEME: "theme",
-  USER_EXAMS: "userExams"
+  USER_EXAMS: "userExams",
+  SUMMER_SCHEDULE_MIGRATION_VERSION: "summerScheduleMigrationVersion"
+};
+
+export const SUMMER_SCHEDULE_MIGRATION_VERSION = "1";
+
+export const SUMMER_STORAGE_KEYS = {
+  NOTIFICATIONS_LAST_SCHEDULED_AT: "summerNotificationsLastScheduledAt",
+  NOTIFICATIONS_LAST_RECONCILED_AT: "summerNotificationsLastReconciledAt",
+  NOTIFICATION_PLAN_SNAPSHOT: "summerNotificationPlanSnapshot",
+  WIDGET_SCHEDULE_SNAPSHOT: "summerWidgetScheduleSnapshot",
+  CUSTOM_SCHEDULE: "summerScheduleCustom",
+  SCHEDULE_SOURCE: "summerScheduleSource",
+  REMOTE_SCHEDULE_SNAPSHOT: "summerScheduleRemoteSnapshot",
+  REMOTE_SCHEDULE_META: "summerScheduleRemoteMeta",
+  REMOTE_SKIPPED_UPDATE: "summerScheduleRemoteSkippedUpdate",
+  DEFAULT_SCHEDULE_VERSION: "summerScheduleDefaultVersion",
+  DEFAULT_SCHEDULE_SIGNATURE: "summerScheduleDefaultSignature",
+  REMOTE_LAST_CHECK_AT: "summerScheduleRemoteLastCheckAt",
+  REMOTE_LAST_FOREGROUND_CHECK_AT: "summerScheduleRemoteLastForegroundCheckAt",
+  REMOTE_LAST_ERROR_AT: "summerScheduleRemoteLastErrorAt",
+  THEME: "summerTheme"
 };

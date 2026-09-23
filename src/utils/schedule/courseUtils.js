@@ -1,4 +1,4 @@
-import { DAYS, DISPLAY_MODES } from "../../config/constants";
+import { DAYS, DISPLAY_MODES, SECTION_LAST_PERIODS } from "../../config/constants";
 import {
   normalizeElectives,
   shouldIncludeCourseForAudience
@@ -344,6 +344,8 @@ export const mergeCellsByDay = (
       let hasCurrentWeekCourse = cell.hasCurrentWeekCourse;
 
       while (end + 1 <= 13) {
+        // 午休/晚休处断开合并，避免课程卡片跨过休息分隔行
+        if (SECTION_LAST_PERIODS.includes(end)) break;
         const next = raw[end + 1];
         if (!next || next.empty) break;
         if (!next.hasCurrentWeekCourse) break;

@@ -26,27 +26,35 @@ const SettingsPage = ({
   onDisplayModeChange,
   theme,
   onThemeChange,
-  notificationsEnabled = false,
-  onToggleNotifications,
-  userGroup = GROUP_TYPES.G6A,
-  onGroupChange,
-  selectedElectives = [],
-  onSelectedElectivesChange,
-  leadMinutes = 15,
-  leadMinuteOptions = [10, 15, 20, 30],
-  onLeadMinutesChange,
-  onTestNotification,
-  notificationStatus = "",
-  onSoftUpdateSchedule,
-  onConfirmRemoteUpdate,
-  onCancelRemoteUpdate,
-  pendingRemoteSnapshot = null,
-  isSoftUpdating = false,
-  remoteUpdatedAt = "",
+  notifications = {},
+  remoteUpdate = {},
   scheduleSource = "builtin",
   hasManualScheduleChanges = false,
   onResetSchedule
 }) => {
+  const {
+    enabled: notificationsEnabled = false,
+    userGroup = GROUP_TYPES.G6A,
+    selectedElectives = [],
+    leadMinutes = 15,
+    leadMinuteOptions = [10, 15, 20, 30],
+    statusMessage: notificationStatus = "",
+    onToggle: onToggleNotifications,
+    onGroupChange,
+    onSelectedElectivesChange,
+    onLeadMinutesChange,
+    onTest: onTestNotification
+  } = notifications;
+
+  const {
+    onSoftUpdate: onSoftUpdateSchedule,
+    onConfirm: onConfirmRemoteUpdate,
+    onCancel: onCancelRemoteUpdate,
+    pendingSnapshot: pendingRemoteSnapshot = null,
+    isUpdating: isSoftUpdating = false,
+    updatedAt: remoteUpdatedAt = ""
+  } = remoteUpdate;
+
   const [showWeekSelector, setShowWeekSelector] = useState(false);
   const [updateStatus, setUpdateStatus] = useState("");
   const [updateResultType, setUpdateResultType] = useState("");

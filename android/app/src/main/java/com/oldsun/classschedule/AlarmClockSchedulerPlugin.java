@@ -144,7 +144,7 @@ public class AlarmClockSchedulerPlugin extends Plugin {
         }
     }
 
-    private void cancelAlarm(Context context, AlarmManager alarmManager, int id) {
+    static void cancelAlarm(Context context, AlarmManager alarmManager, int id) {
         Intent intent = new Intent(context, AlarmClockReceiver.class);
         intent.putExtra(AlarmClockReceiver.EXTRA_NOTIFICATION_ID, id);
 

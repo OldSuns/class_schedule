@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import * as storage from "../../../storage";
 import { DEFAULT_SCHEDULE_VERSION, STORAGE_KEYS } from "../../config/constants";
 import { scheduleData as defaultScheduleData } from "../../data/scheduleData";
+import { updatedAt as builtInScheduleUpdatedAt } from "../../../schedule.json";
 import { normalizeSchedule } from "../../utils/schedule/scheduleUtils";
 import {
   buildScheduleSignature,
@@ -536,7 +537,12 @@ export const useScheduleData = () => {
       const remoteSignature =
         nextSnapshot.signature || buildScheduleSignature(nextSnapshot.schedule);
 
-      if (currentSignature === remoteSignature) {
+      // 远端日期早于内置课表日期（CDN 缓存滞后）或内容与当前一致：无需更新
+      const remoteOlderThanBuiltIn =
+        nextSnapshot.updatedAt &&
+        builtInScheduleUpdatedAt &&
+        nextSnapshot.updatedAt < builtInScheduleUpdatedAt;
+      if (remoteOlderThanBuiltIn || currentSignature === remoteSignature) {
         clearPendingRemoteUpdate();
         return {
           status: "latest",
@@ -606,7 +612,12 @@ export const useScheduleData = () => {
     cancelRemoteUpdate,
     pendingRemoteSnapshot,
     isCheckingRemote,
-    remoteUpdatedAt: remoteSnapshot?.updatedAt || remoteMeta?.updatedAt || "",
+    remoteUpdatedAt:
+      scheduleSource === SCHEDULE_SOURCES.REMOTE
+        ? remoteSnapshot?.updatedAt || remoteMeta?.updatedAt || ""
+        : scheduleSource === SCHEDULE_SOURCES.MANUAL
+          ? ""
+          : builtInScheduleUpdatedAt,
     builtInUpdateNotice
   };
 };

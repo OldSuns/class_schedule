@@ -34,7 +34,7 @@ const Header = ({
 
   return (
     <div className="mb-2 sm:mb-3">
-      {/* Mobile top spacing (status bar already handled by safe-top) */}
+      {/* Mobile title spacing; system bars are handled by the native shell. */}
       <div className="sm:hidden mb-1" />
 
       {/* Title row */}
