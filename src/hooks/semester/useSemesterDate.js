@@ -7,6 +7,16 @@ import { DEFAULT_SEMESTER_START_DATE, STORAGE_KEYS } from "../../config/constant
 import { refreshWidget } from "../../services/platform/widgetBridge";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+const LEGACY_DEFAULT_SEMESTER_START_DATE = "2026-03-02";
+
+export const getSemesterStartDateMigration = (savedDate) => ({
+  date:
+    savedDate === LEGACY_DEFAULT_SEMESTER_START_DATE
+      ? DEFAULT_SEMESTER_START_DATE
+      : savedDate || DEFAULT_SEMESTER_START_DATE,
+  shouldPersist:
+    !savedDate || savedDate === LEGACY_DEFAULT_SEMESTER_START_DATE
+});
 
 const getDateInfos = (date) => ({
   todayInfo: date ? calculateTodayInfo(date) : null,
@@ -17,9 +27,9 @@ const getDateInfos = (date) => ({
  * 管理学期开始日期和今天信息的 Hook
  */
 export const useSemesterDate = () => {
-  const initialDate =
-    storage.getItemSync(STORAGE_KEYS.SEMESTER_START_DATE) ||
-    DEFAULT_SEMESTER_START_DATE;
+  const { date: initialDate } = getSemesterStartDateMigration(
+    storage.getItemSync(STORAGE_KEYS.SEMESTER_START_DATE)
+  );
   const [semesterStartDate, setSemesterStartDate] = useState(initialDate);
   const [todayInfo, setTodayInfo] = useState(() => getDateInfos(initialDate).todayInfo);
   const [displayWeekInfo, setDisplayWeekInfo] = useState(
@@ -35,19 +45,17 @@ export const useSemesterDate = () => {
       const savedDate = await storage.getItem(STORAGE_KEYS.SEMESTER_START_DATE);
       if (cancelled || hasUserChangedDateRef.current) return;
 
-      if (savedDate) {
-        setSemesterStartDate(savedDate);
-        const infos = getDateInfos(savedDate);
-        setTodayInfo(infos.todayInfo);
-        setDisplayWeekInfo(infos.displayWeekInfo);
-      } else if (DEFAULT_SEMESTER_START_DATE) {
-        setSemesterStartDate(DEFAULT_SEMESTER_START_DATE);
-        const infos = getDateInfos(DEFAULT_SEMESTER_START_DATE);
-        setTodayInfo(infos.todayInfo);
-        setDisplayWeekInfo(infos.displayWeekInfo);
+      const { date: resolvedDate, shouldPersist } =
+        getSemesterStartDateMigration(savedDate);
+      setSemesterStartDate(resolvedDate);
+      const infos = getDateInfos(resolvedDate);
+      setTodayInfo(infos.todayInfo);
+      setDisplayWeekInfo(infos.displayWeekInfo);
+
+      if (shouldPersist) {
         await storage.setItem(
           STORAGE_KEYS.SEMESTER_START_DATE,
-          DEFAULT_SEMESTER_START_DATE
+          resolvedDate
         );
       }
     };

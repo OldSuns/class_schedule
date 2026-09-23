@@ -1,7 +1,4 @@
-# CLAUDE.md
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
+# Agents.md
 ## Commands
 
 - Install dependencies: `npm install`
@@ -58,3 +55,4 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - The checked-in Android tests are still the default Capacitor scaffold examples and use the old `com.getcapacitor.myapp` package name.
 - `README.md` and `DEVELOPERS.md` still mention some old flat `src/*.js` paths; the current code is organized under `src/app`, `src/components`, `src/hooks`, `src/services`, `src/utils`, `src/data`, and `src/config`.
 - If remote `schedule.json` changes do not appear immediately through jsDelivr, `DEVELOPERS.md` contains the purge workflow used by this project.
+

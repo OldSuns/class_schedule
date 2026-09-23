@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import { Browser } from "@capacitor/browser";
-import { Capacitor } from "@capacitor/core";
 import {
   APP_VERSION,
   DISPLAY_MODES,
   GITHUB_RELEASES_URL
-} from "../../config/constants";
+} from "../../config/constants.js";
 import { GROUP_TYPES } from "../../utils/schedule/groupUtils";
-import { checkForUpdates } from "../../services/app/updateChecker";
+import { checkForUpdates } from "../../services/app/updateChecker.js";
+import { openUpdateTarget } from "../../services/app/updateOpener.js";
 import QuickWeekSection from "./SettingsMenu/QuickWeekSection.jsx";
 import DisplayModeSection from "./SettingsMenu/DisplayModeSection.jsx";
 import ThemeSection from "./SettingsMenu/ThemeSection.jsx";
@@ -160,23 +159,10 @@ const SettingsPage = ({
   };
 
   const handleOpenReleasePage = async () => {
-    const isAndroid =
-      Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android";
-    const target = isAndroid && apkUrl ? apkUrl : updateUrl || GITHUB_RELEASES_URL;
-    if (!target) return;
-
-    try {
-      if (Capacitor.isNativePlatform()) {
-        await Browser.open({ url: target });
-        return;
-      }
-    } catch (error) {
-      console.error("打开下载页失败:", error);
-    }
-
-    if (typeof window !== "undefined") {
-      window.open(target, "_blank", "noopener,noreferrer");
-    }
+    await openUpdateTarget({
+      apkUrl,
+      releaseUrl: updateUrl || GITHUB_RELEASES_URL
+    });
   };
 
   const handleResetSchedule = async () => {
