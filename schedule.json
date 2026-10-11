@@ -1698,6 +1698,133 @@
                 "default": "网课",
                 "weeks": {}
               }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "理论｜蛋白定量检测 / 免疫组化",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                9
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "理论+实操｜蛋白表达案例 / PCR实验",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                11,
+                13
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "实操｜RNA抽提 / PCR实验",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                6
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜腹穿与骨穿实训",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                8
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜导尿术、气管插管术",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                10
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜创伤急救实战演练",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                12
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜心电图判读知识竞赛",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
             }
           ]
         },
@@ -1718,16 +1845,453 @@
                 "default": "网课",
                 "weeks": {}
               }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                5
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "理论｜临床研究设计方法 / 文章撰写",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "理论｜蛋白定量检测 / 免疫组化",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                9
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "理论+实操｜蛋白表达案例 / PCR实验",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                11,
+                13
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "实操｜RNA抽提 / PCR实验",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                6
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜腹穿与骨穿实训",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                8
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜导尿术、气管插管术",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                10
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜创伤急救实战演练",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                12
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜心电图判读知识竞赛",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
             }
           ]
         },
         {
           "period": 8,
-          "courses": []
+          "courses": [
+            {
+              "name": "科创营",
+              "weeks": [
+                5
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "理论｜临床研究设计方法 / 文章撰写",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "理论｜蛋白定量检测 / 免疫组化",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                9
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "理论+实操｜蛋白表达案例 / PCR实验",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                11,
+                13
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "实操｜RNA抽提 / PCR实验",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                6
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜腹穿与骨穿实训",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                8
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜导尿术、气管插管术",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                10
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜创伤急救实战演练",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                12
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜心电图判读知识竞赛",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            }
+          ]
         },
         {
           "period": 9,
-          "courses": []
+          "courses": [
+            {
+              "name": "科创营",
+              "weeks": [
+                5
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "理论｜临床研究设计方法 / 文章撰写",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "理论｜蛋白定量检测 / 免疫组化",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                9
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "理论+实操｜蛋白表达案例 / PCR实验",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "科创营",
+              "weeks": [
+                11,
+                13
+              ],
+              "group": null,
+              "electives": [
+                "innovationCamp"
+              ],
+              "note": {
+                "default": "实操｜RNA抽提 / PCR实验",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                6
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜腹穿与骨穿实训",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                8
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜导尿术、气管插管术",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                10
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜创伤急救实战演练",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "临床技能班",
+              "weeks": [
+                12
+              ],
+              "group": null,
+              "electives": [
+                "clinicalSkills"
+              ],
+              "note": {
+                "default": "实践｜心电图判读知识竞赛",
+                "weeks": {}
+              },
+              "location": {
+                "default": "AHA技能培训中心",
+                "weeks": {}
+              }
+            }
+          ]
         },
         {
           "period": 10,
