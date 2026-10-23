@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-18",
+  "updatedAt": "2026-10-23",
   "schedule": [
     {
       "day": "Monday",
@@ -12,7 +12,6 @@
               "name": "内科学A(Ⅱ)",
               "weeks": [
                 1,
-                7,
                 9,
                 11
               ],
@@ -23,6 +22,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学A(Ⅱ)",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "note": {
+                "default": "赵辉｜消化道出血",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },
@@ -98,7 +112,6 @@
               "name": "内科学A(Ⅱ)",
               "weeks": [
                 1,
-                7,
                 9,
                 11
               ],
@@ -109,6 +122,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学A(Ⅱ)",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "note": {
+                "default": "赵辉｜消化道出血",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },
@@ -185,7 +213,6 @@
               "weeks": [
                 1,
                 2,
-                7,
                 8,
                 9,
                 10,
@@ -200,6 +227,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "眼科学",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "note": {
+                "default": "单将成｜视网膜病",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },
@@ -258,7 +300,6 @@
               "weeks": [
                 1,
                 2,
-                7,
                 8,
                 9,
                 10,
@@ -273,6 +314,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "眼科学",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "note": {
+                "default": "单将成｜视网膜病",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },
@@ -363,7 +419,6 @@
             {
               "name": "内科学见习",
               "weeks": [
-                7,
                 8,
                 11,
                 13,
@@ -381,17 +436,32 @@
               }
             },
             {
+              "name": "内科学见习",
+              "weeks": [
+                7
+              ],
+              "group": "7班C组",
+              "note": {
+                "default": "彭礼清｜消化科见习3",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1期7号楼的9楼709病区示教室",
+                "weeks": {}
+              }
+            },
+            {
               "name": "外科学见习",
               "weeks": [
                 7
               ],
               "group": "6班A组",
               "note": {
-                "default": "",
+                "default": "张健｜肝胆疾病、胰腺疾病见习",
                 "weeks": {}
               },
               "location": {
-                "default": "未排地点",
+                "default": "1期6号楼的8楼608病区示教室",
                 "weeks": {}
               }
             },
@@ -497,7 +567,6 @@
             {
               "name": "内科学见习",
               "weeks": [
-                7,
                 8,
                 11,
                 13,
@@ -515,17 +584,32 @@
               }
             },
             {
+              "name": "内科学见习",
+              "weeks": [
+                7
+              ],
+              "group": "7班C组",
+              "note": {
+                "default": "彭礼清｜消化科见习3",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1期7号楼的9楼709病区示教室",
+                "weeks": {}
+              }
+            },
+            {
               "name": "外科学见习",
               "weeks": [
                 7
               ],
               "group": "6班A组",
               "note": {
-                "default": "",
+                "default": "张健｜肝胆疾病、胰腺疾病见习",
                 "weeks": {}
               },
               "location": {
-                "default": "未排地点",
+                "default": "1期6号楼的8楼608病区示教室",
                 "weeks": {}
               }
             },
@@ -631,7 +715,6 @@
             {
               "name": "内科学见习",
               "weeks": [
-                7,
                 8,
                 11,
                 13,
@@ -649,17 +732,32 @@
               }
             },
             {
+              "name": "内科学见习",
+              "weeks": [
+                7
+              ],
+              "group": "7班C组",
+              "note": {
+                "default": "彭礼清｜消化科见习3",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1期7号楼的9楼709病区示教室",
+                "weeks": {}
+              }
+            },
+            {
               "name": "外科学见习",
               "weeks": [
                 7
               ],
               "group": "6班A组",
               "note": {
-                "default": "",
+                "default": "张健｜肝胆疾病、胰腺疾病见习",
                 "weeks": {}
               },
               "location": {
-                "default": "未排地点",
+                "default": "1期6号楼的8楼608病区示教室",
                 "weeks": {}
               }
             },
@@ -827,7 +925,6 @@
               "name": "麻醉学",
               "weeks": [
                 2,
-                7,
                 10,
                 12
               ],
@@ -838,6 +935,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "麻醉学",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "note": {
+                "default": "刘洋｜局部麻醉",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             }
@@ -896,7 +1008,6 @@
               "name": "麻醉学",
               "weeks": [
                 2,
-                7,
                 10,
                 12
               ],
@@ -909,6 +1020,21 @@
                 "default": "未排地点",
                 "weeks": {}
               }
+            },
+            {
+              "name": "麻醉学",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "note": {
+                "default": "刘洋｜局部麻醉",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
+                "weeks": {}
+              }
             }
           ]
         },
@@ -918,7 +1044,6 @@
             {
               "name": "外科学A(Ⅱ)",
               "weeks": [
-                7,
                 9,
                 13,
                 14,
@@ -931,6 +1056,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "外科学A(Ⅱ)",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "note": {
+                "default": "蔡立成｜泌尿、男生殖系统感染",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },
@@ -987,7 +1127,6 @@
             {
               "name": "外科学A(Ⅱ)",
               "weeks": [
-                7,
                 9,
                 13,
                 14,
@@ -1000,6 +1139,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "外科学A(Ⅱ)",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "note": {
+                "default": "蔡立成｜泌尿、男生殖系统感染",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },
@@ -2478,7 +2632,6 @@
             {
               "name": "内科学见习",
               "weeks": [
-                7,
                 9,
                 10,
                 12,
@@ -2491,6 +2644,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学见习",
+              "weeks": [
+                7
+              ],
+              "group": "6班A组",
+              "note": {
+                "default": "柳依莲｜内分泌科见习1",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1期6号楼的7楼607病区示教室",
                 "weeks": {}
               }
             },
@@ -2598,7 +2766,6 @@
             {
               "name": "内科学见习",
               "weeks": [
-                7,
                 9,
                 10,
                 12,
@@ -2611,6 +2778,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学见习",
+              "weeks": [
+                7
+              ],
+              "group": "6班A组",
+              "note": {
+                "default": "柳依莲｜内分泌科见习1",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1期6号楼的7楼607病区示教室",
                 "weeks": {}
               }
             },
@@ -2733,7 +2915,6 @@
             {
               "name": "内科学见习",
               "weeks": [
-                7,
                 9,
                 10,
                 12,
@@ -2746,6 +2927,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "内科学见习",
+              "weeks": [
+                7
+              ],
+              "group": "6班A组",
+              "note": {
+                "default": "柳依莲｜内分泌科见习1",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1期6号楼的7楼607病区示教室",
                 "weeks": {}
               }
             },
@@ -2974,11 +3170,11 @@
               ],
               "group": "6班B组",
               "note": {
-                "default": "",
+                "default": "潘治平｜肝胆疾病、胰腺疾病见习",
                 "weeks": {}
               },
               "location": {
-                "default": "未排地点",
+                "default": "1期6号楼的8楼608病区示教室",
                 "weeks": {}
               }
             },
@@ -3131,11 +3327,11 @@
               ],
               "group": "6班B组",
               "note": {
-                "default": "",
+                "default": "潘治平｜肝胆疾病、胰腺疾病见习",
                 "weeks": {}
               },
               "location": {
-                "default": "未排地点",
+                "default": "1期6号楼的8楼608病区示教室",
                 "weeks": {}
               }
             },
@@ -3257,11 +3453,11 @@
               ],
               "group": "6班B组",
               "note": {
-                "default": "",
+                "default": "潘治平｜肝胆疾病、胰腺疾病见习",
                 "weeks": {}
               },
               "location": {
-                "default": "未排地点",
+                "default": "1期6号楼的8楼608病区示教室",
                 "weeks": {}
               }
             },
@@ -3590,7 +3786,6 @@
             {
               "name": "精神病学",
               "weeks": [
-                7,
                 10
               ],
               "group": null,
@@ -3600,6 +3795,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "精神病学",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "note": {
+                "default": "苏伟｜强迫症及相关障碍、双相及相关障碍",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             }
@@ -3690,7 +3900,6 @@
             {
               "name": "精神病学",
               "weeks": [
-                7,
                 10
               ],
               "group": null,
@@ -3700,6 +3909,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "精神病学",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "note": {
+                "default": "苏伟｜强迫症及相关障碍、双相及相关障碍",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },
@@ -3741,7 +3965,6 @@
             {
               "name": "精神病学",
               "weeks": [
-                7,
                 10
               ],
               "group": null,
@@ -3751,6 +3974,21 @@
               },
               "location": {
                 "default": "未排地点",
+                "weeks": {}
+              }
+            },
+            {
+              "name": "精神病学",
+              "weeks": [
+                7
+              ],
+              "group": null,
+              "note": {
+                "default": "苏伟｜强迫症及相关障碍、双相及相关障碍",
+                "weeks": {}
+              },
+              "location": {
+                "default": "1楼教室",
                 "weeks": {}
               }
             },
@@ -4003,11 +4241,11 @@
               ],
               "group": "7班D组",
               "note": {
-                "default": "",
+                "default": "吴国栋｜消化科见习2",
                 "weeks": {}
               },
               "location": {
-                "default": "未排地点",
+                "default": "1期7号楼的9楼709病区示教室",
                 "weeks": {}
               }
             },
@@ -4162,11 +4400,11 @@
               ],
               "group": "7班D组",
               "note": {
-                "default": "",
+                "default": "吴国栋｜消化科见习2",
                 "weeks": {}
               },
               "location": {
-                "default": "未排地点",
+                "default": "1期7号楼的9楼709病区示教室",
                 "weeks": {}
               }
             },
@@ -4321,11 +4559,11 @@
               ],
               "group": "7班D组",
               "note": {
-                "default": "",
+                "default": "吴国栋｜消化科见习2",
                 "weeks": {}
               },
               "location": {
-                "default": "未排地点",
+                "default": "1期7号楼的9楼709病区示教室",
                 "weeks": {}
               }
             },
